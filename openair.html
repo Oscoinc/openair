@@ -403,7 +403,7 @@
       position: absolute;
       right: 14px;
       left: auto;
-      max-width: 62%;
+      width: 60%;
       padding: 4px 0;
       display: flex;
       align-items: flex-start;
@@ -795,7 +795,7 @@
       <p data-i18n="concept_p1">人生の約3分の1は、睡眠。<br/>デスクワークは、1日の大半。<br/>トレーニングも、積み重ねの時間。</p>
       <p data-i18n="concept_p2">その多くの呼吸は、<br/>感情やストレスによって乱れている。</p>
       <p data-i18n="concept_p3">気づけば、口で呼吸している。<br/>分かっていても、変えられない。</p>
-      <p class="text-zinc-900 font-medium" data-i18n="concept_p4">だから私たちは、<br/>意識しなくても、鼻呼吸へ導く仕組みをつくった。</p>
+      <p data-i18n="concept_p4">だから私たちは、<br/>意識しなくても、鼻呼吸へ導く仕組みをつくった。</p>
       <p class="text-[20px] md:text-[26px] tracking-[0.04em] text-zinc-900 font-semibold pt-4">Silent Upgrade.</p>
     </div>
   </section>
@@ -1487,7 +1487,7 @@
       <div class="space-y-7 text-[19px] md:text-[22px] text-zinc-700 leading-[2.2]">
         <p data-i18n="closing_p1">人は、1日に約2万回、呼吸する。</p>
         <p data-i18n="closing_p2">そのほとんどは、無意識のまま。</p>
-        <p class="text-zinc-900 font-medium" data-i18n="closing_p3">だからこそ、</p>
+        <p data-i18n="closing_p3">だからこそ、</p>
       </div>
     </div>
   </section>
@@ -2161,28 +2161,25 @@ document.addEventListener('click', (e) => {
   });
 })();
 
-// ============== PRICING carousel: center on "Three" (Best Value) on mobile ==============
+// ============== PRICING carousel: pre-center on "Three" (Best Value) on mobile ==============
 (function(){
   if (!window.matchMedia('(max-width: 768px)').matches) return;
   const buyCarousel = document.querySelector('#buy .mobile-h-scroll');
   if (!buyCarousel || buyCarousel.children.length < 2) return;
-  let triggered = false;
   const centerThree = () => {
     const threeCard = buyCarousel.children[1]; // 2nd card = Three (Best Value)
     if (!threeCard) return;
     const targetLeft = threeCard.offsetLeft - (buyCarousel.offsetWidth - threeCard.offsetWidth) / 2;
-    buyCarousel.scrollTo({ left: targetLeft, behavior: 'smooth' });
+    // Instant set (no animation) so user never sees Single first
+    buyCarousel.scrollLeft = Math.max(0, targetLeft);
   };
-  const obs = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting && !triggered){
-        triggered = true;
-        // small delay so layout is finalized
-        setTimeout(centerThree, 100);
-      }
-    });
-  }, { threshold: 0.35 });
-  obs.observe(buyCarousel);
+  // Run as early as possible, multiple times to handle late layout / image loads
+  centerThree();
+  if (document.readyState !== 'complete') {
+    window.addEventListener('load', centerThree);
+  }
+  // Re-center on viewport resize (orientation change etc.)
+  window.addEventListener('resize', centerThree);
 })();
 
 // ============== Scene cards (toggle on tap) ==============
