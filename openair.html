@@ -397,31 +397,32 @@
     /* Hide desktop label column on mobile (replaced by overlay over the product) */
     #design-labels{ display: none !important; }
 
-    /* Mobile feature overlay (floats over the product after morph, transparent) */
+    /* Mobile feature overlay (floats over the product after morph, transparent, right-aligned) */
     #design-mobile-overlay{ display: block !important; }
     .design-mobile-pill{
       position: absolute;
-      left: 14px;
       right: 14px;
+      left: auto;
+      max-width: 62%;
       padding: 4px 0;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 11px;
       opacity: 0;
-      transform: translateY(-8px);
-      transition: opacity .55s cubic-bezier(.22,.8,.2,1), transform .55s cubic-bezier(.22,.8,.2,1);
+      transform: translateX(-14px);
+      transition: opacity .6s cubic-bezier(.22,.8,.2,1), transform .6s cubic-bezier(.22,.8,.2,1);
       pointer-events: none;
       z-index: 10;
     }
-    /* Stack pills vertically: top / middle / bottom */
-    .design-mobile-pill[data-mobile-step="0"]{ top: 3%; }
-    .design-mobile-pill[data-mobile-step="1"]{ top: 40%; }
-    .design-mobile-pill[data-mobile-step="2"]{ bottom: 3%; }
-    /* Stagger fade-in */
-    .design-mobile-pill.is-active{ opacity: 1; transform: translateY(0); }
+    /* Stack pills vertically with equal spacing */
+    .design-mobile-pill[data-mobile-step="0"]{ top: 8%; }
+    .design-mobile-pill[data-mobile-step="1"]{ top: 44%; }
+    .design-mobile-pill[data-mobile-step="2"]{ top: 80%; }
+    /* Slide-in from left, staggered */
+    .design-mobile-pill.is-active{ opacity: 1; transform: translateX(0); }
     .design-mobile-pill[data-mobile-step="0"].is-active{ transition-delay: 0ms; }
-    .design-mobile-pill[data-mobile-step="1"].is-active{ transition-delay: 100ms; }
-    .design-mobile-pill[data-mobile-step="2"].is-active{ transition-delay: 200ms; }
+    .design-mobile-pill[data-mobile-step="1"].is-active{ transition-delay: 120ms; }
+    .design-mobile-pill[data-mobile-step="2"].is-active{ transition-delay: 240ms; }
     .design-mobile-pill .num{
       flex-shrink: 0;
       width: 24px; height: 24px;
