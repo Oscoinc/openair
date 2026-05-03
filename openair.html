@@ -2010,15 +2010,69 @@ document.querySelectorAll('.flip-card').forEach(card => {
   });
 })();
 
+// ============== Custom smooth scroll (Apple-like easing) ==============
+function smoothScrollTo(targetY, duration){
+  const startY = window.scrollY || window.pageYOffset;
+  const distance = targetY - startY;
+  const dur = duration || Math.min(2400, Math.max(900, Math.abs(distance) * 0.45));
+  const startT = performance.now();
+  function step(now){
+    const elapsed = now - startT;
+    const t = Math.min(elapsed / dur, 1);
+    // easeInOutQuad — feels smooth and Apple-like for long scrolls
+    const eased = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+    window.scrollTo(0, startY + distance * eased);
+    if (t < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+// Intercept all in-page hash anchor clicks for smooth scroll
+document.addEventListener('click', (e) => {
+  const link = e.target.closest('a[href^="#"]');
+  if (!link) return;
+  const href = link.getAttribute('href');
+  if (!href || href === '#' || href.length < 2) return;
+  const target = document.querySelector(href);
+  if (!target) return;
+  e.preventDefault();
+  const top = target.getBoundingClientRect().top + window.scrollY;
+  smoothScrollTo(top);
+});
+
 // ============== Logo click → scroll to top ==============
 (function(){
   const logo = document.getElementById('nav-logo');
   if (!logo) return;
-  const scrollTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+  const scrollTop = () => smoothScrollTo(0, 1400);
   logo.addEventListener('click', scrollTop);
   logo.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); scrollTop(); }
   });
+})();
+
+// ============== PRICING carousel: center on "Three" (Best Value) on mobile ==============
+(function(){
+  if (!window.matchMedia('(max-width: 768px)').matches) return;
+  const buyCarousel = document.querySelector('#buy .mobile-h-scroll');
+  if (!buyCarousel || buyCarousel.children.length < 2) return;
+  let triggered = false;
+  const centerThree = () => {
+    const threeCard = buyCarousel.children[1]; // 2nd card = Three (Best Value)
+    if (!threeCard) return;
+    const targetLeft = threeCard.offsetLeft - (buyCarousel.offsetWidth - threeCard.offsetWidth) / 2;
+    buyCarousel.scrollTo({ left: targetLeft, behavior: 'smooth' });
+  };
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && !triggered){
+        triggered = true;
+        // small delay so layout is finalized
+        setTimeout(centerThree, 100);
+      }
+    });
+  }, { threshold: 0.35 });
+  obs.observe(buyCarousel);
 })();
 
 // ============== Scene cards (toggle on tap) ==============
