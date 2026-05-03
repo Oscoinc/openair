@@ -85,6 +85,8 @@
     color:#fff;
     pointer-events:none;
   }
+  /* Re-enable clicks on hero buttons specifically */
+  #hero-headline a, #hero-headline button{ pointer-events: auto; }
   .stage-glow{
     position:absolute; left:50%; top:50%;
     width:80vmin; height:80vmin;
@@ -1586,6 +1588,8 @@
     const heroOpacity = 1 - smooth(norm(p, 0.04, 0.10));
     els.hero.style.opacity = String(heroOpacity);
     els.hero.style.transform = `translateY(-50%) translateY(${(-p * 24).toFixed(1)}vmin)`;
+    // Disable clicks once mostly faded out (prevent invisible-button clicks)
+    els.hero.style.pointerEvents = heroOpacity > 0.05 ? '' : 'none';
 
     // ===== 10 phases =====
     // P0  0.00-0.06   Hero text intro
