@@ -61,22 +61,38 @@
   });
 
   // ============== Dynamic theme-color: match browser UI (top/bottom bars) to page bg ==============
-  // While inside the dark cinematic hero → black bars.
-  // After scrolling past it → white bars (matches the white content sections).
+  // iOS Safari is finicky about <meta name="theme-color"> updates — best results come from
+  // (a) replacing the entire <meta> element rather than mutating its content attribute, and
+  // (b) also setting <html> and <body> background-color so the bottom toolbar follows.
   (function(){
-    var meta = document.querySelector('meta[name="theme-color"]');
-    if (!meta) return;
     var last = null;
+    function setColor(color){
+      // 1) Replace the <meta name="theme-color"> element entirely. iOS Safari sometimes
+      //    ignores attribute mutations but does react to a fresh meta node.
+      var oldMeta = document.querySelector('meta[name="theme-color"]');
+      if (oldMeta && oldMeta.parentNode) oldMeta.parentNode.removeChild(oldMeta);
+      var meta = document.createElement('meta');
+      meta.setAttribute('name', 'theme-color');
+      meta.setAttribute('content', color);
+      document.head.appendChild(meta);
+      // 2) Drive <html>/<body> background-color too — iOS Safari reflects this for the
+      //    bottom toolbar (and as a fallback for older devices that ignore theme-color).
+      try {
+        document.documentElement.style.backgroundColor = color;
+        if (document.body) document.body.style.backgroundColor = color;
+      } catch(e){}
+    }
     function update(){
       var cin = document.getElementById('cinematic');
       if (!cin) return;
       var rect = cin.getBoundingClientRect();
-      // When the bottom of the cinematic section is above the top of the viewport,
-      // the user has scrolled past the dark hero into the white content.
-      var isPast = rect.bottom <= 0;
+      // When cinematic section's bottom passes above viewport top, switch to white.
+      // Use a small buffer (rect.bottom < 80) so the swap kicks in slightly BEFORE
+      // the user reaches the white concept section, avoiding a visible color flash.
+      var isPast = rect.bottom < 80;
       var next = isPast ? '#ffffff' : '#000000';
       if (next !== last){
-        meta.setAttribute('content', next);
+        setColor(next);
         last = next;
       }
     }
