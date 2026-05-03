@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ご注文ありがとうございます — OPEN AIR</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  *{ -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+  html,body{
+    font-family: -apple-system, BlinkMacSystemFont,
+                 "Hiragino Kaku Gothic ProN","ヒラギノ角ゴ ProN W3","ヒラギノ角ゴシック ProN",
+                 "Hiragino Sans","Yu Gothic Medium","游ゴシック","Helvetica Neue",
+                 Arial, sans-serif;
+    color:#1d1d1f;
+    background:#fafafa;
+  }
+  .glass{
+    background:rgba(255,255,255,.7);
+    backdrop-filter:blur(28px) saturate(180%);
+    -webkit-backdrop-filter:blur(28px) saturate(180%);
+    border:1px solid rgba(255,255,255,.7);
+    box-shadow:0 1px 3px rgba(0,0,0,.03),0 12px 40px rgba(0,0,0,.05),
+               inset 0 1px 0 rgba(255,255,255,1);
+  }
+  .glass-pill{
+    background:rgba(255,255,255,.65);
+    backdrop-filter:blur(20px) saturate(180%);
+    -webkit-backdrop-filter:blur(20px) saturate(180%);
+    border:1px solid rgba(255,255,255,.7);
+    box-shadow:0 1px 2px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.04),
+               inset 0 1px 0 rgba(255,255,255,1);
+  }
+  .text-gradient{ background:linear-gradient(180deg,#1d1d1f 0%,#6e6e73 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+  .btn-dark{ background:#0a0a0a; color:#fff; padding:14px 28px; border-radius:999px; font-weight:600; font-size:15px; transition:transform .25s ease,background .25s ease; display:inline-block; text-align:center; }
+  .btn-dark:hover{ transform:translateY(-1px); background:#000; }
+  .btn-light{ background:rgba(255,255,255,.9); color:#0a0a0a; padding:13px 27px; border-radius:999px; font-weight:500; font-size:15px; border:1px solid rgba(0,0,0,.08); display:inline-block; text-align:center; }
+
+  @keyframes pop{ 0%{ transform:scale(.6); opacity:0; } 60%{ transform:scale(1.08); opacity:1; } 100%{ transform:scale(1); } }
+  @keyframes draw{ to{ stroke-dashoffset:0; } }
+  .check-circle{ animation:pop .55s cubic-bezier(.2,.8,.2,1) both; }
+  .check-stroke{ stroke-dasharray:32; stroke-dashoffset:32; animation:draw .5s .35s cubic-bezier(.2,.8,.2,1) forwards; }
+  .reveal{ opacity:0; transform:translateY(16px); animation:rise .8s cubic-bezier(.2,.8,.2,1) forwards; }
+  .reveal.delay-1{ animation-delay:.30s; }
+  .reveal.delay-2{ animation-delay:.45s; }
+  .reveal.delay-3{ animation-delay:.60s; }
+  @keyframes rise{ to{ opacity:1; transform:translateY(0); } }
+
+  /* === Mobile responsive === */
+  @media (max-width: 768px){
+    nav a[href*="openair.html#"]{ display: none; }
+    nav > a:first-child{ border-right: none; padding-right: 0; }
+    nav{ gap: 10px !important; padding-left: 14px; padding-right: 6px; }
+    h1.text-4xl, h1.md\:text-5xl,
+    h2.text-3xl, h2.md\:text-4xl, h2.md\:text-5xl{ font-size: 28px !important; line-height: 1.25 !important; }
+    main.pt-32{ padding-top: 96px !important; padding-bottom: 64px !important; }
+    main.pb-32{ padding-bottom: 64px !important; }
+    .lg\:grid-cols-\[1fr_360px\],
+    .lg\:grid-cols-\[240px_1fr\]{ grid-template-columns: 1fr !important; }
+    .lg\:sticky{ position: static !important; }
+    footer .flex.flex-wrap{ justify-content: center !important; flex-direction: column; gap: 16px !important; }
+    .glass.rounded-\[28px\],
+    .glass.rounded-\[24px\]{ padding: 24px !important; }
+    .field{ padding: 12px 14px !important; font-size: 16px !important; }
+    a, button{ -webkit-tap-highlight-color: transparent; }
+  }
+  @supports (padding: max(0px)){
+    nav{ top: max(16px, env(safe-area-inset-top)); }
+  }
+
+</style>
+</head>
+<body>
+
+<!-- ====== Persistent Nav ====== -->
+<nav class="fixed top-4 left-1/2 -translate-x-1/2 z-50 glass-pill rounded-full pl-3 pr-2 py-2 flex items-center gap-5">
+  <a href="./openair.html" class="pr-3 border-r border-black/10 flex items-center gap-2">
+    <span class="text-[15px] font-semibold tracking-tight text-zinc-900">OPEN AIR</span>
+  </a>
+  <a href="./openair.html#concept"  class="text-[13px] text-zinc-600 hover:text-zinc-900 transition" data-i18n="nav_concept">コンセプト</a>
+  <a href="./openair.html#features" class="text-[13px] text-zinc-600 hover:text-zinc-900 transition" data-i18n="nav_features">特徴</a>
+  <a href="./openair.html#scenes"   class="text-[13px] text-zinc-600 hover:text-zinc-900 transition" data-i18n="nav_scenes">シーン</a>
+  <a href="./openair.html#buy"      class="text-[13px] text-zinc-600 hover:text-zinc-900 transition" data-i18n="nav_buy">購入</a>
+  <a href="./cart.html" class="ml-1 px-4 py-1.5 rounded-full text-[13px] font-medium bg-zinc-900 text-white relative"><span data-i18n="nav_cart">カート</span><span id="nav-cart-badge" class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] grid place-items-center bg-red-500 text-white text-[10px] font-bold rounded-full px-1">0</span></a>
+</nav>
+
+<main class="pt-32 pb-32 px-6 max-w-3xl mx-auto">
+
+  <!-- Animated check -->
+  <div class="flex justify-center mb-8">
+    <svg class="check-circle" width="84" height="84" viewBox="0 0 84 84" fill="none">
+      <circle cx="42" cy="42" r="40" stroke="#0a0a0a" stroke-width="2"/>
+      <path class="check-stroke" d="M26 43 L38 55 L58 31" stroke="#0a0a0a" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    </svg>
+  </div>
+
+  <header class="text-center mb-12 reveal">
+    <div class="text-[12px] tracking-[0.32em] uppercase text-zinc-500 mb-4">Order placed</div>
+    <h1 class="text-4xl md:text-5xl font-semibold tracking-tight text-gradient leading-[1.15]" data-i18n="cp_h1">
+      ご注文ありがとうございます。
+    </h1>
+    <p class="mt-5 text-zinc-600 leading-relaxed" data-i18n="cp_sub">
+      ご注文確認のメールをお送りしました。<br/>
+      数日中にお届けします — 静かな夜が始まります。
+    </p>
+  </header>
+
+  <!-- Order details -->
+  <section class="glass rounded-[28px] p-7 md:p-9 reveal delay-1" id="order-card">
+    <div class="flex flex-wrap justify-between items-baseline gap-3 mb-7">
+      <div>
+        <div class="text-[11px] tracking-[0.28em] uppercase text-zinc-500 mb-1">Order ID</div>
+        <div class="text-[18px] font-semibold tabular-nums tracking-tight" id="order-id">—</div>
+      </div>
+      <div class="text-right">
+        <div class="text-[11px] tracking-[0.28em] uppercase text-zinc-500 mb-1">Date</div>
+        <div class="text-[14px] text-zinc-700" id="order-date">—</div>
+      </div>
+    </div>
+
+    <div class="border-t border-black/10 pt-6">
+      <div class="text-[11px] tracking-[0.28em] uppercase text-zinc-500 mb-3">Items</div>
+      <div id="items-list" class="space-y-3"></div>
+    </div>
+
+    <div class="border-t border-black/10 mt-6 pt-6 grid md:grid-cols-2 gap-6 text-[14px]">
+      <div>
+        <div class="text-[11px] tracking-[0.28em] uppercase text-zinc-500 mb-2" data-i18n="cp_ship_label">お届け先</div>
+        <div id="ship-name" class="text-zinc-900 font-medium mb-1">—</div>
+        <div id="ship-address" class="text-zinc-600 leading-relaxed">—</div>
+        <div id="ship-phone" class="text-zinc-500 mt-2 text-[12px]">—</div>
+      </div>
+      <div>
+        <div class="text-[11px] tracking-[0.28em] uppercase text-zinc-500 mb-2" data-i18n="cp_pay_label">お支払い</div>
+        <div id="pay-method" class="text-zinc-900 font-medium">—</div>
+        <div id="pay-email" class="text-zinc-500 mt-2 text-[12px]">—</div>
+      </div>
+    </div>
+
+    <div class="border-t border-black/10 mt-6 pt-6 flex justify-between items-baseline">
+      <div class="text-[13px] text-zinc-500" data-i18n="cp_total_label">合計（税込）</div>
+      <div class="text-3xl font-semibold tracking-tight" id="order-total">¥0</div>
+    </div>
+  </section>
+
+  <!-- No-order fallback -->
+  <div id="no-order" class="hidden text-center py-12 reveal">
+    <div class="inline-block glass rounded-3xl px-10 py-12">
+      <h2 class="text-xl font-semibold tracking-tight mb-2" data-i18n="cp_noorder_h2">注文情報が見つかりませんでした</h2>
+      <p class="text-zinc-500 text-sm mb-7" data-i18n="cp_noorder_sub">先に商品をカートに追加して、購入手続きへお進みください。</p>
+      <a href="./openair.html#buy" class="btn-dark" data-i18n="cp_noorder_btn">商品を見る</a>
+    </div>
+  </div>
+
+  <div class="mt-10 flex justify-center gap-3 reveal delay-2">
+    <a href="./openair.html" class="btn-dark" data-i18n="cp_btn_home">ホームに戻る</a>
+    <a href="./openair.html#buy" class="btn-light" data-i18n="cp_btn_continue">買い物を続ける</a>
+  </div>
+
+  <!-- Closing tone -->
+  <p class="mt-16 text-center text-zinc-400 italic text-[14px] reveal delay-3" data-i18n="cp_closing">
+    呼吸を、整える。<br/>
+    今日から、その "少し" がはじまります。
+  </p>
+</main>
+
+<footer class="border-t border-zinc-200/60 py-10 px-6 bg-white">
+  <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-6 text-zinc-500 text-sm">
+    <span class="text-xs text-zinc-400">© 2026 OPEN AIR, Inc.</span>
+    <div class="flex gap-6 items-center">
+      <a href="./privacy.html" class="hover:text-zinc-900" data-i18n="footer_privacy">プライバシー</a>
+      <a href="./terms.html" class="hover:text-zinc-900" data-i18n="footer_terms">利用規約</a>
+      <a href="./support.html" class="hover:text-zinc-900" data-i18n="footer_support">サポート</a>
+      <button id="lang-switcher" type="button" class="text-zinc-500 hover:text-zinc-900 transition flex items-center gap-1.5" aria-label="言語切替 / Cambiar idioma">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"/>
+          <path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>
+        </svg>
+        <span id="lang-current">日本語</span>
+      </button>
+    </div>
+  </div>
+</footer>
+
+<!-- Region selection modal -->
+<div id="region-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/40 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="region-modal-title">
+  <div class="bg-white rounded-3xl p-7 max-w-sm w-full shadow-2xl" onclick="event.stopPropagation()">
+    <div class="text-[11px] tracking-[0.3em] uppercase text-zinc-500 mb-1">Region</div>
+    <h3 id="region-modal-title" class="text-xl font-semibold tracking-tight mb-1">配送地域を選択</h3>
+    <p class="text-[12px] text-zinc-500 mb-5" id="region-modal-sub">ご利用の地域に合わせて、言語と通貨が切り替わります。</p>
+    <ul class="space-y-1.5">
+      <li>
+        <button data-region="ja" class="region-option w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
+          <span class="text-2xl">🇯🇵</span>
+          <div class="flex-1">
+            <div class="text-[14px] font-medium text-zinc-900">日本</div>
+            <div class="text-[11px] text-zinc-500">日本語 · 全国配送 · ¥</div>
+          </div>
+          <span class="region-check text-zinc-900 hidden text-[18px]">✓</span>
+        </button>
+      </li>
+      <li>
+        <button data-region="es" class="region-option w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
+          <span class="text-2xl">🇪🇸</span>
+          <div class="flex-1">
+            <div class="text-[14px] font-medium text-zinc-900">España</div>
+            <div class="text-[11px] text-zinc-500">Español · Envío UE · €</div>
+          </div>
+          <span class="region-check text-zinc-900 hidden text-[18px]">✓</span>
+        </button>
+      </li>
+      <li>
+        <button data-region="br" class="region-option region-soon w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
+          <span class="text-2xl opacity-70">🇧🇷</span>
+          <div class="flex-1">
+            <div class="text-[14px] font-medium text-zinc-900">Brasil</div>
+            <div class="text-[11px] text-zinc-500" id="region-br-sub">ご購入できるよう、準備を進めています</div>
+          </div>
+          <span class="text-[10px] tracking-[0.18em] uppercase text-zinc-500 px-2.5 py-1 rounded-full border border-zinc-200" id="region-br-badge">Soon</span>
+        </button>
+      </li>
+      <li>
+        <button data-region="us" class="region-option region-soon w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
+          <span class="text-2xl opacity-70">🇺🇸</span>
+          <div class="flex-1">
+            <div class="text-[14px] font-medium text-zinc-900">United States</div>
+            <div class="text-[11px] text-zinc-500" id="region-us-sub">ご購入できるよう、準備を進めています</div>
+          </div>
+          <span class="text-[10px] tracking-[0.18em] uppercase text-zinc-500 px-2.5 py-1 rounded-full border border-zinc-200" id="region-us-badge">Soon</span>
+        </button>
+      </li>
+    </ul>
+    <button id="region-close" type="button" class="mt-5 w-full text-center text-[13px] text-zinc-500 hover:text-zinc-900 transition py-2">閉じる</button>
+  </div>
+</div>
+
+<script>
+// ============== i18n ==============
+const translations = {
+  // Nav
+  "nav_concept":  { ja: "コンセプト", es: "Concepto" },
+  "nav_features": { ja: "特徴",       es: "Características" },
+  "nav_scenes":   { ja: "シーン",     es: "Escenas" },
+  "nav_buy":      { ja: "購入",       es: "Comprar" },
+  "nav_cart":     { ja: "カート",     es: "Carrito" },
+
+  // Header
+  "cp_h1":  { ja: "ご注文ありがとうございます。", es: "Gracias por tu pedido." },
+  "cp_sub": {
+    ja: "ご注文確認のメールをお送りしました。<br/>数日中にお届けします — 静かな夜が始まります。",
+    es: "Te enviamos un correo de confirmación.<br/>Llegará en pocos días — empieza una noche más tranquila."
+  },
+
+  // Order card labels
+  "cp_ship_label":  { ja: "お届け先", es: "Envío" },
+  "cp_pay_label":   { ja: "お支払い", es: "Pago" },
+  "cp_total_label": { ja: "合計（税込）", es: "Total (impuestos incl.)" },
+
+  // Item brand prefix
+  "cp_item_brand_prefix": { ja: "OPEN AIR", es: "OPEN AIR" },
+
+  // No-order fallback
+  "cp_noorder_h2":  { ja: "注文情報が見つかりませんでした", es: "No encontramos tu pedido" },
+  "cp_noorder_sub": { ja: "先に商品をカートに追加して、購入手続きへお進みください。", es: "Agrega productos a tu carrito y continúa con la compra." },
+  "cp_noorder_btn": { ja: "商品を見る", es: "Ver productos" },
+
+  // Buttons
+  "cp_btn_home":     { ja: "ホームに戻る", es: "Volver al inicio" },
+  "cp_btn_continue": { ja: "買い物を続ける", es: "Seguir comprando" },
+
+  // Closing
+  "cp_closing": {
+    ja: "呼吸を、整える。<br/>今日から、その \"少し\" がはじまります。",
+    es: "Respira con calma.<br/>Hoy empieza ese pequeño cambio."
+  },
+
+  // Payment labels (used dynamically)
+  "cp_pay_card":        { ja: "クレジットカード", es: "Tarjeta de crédito" },
+  "cp_pay_apple":       { ja: "Apple Pay", es: "Apple Pay" },
+  "cp_pay_convenience": { ja: "コンビニ払い", es: "Pago en tienda" },
+  "cp_pay_paypay":      { ja: "PayPay", es: "PayPay" },
+
+  // Footer
+  "footer_privacy": { ja: "プライバシー", es: "Privacidad" },
+  "footer_terms":   { ja: "利用規約",     es: "Términos" },
+  "footer_support": { ja: "サポート",     es: "Soporte" }
+};
+
+const I18N_KEY = 'openair_lang';
+function getLang(){ return localStorage.getItem(I18N_KEY) || 'ja'; }
+function t(key){
+  const entry = translations[key];
+  if (!entry) return key;
+  const lang = getLang();
+  return entry[lang] || entry.ja || key;
+}
+function applyLang(lang){
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const entry = translations[key];
+    if (!entry) return;
+    el.innerHTML = entry[lang] || entry.ja;
+  });
+  const langLabel = document.getElementById('lang-current');
+  if (langLabel) langLabel.textContent = lang === 'es' ? 'Español' : '日本語';
+  const langOther = document.getElementById('lang-other');
+  if (langOther) langOther.textContent = lang === 'es' ? '日本語' : 'Español';
+  if (typeof renderOrder === 'function') renderOrder();
+}
+function setLang(lang){
+  localStorage.setItem(I18N_KEY, lang);
+  applyLang(lang);
+}
+
+// Nav badge
+(function(){
+  function updateBadge(){
+    const badge = document.getElementById('nav-cart-badge');
+    if (!badge) return;
+    let cart = {};
+    try { cart = JSON.parse(localStorage.getItem('openair_cart')) || {}; } catch(e){}
+    const q = Object.values(cart).reduce((s,v)=>s+v,0);
+    if (q > 0){ badge.textContent = q; badge.classList.remove('hidden'); }
+    else { badge.classList.add('hidden'); }
+  }
+  updateBadge();
+  window.addEventListener('storage', updateBadge);
+  window.addEventListener('focus', updateBadge);
+})();
+
+function fmtYen(n){ return '¥' + n.toLocaleString('ja-JP'); }
+function fmtEur(n){ return '€' + n.toLocaleString('es-ES'); }
+function fmtPrice(n, lang){ return lang === 'es' ? fmtEur(n) : fmtYen(n); }
+
+const order = (() => {
+  try { return JSON.parse(localStorage.getItem('openair_last_order')); }
+  catch(e){ return null; }
+})();
+
+function renderOrder(){
+  if (!order){
+    document.getElementById('order-card').style.display = 'none';
+    document.getElementById('no-order').classList.remove('hidden');
+    return;
+  }
+  const lang = getLang();
+  document.getElementById('order-id').textContent = order.id;
+  const d = new Date(order.date);
+  document.getElementById('order-date').textContent =
+    `${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+
+  document.getElementById('items-list').innerHTML = order.items.map(it => {
+    const descText = (it.desc && typeof it.desc === 'object') ? (it.desc[lang] || it.desc.ja) : it.desc;
+    return `
+    <div class="flex gap-3 items-center">
+      <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-zinc-50 to-zinc-100 grid place-items-center shrink-0 overflow-hidden relative">
+        <img src="${it.image}" alt="" class="max-w-[80%] max-h-[80%] object-contain" onerror="this.style.display='none'">
+        ${it.qty > 1 ? `<span class="absolute -top-1 -right-1 w-5 h-5 grid place-items-center bg-zinc-900 text-white text-[10px] font-semibold rounded-full">${it.qty}</span>` : ''}
+      </div>
+      <div class="flex-1">
+        <div class="text-[14px] font-semibold tracking-tight">${t('cp_item_brand_prefix')} ${it.name}</div>
+        <div class="text-[12px] text-zinc-500">${descText}</div>
+      </div>
+      <div class="text-[14px] font-semibold tabular-nums">${fmtPrice((typeof it.price === 'object' ? (it.price[lang] || it.price.ja) : it.price) * it.qty, lang)}</div>
+    </div>
+    `;
+  }).join('');
+
+  document.getElementById('ship-name').textContent = order.name;
+  document.getElementById('ship-address').textContent = order.address;
+  document.getElementById('ship-phone').textContent = order.phone;
+  const payKey = 'cp_pay_' + order.payment;
+  document.getElementById('pay-method').textContent =
+    (translations[payKey] ? t(payKey) : order.payment);
+  document.getElementById('pay-email').textContent = order.email;
+  // Order total: support multi-currency totals if stored, else fallback to legacy yen
+  const totalVal = (typeof order.total === 'object') ? (order.total[lang] || order.total.ja) : order.total;
+  document.getElementById('order-total').textContent = fmtPrice(totalVal, lang);
+}
+
+renderOrder();
+
+// ============== i18n init ==============
+applyLang(getLang());
+document.getElementById('lang-switcher')?.addEventListener('click', (e) => {
+  e.preventDefault();
+  const cur = getLang();
+  setLang(cur === 'ja' ? 'es' : 'ja');
+});
+
+// Region modal logic
+(function(){
+  const modal = document.getElementById('region-modal');
+  const switcher = document.getElementById('lang-switcher');
+  if (!modal || !switcher) return;
+
+  const newSwitcher = switcher.cloneNode(true);
+  switcher.parentNode.replaceChild(newSwitcher, switcher);
+
+  function openModal(){
+    modal.classList.remove('hidden');
+    updateChecks();
+    const lang = getLang();
+    const title = modal.querySelector('#region-modal-title');
+    const sub = modal.querySelector('#region-modal-sub');
+    const close = modal.querySelector('#region-close');
+    const brSub = modal.querySelector('#region-br-sub');
+    const usSub = modal.querySelector('#region-us-sub');
+    if (lang === 'es') {
+      if (title) title.textContent = 'Selecciona tu región';
+      if (sub) sub.textContent = 'El idioma y la moneda se ajustan a tu región.';
+      if (close) close.textContent = 'Cerrar';
+      if (brSub) brSub.textContent = 'Estamos trabajando para que pronto puedas comprarlo aquí.';
+      if (usSub) usSub.textContent = 'Estamos trabajando para que pronto puedas comprarlo aquí.';
+    } else {
+      if (title) title.textContent = '配送地域を選択';
+      if (sub) sub.textContent = 'ご利用の地域に合わせて、言語と通貨が切り替わります。';
+      if (close) close.textContent = '閉じる';
+      if (brSub) brSub.textContent = 'ご購入できるよう、準備を進めています。';
+      if (usSub) usSub.textContent = 'ご購入できるよう、準備を進めています。';
+    }
+  }
+  function closeModal(){ modal.classList.add('hidden'); }
+  function updateChecks(){
+    const lang = getLang();
+    modal.querySelectorAll('.region-option').forEach(btn => {
+      const check = btn.querySelector('.region-check');
+      if (!check) return;
+      const region = btn.dataset.region;
+      if ((region === 'ja' && lang === 'ja') || (region === 'es' && lang === 'es')) {
+        check.classList.remove('hidden');
+      } else {
+        check.classList.add('hidden');
+      }
+    });
+  }
+  function showSoonToast(region){
+    const lang = getLang();
+    const msg = lang === 'es'
+      ? 'Estamos trabajando para que pronto puedas comprarlo aquí.'
+      : 'ご購入できるよう、準備を進めています。';
+    let toast = document.getElementById('region-toast');
+    if (!toast){
+      toast = document.createElement('div');
+      toast.id = 'region-toast';
+      toast.setAttribute('role','status');
+      toast.setAttribute('aria-live','polite');
+      document.body.appendChild(toast);
+    }
+    toast.style.cssText = `
+      position:fixed; bottom:24px; left:50%;
+      transform:translateX(-50%) translateY(20px);
+      background:rgba(10,10,10,.92); color:#fff;
+      padding:14px 22px; border-radius:999px;
+      font-size:14px; max-width:90vw;
+      z-index:200; opacity:0;
+      transition:opacity .25s, transform .25s;
+      box-shadow:0 10px 40px rgba(0,0,0,.25);
+      backdrop-filter:blur(10px);
+    `;
+    toast.textContent = msg;
+    requestAnimationFrame(()=>{
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateX(-50%) translateY(0)';
+    });
+    clearTimeout(window.__regionToastT);
+    window.__regionToastT = setTimeout(()=>{
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateX(-50%) translateY(20px)';
+    }, 3200);
+  }
+
+  newSwitcher.addEventListener('click', (e) => { e.preventDefault(); openModal(); });
+  modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+  document.getElementById('region-close')?.addEventListener('click', closeModal);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal(); });
+
+  modal.querySelectorAll('.region-option').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const region = btn.dataset.region;
+      if (region === 'ja') { setLang('ja'); closeModal(); }
+      else if (region === 'es') { setLang('es'); closeModal(); }
+      else if (region === 'br' || region === 'us') {
+        showSoonToast(region);
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>

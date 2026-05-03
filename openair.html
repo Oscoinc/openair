@@ -1,0 +1,2315 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OPEN AIR — 呼吸を、整える。</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  *{ -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+  html,body{
+    /* Apple 純正 日本語フォントスタック */
+    font-family: -apple-system, BlinkMacSystemFont,
+                 "Hiragino Kaku Gothic ProN","ヒラギノ角ゴ ProN W3","ヒラギノ角ゴシック ProN",
+                 "Hiragino Sans","Yu Gothic Medium","游ゴシック","Helvetica Neue",
+                 Arial, sans-serif;
+    color:#1d1d1f;
+  }
+  html{ scroll-behavior:smooth; }
+  body{ background:#0a0a0a; }
+
+  /* === Hero stage colors === */
+  .stage-bg{
+    background: radial-gradient(ellipse at center, #15151a 0%, #050507 70%, #000 100%);
+  }
+
+  /* === Liquid Glass === */
+  .glass{
+    background:rgba(255,255,255,.55);
+    backdrop-filter:blur(28px) saturate(180%);
+    -webkit-backdrop-filter:blur(28px) saturate(180%);
+    border:1px solid rgba(255,255,255,.6);
+    box-shadow:0 1px 3px rgba(0,0,0,.03),0 12px 40px rgba(0,0,0,.05),
+               inset 0 1px 0 rgba(255,255,255,1);
+  }
+  .glass-pill{
+    background:rgba(255,255,255,.65);
+    backdrop-filter:blur(20px) saturate(180%);
+    -webkit-backdrop-filter:blur(20px) saturate(180%);
+    border:1px solid rgba(255,255,255,.7);
+    box-shadow:0 1px 2px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.04),
+               inset 0 1px 0 rgba(255,255,255,1);
+  }
+  .glass-dark{
+    background:rgba(20,20,22,.55);
+    backdrop-filter:blur(24px) saturate(160%);
+    -webkit-backdrop-filter:blur(24px) saturate(160%);
+    border:1px solid rgba(255,255,255,.08);
+  }
+  .glass-pill-dark{
+    background:rgba(255,255,255,.05);
+    backdrop-filter:blur(20px) saturate(160%);
+    -webkit-backdrop-filter:blur(20px) saturate(160%);
+    border:1px solid rgba(255,255,255,.10);
+  }
+
+  .text-gradient{ background:linear-gradient(180deg,#1d1d1f 0%,#6e6e73 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+  .text-gradient-light{ background:linear-gradient(180deg,#ffffff 0%,#a1a1aa 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+
+  ::-webkit-scrollbar{ width:8px;height:8px; }
+  ::-webkit-scrollbar-track{ background:transparent; }
+  ::-webkit-scrollbar-thumb{ background:rgba(255,255,255,.10); border-radius:4px; }
+
+  .btn-primary{ background:#fff; color:#0a0a0a; padding:14px 28px; border-radius:999px; font-weight:600; font-size:15px; transition:transform .25s ease,background .25s ease; }
+  .btn-primary:hover{ transform:translateY(-1px); background:#f4f4f5; }
+  .btn-secondary{ background:rgba(255,255,255,.08); color:#fff; padding:13px 27px; border-radius:999px; font-weight:500; font-size:15px; border:1px solid rgba(255,255,255,.18); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); transition:background .25s ease,transform .25s ease; }
+  .btn-secondary:hover{ transform:translateY(-1px); background:rgba(255,255,255,.14); }
+  .btn-dark{ background:#0a0a0a; color:#fff; padding:14px 28px; border-radius:999px; font-weight:600; font-size:15px; transition:transform .25s ease,background .25s ease; }
+  .btn-dark:hover{ transform:translateY(-1px); background:#000; }
+  .btn-light{ background:rgba(255,255,255,.7); color:#0a0a0a; padding:13px 27px; border-radius:999px; font-weight:500; font-size:15px; border:1px solid rgba(0,0,0,.06); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); transition:background .25s ease,transform .25s ease; }
+  .btn-light:hover{ transform:translateY(-1px); background:#fff; }
+
+  /* === Cinematic stage === */
+  .stage-pin{ position:sticky; top:0; height:100vh; overflow:hidden; }
+  .stage-img{
+    position:absolute; left:50%; top:50%;
+    transform-origin:center center;
+    will-change:transform,opacity,filter;
+    pointer-events:none;
+    user-select:none;
+  }
+  .stage-caption{
+    position:absolute; left:0; right:0;
+    text-align:center;
+    will-change:transform,opacity;
+    color:#fff;
+    pointer-events:none;
+  }
+  .stage-glow{
+    position:absolute; left:50%; top:50%;
+    width:80vmin; height:80vmin;
+    transform:translate(-50%,-50%);
+    background: radial-gradient(circle, rgba(207,216,227,.35) 0%, rgba(207,216,227,0) 60%);
+    will-change:opacity,transform;
+    pointer-events:none;
+    opacity:0;
+    mix-blend-mode:screen;
+  }
+
+  .progress-rail{
+    position:fixed; top:50%; right:24px; transform:translateY(-50%);
+    width:2px; height:240px; background:rgba(255,255,255,.10); border-radius:2px; z-index:40;
+  }
+  .progress-rail .fill{ position:absolute; top:0; left:0; right:0; background:linear-gradient(180deg,#fff,#a1a1aa); border-radius:2px; height:0; transition:height .12s linear; }
+
+  .reveal{ opacity:0; transform:translateY(24px); transition:opacity .9s cubic-bezier(.2,.8,.2,1),transform .9s cubic-bezier(.2,.8,.2,1); }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+
+  /* Subtle grain overlay for cinema feel */
+  .grain{ position:absolute; inset:0; pointer-events:none; opacity:.04; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+  /* breath arrows on nose phase */
+  .breath{ position:absolute; left:50%; bottom:18%; width:120px; height:80px; transform:translateX(-50%); opacity:0; }
+  .breath svg{ width:100%; height:100%; }
+  .breath path{ stroke:rgba(255,255,255,.7); stroke-width:1.4; fill:none; stroke-linecap:round; stroke-dasharray:4 6; }
+
+  /* Skeleton loader */
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+  .loader{ width:36px;height:36px;border:2px solid rgba(255,255,255,.10);border-top-color:rgba(255,255,255,.6);border-radius:50%;animation:spin .8s linear infinite; }
+
+  /* Nav theme — dark BG (cinematic, dark sections) */
+  #nav[data-theme="dark"] .nav-link        { color: rgba(255,255,255,.70); }
+  #nav[data-theme="dark"] .nav-link:hover  { color: rgba(255,255,255,1); }
+  #nav[data-theme="dark"] .nav-link-strong { color: #fff; }
+  #nav[data-theme="dark"] .nav-divider     { border-color: rgba(255,255,255,.10); }
+  #nav[data-theme="dark"] #nav-cart        { background:#fff; color:#0a0a0a; }
+  #nav[data-theme="dark"] #nav-cart:hover  { background:#f4f4f5; }
+  /* === Instagram-style ガラス枠カード === */
+  .ig-card{
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: 0 30px 60px rgba(0,0,0,.18), 0 8px 24px rgba(0,0,0,.10);
+    background: #18181b;
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    transition: transform .55s cubic-bezier(.22,.8,.2,1), box-shadow .55s cubic-bezier(.22,.8,.2,1);
+    -webkit-tap-highlight-color: transparent;
+    cursor: pointer;
+    position: relative;
+  }
+  .ig-card:active{ transform: translateY(-2px) scale(1.005); transition-duration: .15s; }
+  .ig-card .ig-bg-photo{
+    transition: transform .9s cubic-bezier(.22,.8,.2,1), filter .6s cubic-bezier(.22,.8,.2,1);
+  }
+  /* Default IG handle pill at bottom */
+  .ig-overlay-handle{
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    padding: 18px 20px;
+    background: linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(0,0,0,.50) 100%);
+    transition: opacity .5s cubic-bezier(.22,.8,.2,1);
+    pointer-events: none;
+  }
+  .ig-handle-pill{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,.92);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    color: #18181b;
+    padding: 8px 14px 8px 10px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: .01em;
+    box-shadow: 0 4px 14px rgba(0,0,0,.18);
+  }
+  .ig-handle-pill svg{ width: 18px; height: 18px; flex-shrink: 0; }
+  /* Always-visible role label (bottom-left of card) */
+  .ig-overlay-label{
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    padding: 22px 24px;
+    background: linear-gradient(to top, rgba(0,0,0,.55) 0%, rgba(0,0,0,0) 40%);
+    transition: opacity .55s cubic-bezier(.22,.8,.2,1);
+    pointer-events: none;
+  }
+  .ig-overlay-label .ig-label-text{
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: .01em;
+    text-shadow: 0 2px 10px rgba(0,0,0,.45);
+  }
+  /* Hide label when revealed (quote takes over) */
+  .ig-card.is-revealed .ig-overlay-label{ opacity: 0; }
+  @media (hover: hover) and (pointer: fine){
+    .ig-card:hover .ig-overlay-label{ opacity: 0; }
+  }
+  /* Quote overlay (visible on hover) */
+  .ig-overlay-quote{
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    padding: 28px 26px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(0,0,0,.50), rgba(0,0,0,.40));
+    color: #fff;
+    opacity: 0;
+    transition: opacity .55s cubic-bezier(.22,.8,.2,1);
+    pointer-events: none;
+  }
+  .ig-overlay-quote .ig-role{
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.7);
+    margin-bottom: 14px;
+  }
+  .ig-overlay-quote .ig-quote{
+    font-size: 13px;
+    line-height: 1.85;
+    color: rgba(255,255,255,.96);
+    margin: 0;
+  }
+  @media (hover:hover) and (pointer: fine){
+    .ig-card:hover{
+      transform: translateY(-4px) scale(1.012);
+      box-shadow: 0 40px 80px rgba(0,0,0,.22), 0 14px 32px rgba(0,0,0,.14);
+    }
+    .ig-card:hover .ig-bg-photo{
+      filter: blur(8px) saturate(.85) brightness(.92);
+      transform: scale(1.04);
+    }
+    .ig-card:hover .ig-overlay-handle{ opacity: 0; }
+    .ig-card:hover .ig-overlay-quote{ opacity: 1; }
+  }
+  /* Touch / class-based reveal (works on iOS without sticky hover) */
+  .ig-card.is-revealed .ig-bg-photo{
+    filter: blur(8px) saturate(.85) brightness(.92);
+    transform: scale(1.04);
+  }
+  .ig-card.is-revealed .ig-overlay-handle{ opacity: 0; }
+  .ig-card.is-revealed .ig-overlay-quote{ opacity: 1; }
+  /* CTA at bottom of quote overlay (visible when revealed) */
+  .ig-overlay-quote .ig-quote-cta{
+    margin-top: 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #fff;
+    background: rgba(255,255,255,.14);
+    padding: 8px 14px;
+    border: 1px solid rgba(255,255,255,.4);
+    border-radius: 999px;
+    align-self: flex-start;
+    text-decoration: none;
+    pointer-events: auto;
+    transition: background .25s, border-color .25s, transform .25s;
+    cursor: pointer;
+  }
+  .ig-overlay-quote .ig-quote-cta:hover{
+    background: rgba(255,255,255,.22);
+    border-color: rgba(255,255,255,.6);
+    transform: translateY(-1px);
+  }
+  .ig-photo{
+    position: relative;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  /* Photo background — falls back to a tasteful gradient if user-provided photo missing */
+  .ig-photo-boxer{
+    background:
+      radial-gradient(60% 40% at 30% 30%, rgba(255,160,80,.20), transparent 60%),
+      radial-gradient(40% 35% at 75% 70%, rgba(60,80,120,.25), transparent 65%),
+      linear-gradient(135deg, #1a1714 0%, #100a08 50%, #050505 100%);
+  }
+  .ig-photo-desk{
+    background:
+      radial-gradient(70% 50% at 35% 35%, rgba(80,160,240,.22), transparent 60%),
+      radial-gradient(50% 40% at 70% 80%, rgba(255,210,170,.18), transparent 65%),
+      linear-gradient(135deg, #d8dfe5 0%, #b8c2cc 50%, #6e7a85 100%);
+  }
+  .ig-photo-chef{
+    background:
+      radial-gradient(60% 45% at 50% 35%, rgba(255,210,140,.30), transparent 60%),
+      radial-gradient(50% 40% at 70% 80%, rgba(255,160,140,.20), transparent 65%),
+      linear-gradient(135deg, #f4e4cc 0%, #c9a98a 50%, #6e5944 100%);
+  }
+  /* The actual photo if user adds user_10.png (chef) / user_11.png (desk) / user_12.png (boxer) into /assets */
+  .ig-bg-photo{
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    z-index: 0;
+  }
+  .ig-top{
+    position: absolute; top: 0; left: 0; right: 0; z-index: 2;
+    padding: 12px 14px;
+    display: flex; align-items: center; gap: 10px;
+    background: linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,0));
+    backdrop-filter: blur(14px) saturate(160%);
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+  }
+  .ig-bottom{
+    position: absolute; bottom: 0; left: 0; right: 0; z-index: 2;
+    padding: 14px 16px 18px;
+    background: linear-gradient(0deg, rgba(0,0,0,.55), rgba(0,0,0,0));
+    backdrop-filter: blur(14px) saturate(160%);
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+    line-height: 1.45;
+  }
+  .ig-pill{
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2;
+    padding: 14px 38px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.10);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255,255,255,.18);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.25), 0 8px 32px rgba(0,0,0,.15);
+  }
+  .ig-pill span{
+    font-size: 22px; font-weight: 600; letter-spacing: 0.04em;
+    color: rgba(255,255,255,.92);
+  }
+
+  /* Nav theme — light BG (white sections) */
+  #nav[data-theme="light"] .nav-link        { color: rgba(63,63,70,.85); }
+  #nav[data-theme="light"] .nav-link:hover  { color: #0a0a0a; }
+  #nav[data-theme="light"] .nav-link-strong { color: #0a0a0a; }
+  #nav[data-theme="light"] .nav-divider     { border-color: rgba(0,0,0,.08); }
+  #nav[data-theme="light"] #nav-cart        { background:#0a0a0a; color:#fff; }
+  #nav[data-theme="light"] #nav-cart:hover  { background:#000; }
+
+  /* ====================================================== */
+  /* === MOBILE RESPONSIVE FIXES (iPhone / narrow screens) === */
+  /* ====================================================== */
+  @media (max-width: 768px){
+    /* --- Nav: drop center links, keep logo + cart only --- */
+    #nav{ gap: 12px; padding-left: 14px; padding-right: 6px; }
+    #nav .nav-divider{ border-right: none; padding-right: 0; }
+    #nav a.nav-link{ display: none; }
+
+    /* --- Hero on mobile --- */
+    #hero-headline h1{ font-size: 38px !important; line-height: 1.1; padding: 0 8px; }
+    #hero-headline p{ font-size: 14px !important; line-height: 1.7; padding: 0 16px; }
+    #hero-headline .glass-pill-dark{ font-size: 10px !important; padding: 6px 12px !important; }
+    #hero-headline .btn-primary,
+    #hero-headline .btn-secondary{ padding: 11px 20px !important; font-size: 13px !important; }
+
+    /* --- Cinematic captions sized down --- */
+    .stage-caption div.text-2xl,
+    .stage-caption div.md\:text-4xl{ font-size: 22px !important; padding: 0 16px; line-height: 1.3 !important; }
+    .stage-caption .text-\[11px\]{ font-size: 10px !important; }
+    .stage-caption .text-\[12px\]{ font-size: 10px !important; }
+    .stage-caption .text-\[15px\]{ font-size: 13px !important; }
+
+    /* --- Section spacing reduced --- */
+    section.py-40{ padding-top: 64px !important; padding-bottom: 64px !important; }
+    section.py-32{ padding-top: 56px !important; padding-bottom: 56px !important; }
+    section.py-24{ padding-top: 48px !important; padding-bottom: 48px !important; }
+
+    /* --- Hide scroll progress rail on mobile --- */
+    .progress-rail{ display: none !important; }
+
+    /* --- Headlines on mobile: 3-level hierarchy preserved --- */
+    h1.text-5xl, h1.md\:text-7xl{ font-size: 36px !important; line-height: 1.18 !important; }
+    /* L1: hero/major sections (md:text-6xl) */
+    h2.md\:text-6xl{ font-size: 32px !important; line-height: 1.18 !important; }
+    /* L2: standard content sections (md:text-5xl) */
+    h2.md\:text-5xl{ font-size: 26px !important; line-height: 1.22 !important; }
+    /* L3: sub sections (md:text-4xl) */
+    h2.md\:text-4xl{ font-size: 22px !important; line-height: 1.28 !important; }
+    .text-\[17px\], .md\:text-\[19px\]{ font-size: 15px !important; line-height: 1.85 !important; }
+    .text-\[19px\], .md\:text-\[22px\]{ font-size: 16px !important; }
+
+    /* --- DESIGN scroll-pinned: keep animation on mobile, compact the layout --- */
+    #design-anim{ height: 220vh !important; }
+    #design-anim .design-pin{ padding: 56px 0 16px !important; }
+    /* Inner 3-col grid → stack */
+    #design-anim .design-pin .grid{
+      grid-template-columns: 1fr !important;
+      gap: 16px !important;
+    }
+    #design-anim .design-pin h2{ font-size: 24px !important; line-height: 1.2 !important; }
+    #design-anim .design-pin .text-\[12px\]{ font-size: 10px !important; }
+    /* Hide step indicator and right-side detailed labels on mobile (too cramped) */
+    #design-labels{ display: none !important; }
+    /* Stage size */
+    #design-anim .design-pin .aspect-\[5\/4\]{
+      max-height: 42vh !important;
+      width: 100% !important;
+      margin: 0 auto;
+    }
+    #design-single, #design-layers{ max-width: 92% !important; max-height: 92% !important; }
+
+    /* --- Mobile logo: keep modest size --- */
+    #logo{ max-height: 22vmin !important; max-width: 70vmin !important; }
+    /* --- Mobile package: make it more prominent --- */
+    #package{ max-width: 82vmin !important; max-height: 82vmin !important; }
+    /* --- HOW TO USE Step images: show full image (no cropping) on mobile --- */
+    #wear img.object-cover{
+      object-fit: contain !important;
+      object-position: right center !important;
+    }
+
+    /* --- Reveal: make all reveals immediately visible on mobile to avoid trapped content --- */
+    .reveal{ opacity: 1 !important; transform: none !important; }
+
+    /* --- Cinematic section: shorten on mobile for less scroll --- */
+    #cinematic{ height: 500vh !important; }
+
+    /* --- Pricing cards: tighten padding --- */
+    section#buy .rounded-\[28px\]{ padding: 28px !important; }
+
+    /* --- Footer: stack and align --- */
+    footer .flex.flex-wrap{ justify-content: center !important; flex-direction: column; gap: 16px !important; }
+
+    /* --- Tap target safety --- */
+    a, button{ -webkit-tap-highlight-color: transparent; }
+  }
+
+  /* iPhone notch safe area for fixed nav */
+  @supports (padding: max(0px)){
+    nav#nav{ top: max(16px, env(safe-area-inset-top)); }
+  }
+
+  /* ===== Flip cards (Why) ===== */
+  .flip-card{
+    perspective:1000px;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+    background:transparent;
+    padding:0;
+    border:0;
+    width:100%;
+    text-align:inherit;
+    font:inherit;
+    color:inherit;
+  }
+  .flip-card .flip-inner{
+    position:relative;
+    width:100%;
+    aspect-ratio:1/1;
+    transition:transform .7s cubic-bezier(.2,.8,.2,1);
+    transform-style:preserve-3d;
+  }
+  .flip-card.flipped .flip-inner{ transform:rotateY(180deg); }
+  .flip-face{
+    position:absolute;
+    inset:0;
+    -webkit-backface-visibility:hidden;
+    backface-visibility:hidden;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:18px;
+    border-radius:24px;
+    text-align:center;
+  }
+  .flip-front{
+    background:rgba(255,255,255,.7);
+    backdrop-filter:blur(28px) saturate(180%);
+    -webkit-backdrop-filter:blur(28px) saturate(180%);
+    border:1px solid rgba(255,255,255,.7);
+    box-shadow:0 1px 3px rgba(0,0,0,.03),0 12px 40px rgba(0,0,0,.05),
+               inset 0 1px 0 rgba(255,255,255,1);
+  }
+  .flip-front .flip-hint{
+    position:absolute;
+    bottom:10px; left:0; right:0;
+    text-align:center;
+    font-size:9px;
+    letter-spacing:.22em;
+    color:rgba(0,0,0,.32);
+    text-transform:uppercase;
+    pointer-events:none;
+  }
+  .flip-back{
+    transform:rotateY(180deg);
+    background:#0a0a0a;
+    color:#fff;
+    border:1px solid rgba(255,255,255,.08);
+  }
+  .flip-back .flip-eyebrow{
+    font-size:9px;
+    letter-spacing:.3em;
+    color:rgba(255,255,255,.45);
+    text-transform:uppercase;
+    margin-bottom:8px;
+  }
+  @media (hover:hover){
+    .flip-card:hover .flip-inner{ transform:scale(1.02); }
+    .flip-card.flipped:hover .flip-inner{ transform:rotateY(180deg) scale(1.02); }
+  }
+
+  /* ===== Scene cards: clear by default, reveal text on hover/tap ===== */
+  .scene-card{
+    position: relative;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    overflow: hidden;
+    background: #18181b;
+  }
+  .scene-card .scene-img{
+    transition: filter .65s cubic-bezier(.22,.8,.2,1), transform .65s cubic-bezier(.22,.8,.2,1);
+    filter: brightness(1) contrast(1) saturate(1);
+  }
+  .scene-card .scene-overlay{
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,.78) 0%, rgba(0,0,0,.35) 45%, rgba(0,0,0,0) 75%);
+    opacity: 0;
+    transition: opacity .55s cubic-bezier(.22,.8,.2,1);
+  }
+  .scene-card .scene-content{
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    padding: 24px 26px;
+    color: #fff;
+    z-index: 2;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity .55s cubic-bezier(.22,.8,.2,1), transform .55s cubic-bezier(.22,.8,.2,1);
+    pointer-events: none;
+  }
+  .scene-card .scene-eyebrow{ color: rgba(255,255,255,.7); }
+  .scene-card .scene-title{ color: #fff; }
+  .scene-card .scene-desc{ color: rgba(255,255,255,.85); }
+
+  /* Revealed state — class-based (works on touch) */
+  .scene-card.is-on .scene-img{
+    filter: brightness(.78) contrast(1.02);
+    transform: scale(1.02);
+  }
+  .scene-card.is-on .scene-overlay{ opacity: 1; }
+  .scene-card.is-on .scene-content{
+    opacity: 1;
+    transform: translateY(0);
+  }
+  /* Hover: only on real hover-capable devices (avoid sticky-hover on iOS) */
+  @media (hover: hover) and (pointer: fine){
+    .scene-card:hover .scene-img{
+      filter: brightness(.78) contrast(1.02);
+      transform: scale(1.02);
+    }
+    .scene-card:hover .scene-overlay{ opacity: 1; }
+    .scene-card:hover .scene-content{
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* ===== Card "+" affordance (shared by SCENES + Ambassador cards) ===== */
+  .card-plus{
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 14px rgba(0,0,0,.22), 0 1px 3px rgba(0,0,0,.08);
+    z-index: 5;
+    pointer-events: none;
+    transition: transform .45s cubic-bezier(.22,.8,.2,1), background .35s ease;
+  }
+  .card-plus svg{ width: 18px; height: 18px; stroke: #18181b; stroke-width: 2.4; stroke-linecap: round; fill: none; }
+  /* Rotate to "×" when active (class-based works on touch) */
+  .scene-card.is-on .card-plus,
+  .ig-card.is-revealed .card-plus{
+    transform: rotate(45deg);
+  }
+  /* Hover-only rotation (desktop) */
+  @media (hover: hover) and (pointer: fine){
+    .scene-card:hover .card-plus,
+    .ig-card:hover .card-plus{
+      transform: rotate(45deg);
+    }
+    /* On desktop the hover already conveys interactivity — hide the "+" affordance */
+    .scene-card > .card-plus,
+    .ig-card .card-plus{
+      display: none;
+    }
+  }
+  /* Small variant for flip cards */
+  .card-plus.card-plus-sm{
+    width: 26px;
+    height: 26px;
+    right: 10px;
+    bottom: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.05);
+  }
+  .card-plus.card-plus-sm svg{ width: 12px; height: 12px; stroke-width: 2.4; }
+  /* Flip back face: show "×" by default (rotated 45deg) */
+  .flip-back .card-plus{ transform: rotate(45deg); }
+</style>
+</head>
+<body class="overflow-x-hidden">
+
+<!-- ====== Persistent Nav (テーマ自動切替) ====== -->
+<nav id="nav" data-theme="dark" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 glass-pill-dark rounded-full pl-3 pr-2 py-2 flex items-center gap-5">
+  <span class="nav-divider pr-3 border-r border-white/10 flex items-center gap-2">
+    <span id="nav-logo" class="nav-link-strong text-[15px] font-semibold tracking-tight">OPEN AIR</span>
+  </span>
+  <a href="#concept"  class="nav-link text-[13px] transition" data-i18n="nav_concept">コンセプト</a>
+  <a href="#features" class="nav-link text-[13px] transition" data-i18n="nav_features">特徴</a>
+  <a href="#scenes"   class="nav-link text-[13px] transition" data-i18n="nav_scenes">シーン</a>
+  <a href="#buy"      class="nav-link text-[13px] transition" data-i18n="nav_buy">購入</a>
+  <a href="./cart.html" id="nav-cart" class="ml-1 px-4 py-1.5 rounded-full text-[13px] font-medium transition relative"><span data-i18n="nav_cart">カート</span><span id="nav-cart-badge" class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] grid place-items-center bg-red-500 text-white text-[10px] font-bold rounded-full px-1">0</span></a>
+</nav>
+
+<!-- ====== Cinematic Scroll Hero ====== -->
+<section id="cinematic" style="height: 700vh; position:relative;">
+  <div class="stage-pin stage-bg">
+    <!-- Glow halo -->
+    <div id="glow" class="stage-glow"></div>
+
+    <!-- Layered photos (10-phase animation) -->
+    <img id="logo"          class="stage-img" src="./assets/hero_logo.png?v=7"          alt="OPEN AIRロゴ"     style="opacity:0" onerror="this.src='./assets/part_logo.png?v=7'">
+    <img id="package"       class="stage-img" src="./assets/hero_package.png?v=7"       alt="OPEN AIRのパッケージ" style="opacity:0" onerror="this.src='./assets/part_package.png?v=7'">
+    <img id="strips_fan"    class="stage-img" src="./assets/hero_fan.png?v=7"           alt="複数枚のテープ"    style="opacity:0" onerror="this.src='./assets/part_strips_fan.png?v=7'">
+    <img id="single_strip"  class="stage-img" src="./assets/hero_single.png?v=7"        alt="1枚のテープ"      style="opacity:0" onerror="this.src='./assets/part_single_strip.png?v=7'">
+    <img id="three_layers"  class="stage-img" src="./assets/hero_layers.png?v=7"        alt="3層構造"          style="opacity:0" onerror="this.src='./assets/part_three_layers.png?v=7'">
+    <img id="united_strip"  class="stage-img" src="./assets/hero_united.png?v=7"        alt="合体したテープ"    style="opacity:0" onerror="this.src='./assets/hero_single.png?v=7'">
+    <img id="nose"          class="stage-img" src="./assets/hero_nose.png?v=7"          alt="鼻に装着した状態"  style="opacity:0" onerror="this.src='./assets/part_nose.png?v=7'">
+
+    <!-- Breath arrows for the final phase -->
+    <div id="breath" class="breath">
+      <svg viewBox="0 0 120 80" preserveAspectRatio="xMidYMid meet">
+        <path d="M 30 80 Q 38 50 50 18"/>
+        <path d="M 60 80 Q 60 50 60 14"/>
+        <path d="M 90 80 Q 82 50 70 18"/>
+      </svg>
+    </div>
+
+    <!-- Caption layer -->
+    <div id="cap-1" class="stage-caption" style="opacity:0; top: 14%;">
+      <div class="text-[12px] tracking-[0.32em] uppercase text-white/40 mb-3">OPEN AIR</div>
+      <div class="text-[15px] text-white/60">呼吸を、整える。</div>
+    </div>
+    <div id="cap-2" class="stage-caption" style="opacity:0; bottom: 14%;">
+      <div class="text-[11px] tracking-[0.28em] uppercase text-white/40 mb-2">01 — Inside the pack</div>
+      <div class="text-2xl md:text-4xl font-semibold text-gradient-light tracking-tight" data-i18n="cap_2_text">ひっそりと、待っている。</div>
+    </div>
+    <div id="cap-3" class="stage-caption" style="opacity:0; bottom: 14%;">
+      <div class="text-[11px] tracking-[0.28em] uppercase text-white/40 mb-2">02 — Engineered to curve</div>
+      <div class="text-2xl md:text-4xl font-semibold text-gradient-light tracking-tight" data-i18n="cap_3_text">鼻のラインに、寄り添う。</div>
+    </div>
+    <div id="cap-4" class="stage-caption" style="opacity:0; bottom: 14%;">
+      <div class="text-[11px] tracking-[0.28em] uppercase text-white/40 mb-2">03 — Three layers</div>
+      <div class="text-2xl md:text-4xl font-semibold text-gradient-light tracking-tight" data-i18n="cap_4_text">見えない部分に、工夫を。</div>
+    </div>
+    <div id="cap-5" class="stage-caption" style="opacity:0; bottom: 14%;">
+      <div class="text-[11px] tracking-[0.28em] uppercase text-white/40 mb-2">04 — Becomes one</div>
+      <div class="text-2xl md:text-4xl font-semibold text-gradient-light tracking-tight" data-i18n="cap_5_text">意識しなくても、整っている。</div>
+    </div>
+    <div id="cap-6" class="stage-caption" style="opacity:0; bottom: 14%;">
+      <div class="text-[11px] tracking-[0.28em] uppercase text-white/40 mb-2">05 — Wear it</div>
+      <div class="text-2xl md:text-4xl font-semibold text-gradient-light tracking-tight" data-i18n="cap_6_text">装着、たった2ステップ。</div>
+    </div>
+
+    <!-- Hero start headline (only visible at p≈0) -->
+    <div id="hero-headline" class="stage-caption" style="opacity:1; top: 50%; transform: translateY(-50%);">
+      <div class="glass-pill-dark inline-block rounded-full px-4 py-1.5 text-[12px] tracking-[0.32em] uppercase text-white/70 mb-6">OPEN AIR</div>
+      <h1 class="text-5xl md:text-7xl font-semibold tracking-tight text-gradient-light leading-[1.05]" data-i18n="hero_headline">呼吸を、整える。</h1>
+      <p class="mt-5 text-base md:text-lg text-white/55 max-w-xl mx-auto px-6" data-i18n="hero_subtext">
+        意識しなくても、整う。<br/>ただ、それだけ。
+      </p>
+      <div class="mt-7 flex items-center justify-center gap-3">
+        <a href="#buy" class="btn-primary" data-i18n="hero_btn_buy">今すぐ購入</a>
+        <a href="#concept" class="btn-secondary" data-i18n="hero_btn_scroll">スクロールで見る</a>
+      </div>
+    </div>
+
+    <!-- Bottom progress hint -->
+    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/40 text-[11px] tracking-[0.18em] uppercase flex flex-col items-center gap-2">
+      <span id="scroll-hint">Scroll</span>
+      <div class="w-px h-5 bg-white/30"/>
+    </div>
+
+    <!-- Cinematic film grain -->
+    <div class="grain"></div>
+  </div>
+</section>
+
+<!-- Right side scroll progress rail -->
+<div class="progress-rail"><div id="progFill" class="fill"></div></div>
+
+<!-- ====== After-cinematic content (white sections) ====== -->
+<main id="post" class="bg-white relative">
+
+  <!-- ============== CONCEPT ============== -->
+  <section id="concept" class="py-40 px-6 max-w-4xl mx-auto text-center">
+    <div class="text-[12px] tracking-[0.32em] uppercase text-zinc-500 mb-6">Concept</div>
+    <h2 class="text-4xl md:text-6xl font-semibold tracking-tight text-gradient leading-[1.15]" data-i18n="concept_h2">
+      無意識の時間を、<br/>アップグレードする。
+    </h2>
+    <div class="mt-12 space-y-7 text-[17px] md:text-[19px] text-zinc-600 leading-[2.0] max-w-2xl mx-auto">
+      <p data-i18n="concept_p1">人生の約3分の1は、睡眠。<br/>デスクワークは、1日の大半。<br/>トレーニングも、積み重ねの時間。</p>
+      <p data-i18n="concept_p2">その多くの呼吸は、<br/>感情やストレスによって乱れている。</p>
+      <p data-i18n="concept_p3">気づけば、口で呼吸している。<br/>分かっていても、変えられない。</p>
+      <p class="text-zinc-900 font-medium" data-i18n="concept_p4">だから私たちは、<br/>意識しなくても、鼻呼吸へ導く仕組みをつくった。</p>
+      <p class="text-[20px] md:text-[26px] tracking-[0.04em] text-zinc-900 font-semibold pt-4">Silent Upgrade.</p>
+    </div>
+  </section>
+
+  <!-- ============== WHY ============== -->
+  <section class="py-32 px-6 bg-zinc-50">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-16 reveal" data-reveal>
+        <div class="text-[12px] tracking-[0.32em] uppercase text-zinc-500 mb-4">Why it matters</div>
+        <h2 class="text-4xl md:text-5xl font-semibold tracking-tight text-gradient leading-[1.15]" data-i18n="why_h2">
+          口呼吸は、<br/>“無意識のダメージ”です。
+        </h2>
+        <p class="mt-7 text-zinc-600 max-w-xl mx-auto leading-[1.9]" data-i18n="why_sub">
+          日常の中で少しずつ、コンディションに影響を与えていきます。<br/>
+          すぐに変わるものではないからこそ、 “気づかないまま積み重なる”。
+        </p>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 reveal" data-reveal>
+        <button type="button" class="flip-card" aria-pressed="false" aria-label="カード1: タップして詳細を見る">
+          <div class="flip-inner">
+            <div class="flip-face flip-front rounded-3xl">
+              <div class="mb-2 text-zinc-700 flex justify-center">
+                <!-- 口・くちびる -->
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M4 12c2.5-2.5 5-2.5 8 0 3-2.5 5.5-2.5 8 0"/>
+                  <path d="M4 12c2.5 2.5 5 2.5 8 0 3 2.5 5.5 2.5 8 0"/>
+                </svg>
+              </div>
+              <div class="text-[13px] text-zinc-700 leading-snug" data-i18n="why_card1_front">口の乾きや<br/>違和感</div>
+              <span class="card-plus card-plus-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+            </div>
+            <div class="flip-face flip-back rounded-3xl">
+              <div class="flip-eyebrow" data-i18n="why_card1_back_eyebrow">影響</div>
+              <div class="text-[14px] font-medium leading-snug" data-i18n="why_card1_back">睡眠の質の<br/>低下</div>
+              <span class="card-plus card-plus-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+            </div>
+          </div>
+        </button>
+        <button type="button" class="flip-card" aria-pressed="false" aria-label="カード2: タップして詳細を見る">
+          <div class="flip-inner">
+            <div class="flip-face flip-front rounded-3xl">
+              <div class="mb-2 text-zinc-700 flex justify-center">
+                <!-- 呼吸（風） -->
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M5 8h10a2.5 2.5 0 1 0-2.5-2.5"/>
+                  <path d="M3 12h14a2.5 2.5 0 1 1-2.5 2.5"/>
+                  <path d="M5 16h6"/>
+                </svg>
+              </div>
+              <div class="text-[13px] text-zinc-700 leading-snug" data-i18n="why_card2_front">呼吸の<br/>浅さ</div>
+              <span class="card-plus card-plus-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+            </div>
+            <div class="flip-face flip-back rounded-3xl">
+              <div class="flip-eyebrow" data-i18n="why_card2_back_eyebrow">影響</div>
+              <div class="text-[14px] font-medium leading-snug" data-i18n="why_card2_back">酸素供給の<br/>不足</div>
+              <span class="card-plus card-plus-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+            </div>
+          </div>
+        </button>
+        <button type="button" class="flip-card" aria-pressed="false" aria-label="カード3: タップして詳細を見る">
+          <div class="flip-inner">
+            <div class="flip-face flip-front rounded-3xl">
+              <div class="mb-2 text-zinc-700 flex justify-center">
+                <!-- 集中（ターゲット） -->
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="9" stroke-dasharray="3 3"/>
+                  <circle cx="12" cy="12" r="4"/>
+                  <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/>
+                </svg>
+              </div>
+              <div class="text-[13px] text-zinc-700 leading-snug" data-i18n="why_card3_front">集中<br/>しにくさ</div>
+              <span class="card-plus card-plus-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+            </div>
+            <div class="flip-face flip-back rounded-3xl">
+              <div class="flip-eyebrow" data-i18n="why_card3_back_eyebrow">影響</div>
+              <div class="text-[14px] font-medium leading-snug" data-i18n="why_card3_back">パフォーマンス<br/>の低下</div>
+              <span class="card-plus card-plus-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+            </div>
+          </div>
+        </button>
+        <button type="button" class="flip-card" aria-pressed="false" aria-label="カード4: タップして詳細を見る">
+          <div class="flip-inner">
+            <div class="flip-face flip-front rounded-3xl">
+              <div class="mb-2 text-zinc-700 flex justify-center">
+                <!-- 顔・横顔 -->
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="9" r="4"/>
+                  <path d="M5 21c0-3.5 3-6.5 7-6.5s7 3 7 6.5"/>
+                </svg>
+              </div>
+              <div class="text-[13px] text-zinc-700 leading-snug" data-i18n="why_card4_front">フェイスラインの<br/>崩れ</div>
+              <span class="card-plus card-plus-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+            </div>
+            <div class="flip-face flip-back rounded-3xl">
+              <div class="flip-eyebrow" data-i18n="why_card4_back_eyebrow">影響</div>
+              <div class="text-[14px] font-medium leading-snug" data-i18n="why_card4_back">顔のバランス<br/>低下</div>
+              <span class="card-plus card-plus-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+            </div>
+          </div>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== APPROACH ============== -->
+  <section class="py-40 px-6 max-w-3xl mx-auto text-center">
+    <div class="text-[12px] tracking-[0.32em] uppercase text-zinc-500 mb-6">Approach</div>
+    <h2 class="text-4xl md:text-5xl font-semibold tracking-tight text-gradient leading-[1.15]" data-i18n="approach_h2">
+      変化は、<br/>意志に頼らない。
+    </h2>
+    <div class="mt-10 space-y-6 text-[17px] md:text-[19px] text-zinc-600 leading-[2.0] max-w-xl mx-auto">
+      <p data-i18n="approach_p1">必要なのは、<span class="text-zinc-900 font-medium">自然に続く仕組み。</span></p>
+      <p data-i18n="approach_p2">自然に、<span class="text-zinc-900 font-medium">鼻呼吸へ。</span></p>
+    </div>
+  </section>
+
+  <!-- ============== BENEFITS ============== -->
+  <section class="py-32 px-6">
+    <div class="max-w-4xl mx-auto reveal" data-reveal>
+      <div class="text-center mb-14">
+        <div class="text-[12px] tracking-[0.32em] uppercase text-zinc-500 mb-4">Benefits</div>
+        <h2 class="text-4xl md:text-5xl font-semibold tracking-tight text-gradient leading-[1.15]" data-i18n="benefits_h2">気づかないうちに、<br/>変わっていく。</h2>
+      </div>
+
+      <!-- Before / After header -->
+      <div class="grid grid-cols-[1fr_36px_1fr] md:grid-cols-[1fr_72px_1fr] gap-2 md:gap-4 items-center mb-3 md:mb-5">
+        <div class="text-[10px] md:text-[12px] tracking-[0.3em] uppercase text-zinc-400 text-center">Before</div>
+        <div></div>
+        <div class="text-[10px] md:text-[12px] tracking-[0.3em] uppercase text-zinc-900 font-medium text-center">After</div>
+      </div>
+
+      <!-- Pairs -->
+      <div class="space-y-3">
+        <!-- 1: 口（くちびる） -->
+        <div class="grid grid-cols-[1fr_36px_1fr] md:grid-cols-[1fr_72px_1fr] gap-2 md:gap-4 items-stretch">
+          <div class="rounded-2xl bg-zinc-100/70 border border-zinc-200/60 px-3 md:px-5 py-4 md:py-5 text-zinc-400 text-[13px] md:text-[15px] flex flex-col items-center justify-center gap-2">
+            <svg class="text-zinc-400" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 12c2.5-2.5 5-2.5 8 0 3-2.5 5.5-2.5 8 0"/>
+              <path d="M4 12c2.5 2.5 5 2.5 8 0 3 2.5 5.5 2.5 8 0"/>
+            </svg>
+            <span data-i18n="benefits_pair1_before">口の乾き</span>
+          </div>
+          <div class="flex justify-center items-center text-zinc-300">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </div>
+          <div class="glass rounded-2xl px-3 md:px-5 py-4 md:py-5 text-zinc-900 font-medium text-[13px] md:text-[15px] flex flex-col items-center justify-center gap-2">
+            <svg class="text-zinc-900" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 12c2.5-2.5 5-2.5 8 0 3-2.5 5.5-2.5 8 0"/>
+              <path d="M4 12c2.5 2.5 5 2.5 8 0 3 2.5 5.5 2.5 8 0"/>
+            </svg>
+            <span data-i18n="benefits_pair1_after">口呼吸から解放</span>
+          </div>
+        </div>
+        <!-- 2: 呼吸（風） -->
+        <div class="grid grid-cols-[1fr_36px_1fr] md:grid-cols-[1fr_72px_1fr] gap-2 md:gap-4 items-stretch">
+          <div class="rounded-2xl bg-zinc-100/70 border border-zinc-200/60 px-3 md:px-5 py-4 md:py-5 text-zinc-400 text-[13px] md:text-[15px] flex flex-col items-center justify-center gap-2">
+            <svg class="text-zinc-400" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 8h10a2.5 2.5 0 1 0-2.5-2.5"/>
+              <path d="M3 12h14a2.5 2.5 0 1 1-2.5 2.5"/>
+              <path d="M5 16h6"/>
+            </svg>
+            <span data-i18n="benefits_pair2_before">呼吸が浅い</span>
+          </div>
+          <div class="flex justify-center items-center text-zinc-300">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </div>
+          <div class="glass rounded-2xl px-3 md:px-5 py-4 md:py-5 text-zinc-900 font-medium text-[13px] md:text-[15px] flex flex-col items-center justify-center gap-2">
+            <svg class="text-zinc-900" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 8h10a2.5 2.5 0 1 0-2.5-2.5"/>
+              <path d="M3 12h14a2.5 2.5 0 1 1-2.5 2.5"/>
+              <path d="M5 16h6"/>
+            </svg>
+            <span data-i18n="benefits_pair2_after">呼吸が深くなる</span>
+          </div>
+        </div>
+        <!-- 3: 集中（ターゲット） -->
+        <div class="grid grid-cols-[1fr_36px_1fr] md:grid-cols-[1fr_72px_1fr] gap-2 md:gap-4 items-stretch">
+          <div class="rounded-2xl bg-zinc-100/70 border border-zinc-200/60 px-3 md:px-5 py-4 md:py-5 text-zinc-400 text-[13px] md:text-[15px] flex flex-col items-center justify-center gap-2">
+            <svg class="text-zinc-400" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" stroke-dasharray="3 3"/>
+              <circle cx="12" cy="12" r="4"/>
+              <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/>
+            </svg>
+            <span data-i18n="benefits_pair3_before">集中できない</span>
+          </div>
+          <div class="flex justify-center items-center text-zinc-300">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </div>
+          <div class="glass rounded-2xl px-3 md:px-5 py-4 md:py-5 text-zinc-900 font-medium text-[13px] md:text-[15px] flex flex-col items-center justify-center gap-2">
+            <svg class="text-zinc-900" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" stroke-dasharray="3 3"/>
+              <circle cx="12" cy="12" r="4"/>
+              <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/>
+            </svg>
+            <span data-i18n="benefits_pair3_after">無意識に続く</span>
+          </div>
+        </div>
+        <!-- 4: 顔（フェイスライン） -->
+        <div class="grid grid-cols-[1fr_36px_1fr] md:grid-cols-[1fr_72px_1fr] gap-2 md:gap-4 items-stretch">
+          <div class="rounded-2xl bg-zinc-100/70 border border-zinc-200/60 px-3 md:px-5 py-4 md:py-5 text-zinc-400 text-[13px] md:text-[15px] flex flex-col items-center justify-center gap-2">
+            <svg class="text-zinc-400" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="9" r="4"/>
+              <path d="M5 21c0-3.5 3-6.5 7-6.5s7 3 7 6.5"/>
+            </svg>
+            <span data-i18n="benefits_pair4_before">フェイスラインの崩れ</span>
+          </div>
+          <div class="flex justify-center items-center text-zinc-300">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </div>
+          <div class="glass rounded-2xl px-3 md:px-5 py-4 md:py-5 text-zinc-900 font-medium text-[13px] md:text-[15px] flex flex-col items-center justify-center gap-2">
+            <svg class="text-zinc-900" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="9" r="4"/>
+              <path d="M5 21c0-3.5 3-6.5 7-6.5s7 3 7 6.5"/>
+            </svg>
+            <span data-i18n="benefits_pair4_after">フェイスラインを保つ</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== SCENES ============== -->
+  <section id="scenes" class="py-32 px-6 bg-zinc-50">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-14 reveal" data-reveal>
+        <div class="text-[12px] tracking-[0.32em] uppercase text-zinc-500 mb-4">Scenes</div>
+        <h2 class="text-4xl md:text-5xl font-semibold tracking-tight text-gradient leading-[1.15]" data-i18n="scenes_h2">「寝るためだけ」の<br/>ものではない。</h2>
+        <p class="mt-6 text-zinc-500 max-w-xl mx-auto leading-relaxed" data-i18n="scenes_sub">あなたの 1 日を通して、使えます。</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 reveal" data-reveal>
+
+        <!-- SCENE 1 — 寝る前 (assets/20.png) -->
+        <div class="scene-card rounded-3xl aspect-[4/5]" role="button" tabindex="0" aria-pressed="false" aria-label="寝る前のシーン: タップで詳細を表示">
+          <img src="./assets/20.png?v=7" alt="" class="scene-img absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'">
+          <div class="scene-overlay"></div>
+          <div class="scene-content">
+            <div class="scene-eyebrow text-[11px] tracking-[0.28em] uppercase mb-2">Before sleep</div>
+            <div class="scene-title text-2xl md:text-3xl font-semibold tracking-tight mb-2" data-i18n="scene1_title">寝る前</div>
+            <p class="scene-desc text-[13px] leading-[1.85]" data-i18n="scene1_desc">呼吸を整えて、<br/>リラックスした状態へ。<br/>深く、静かな夜を。</p>
+          </div>
+          <span class="card-plus" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+        </div>
+
+        <!-- SCENE 2 — トレーニング (assets/21.png) -->
+        <div class="scene-card rounded-3xl aspect-[4/5]" role="button" tabindex="0" aria-pressed="false" aria-label="トレーニング中のシーン: タップで詳細を表示">
+          <img src="./assets/21.png?v=7" alt="" class="scene-img absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'">
+          <div class="scene-overlay"></div>
+          <div class="scene-content">
+            <div class="scene-eyebrow text-[11px] tracking-[0.28em] uppercase mb-2">Training</div>
+            <div class="scene-title text-2xl md:text-3xl font-semibold tracking-tight mb-2" data-i18n="scene2_title">トレーニング</div>
+            <p class="scene-desc text-[13px] leading-[1.85]" data-i18n="scene2_desc">呼吸に集中することで、<br/>パフォーマンスの安定を<br/>サポート。</p>
+          </div>
+          <span class="card-plus" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+        </div>
+
+        <!-- SCENE 3 — デスクワーク (assets/22.png) -->
+        <div class="scene-card rounded-3xl aspect-[4/5]" role="button" tabindex="0" aria-pressed="false" aria-label="デスクワーク中のシーン: タップで詳細を表示">
+          <img src="./assets/22.png?v=7" alt="" class="scene-img absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'">
+          <div class="scene-overlay"></div>
+          <div class="scene-content">
+            <div class="scene-eyebrow text-[11px] tracking-[0.28em] uppercase mb-2">Desk work</div>
+            <div class="scene-title text-2xl md:text-3xl font-semibold tracking-tight mb-2" data-i18n="scene3_title">デスクワーク</div>
+            <p class="scene-desc text-[13px] leading-[1.85]" data-i18n="scene3_desc">気づかないうちの口呼吸を<br/>防ぎ、安定したコンディション<br/>をサポート。</p>
+          </div>
+          <span class="card-plus" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== DESIGN (scroll-pinned animation) ============== -->
+  <section id="design-anim" style="height: 240vh; position: relative;">
+    <div class="design-pin sticky top-0 h-screen overflow-hidden bg-white flex items-center">
+      <div class="max-w-7xl w-full mx-auto px-6 md:px-10 grid md:grid-cols-12 gap-6 md:gap-10 items-center">
+
+        <!-- LEFT — copy -->
+        <div class="md:col-span-3">
+          <div class="text-[12px] tracking-[0.32em] uppercase text-zinc-500 mb-6">Design</div>
+          <h2 class="text-4xl md:text-5xl font-semibold tracking-tight text-gradient leading-[1.15] break-words" style="overflow-wrap:anywhere;" data-i18n="design_h2">目立たないことも、<br/>機能のひとつ。</h2>
+          <p class="mt-7 text-[15px] text-zinc-700 leading-relaxed" data-i18n="design_p1">3つの層が、呼吸を支える。</p>
+          <p class="mt-5 text-[14px] text-zinc-500 leading-[1.95]" data-i18n="design_p2">
+            見えない構造が、<br/>自然な鼻呼吸をつくる。
+          </p>
+          <div class="mt-8 flex items-center gap-2 text-[10px] tracking-[0.28em] uppercase text-zinc-400">
+            <span id="design-step-label">01 — Single piece</span>
+            <div class="flex-1 h-px bg-zinc-200 ml-2 relative max-w-[100px]">
+              <div id="design-step-fill" class="absolute top-0 left-0 h-px bg-zinc-700" style="width:0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CENTER — large product stage (no card, floats on bg) -->
+        <div class="md:col-span-6">
+          <div class="relative aspect-[5/4] flex items-center justify-center">
+            <img id="design-single" src="./assets/design_single.png?v=7" alt="Single" class="absolute max-w-[78%] max-h-[78%] object-contain transition-[opacity,transform] duration-300 ease-out" style="opacity:1; transform: translate(0,0) scale(1); filter: drop-shadow(0 30px 30px rgba(0,0,0,.08));" onerror="this.src='./assets/part_single_strip.png?v=7'">
+            <img id="design-layers" src="./assets/design_layers.png?v=7" alt="Three layers" class="absolute max-w-[100%] max-h-[100%] object-contain transition-[opacity,transform] duration-300 ease-out" style="opacity:0; transform: scale(0.92); filter: drop-shadow(0 30px 30px rgba(0,0,0,.08));" onerror="this.src='./assets/part_three_layers.png?v=7'">
+          </div>
+        </div>
+
+        <!-- RIGHT — 3 numbered features (each appears with its corresponding visual phase) -->
+        <div class="md:col-span-3 relative" id="design-labels">
+          <div class="space-y-10">
+
+            <!-- 01 Invisible Surface — appears with single piece -->
+            <div class="design-label" data-design-step="0" style="opacity:0; transform: translateX(16px);">
+              <div class="flex items-center gap-5 mb-4">
+                <span class="w-9 h-9 rounded-full border border-zinc-200 grid place-items-center text-[10px] font-medium text-zinc-500 shrink-0">01</span>
+                <svg width="44" height="14" viewBox="0 0 44 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" class="text-zinc-800" aria-hidden="true">
+                  <path d="M2 7c3-5 6 5 10 0s7-5 10 0 6 5 10 0 6-5 10 0" stroke-dasharray="2 3"/>
+                </svg>
+              </div>
+              <div class="text-[15px] font-semibold tracking-tight text-zinc-900 mb-1.5">Invisible Surface</div>
+              <p class="text-[12.5px] text-zinc-500 leading-[1.85]" data-i18n="design_feat1_desc">目立たない設計。<br/>透明素材で自然に馴染む。</p>
+            </div>
+
+            <!-- 02 3-Core Lift Structure — appears during morph to 3 layers -->
+            <div class="design-label" data-design-step="1" style="opacity:0; transform: translateX(16px);">
+              <div class="flex items-center gap-5 mb-4">
+                <span class="w-9 h-9 rounded-full border border-zinc-200 grid place-items-center text-[10px] font-medium text-zinc-500 shrink-0">02</span>
+                <svg width="44" height="22" viewBox="0 0 44 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" class="text-zinc-800" aria-hidden="true">
+                  <path d="M2 5c8-4 16-4 24 0s12 0 16 0"/>
+                  <path d="M2 11c8-4 16-4 24 0s12 0 16 0"/>
+                  <path d="M2 17c8-4 16-4 24 0s12 0 16 0"/>
+                </svg>
+              </div>
+              <div class="text-[15px] font-semibold tracking-tight text-zinc-900 mb-1.5">3-Core Lift Structure</div>
+              <p class="text-[12.5px] text-zinc-500 leading-[1.85]" data-i18n="design_feat2_desc">空間をつくる3本構造。<br/>元に戻ろうとする力で、<br/>鼻腔をやさしく広げる。</p>
+            </div>
+
+            <!-- 03 Medical-Grade Grip — appears at the end -->
+            <div class="design-label" data-design-step="2" style="opacity:0; transform: translateX(16px);">
+              <div class="flex items-center gap-5 mb-4">
+                <span class="w-9 h-9 rounded-full border border-zinc-200 grid place-items-center text-[10px] font-medium text-zinc-500 shrink-0">03</span>
+                <svg width="22" height="26" viewBox="0 0 22 26" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-zinc-800" aria-hidden="true">
+                  <path d="M11 2l8 4v6c0 5.5-3.5 9.5-8 11-4.5-1.5-8-5.5-8-11V6l8-4z"/>
+                  <path d="M7.5 13l2.5 2.5 4.5-5"/>
+                </svg>
+              </div>
+              <div class="text-[15px] font-semibold tracking-tight text-zinc-900 mb-1.5">Medical-Grade Grip</div>
+              <p class="text-[12.5px] text-zinc-500 leading-[1.85]" data-i18n="design_feat3_desc">医療用テープを採用。<br/>肌にやさしく、しっかり固定。<br/>長時間でも、快適なつけ心地。</p>
+            </div>
+
+          </div>
+
+          <!-- Henkel pill — appears with label 03 -->
+          <div class="design-label mt-8 inline-flex items-center px-3 py-1.5 rounded-full border border-zinc-200 text-[11px] tracking-[0.04em] text-zinc-600" data-design-step="2" style="opacity:0; transform: translateX(16px);">Adhesive by Henkel (Germany)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== FUNCTION ============== -->
+  <section id="features" class="py-32 px-6 bg-zinc-50">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16 reveal" data-reveal>
+        <div class="text-[12px] tracking-[0.32em] uppercase text-zinc-500 mb-4">Function</div>
+        <h2 class="text-4xl md:text-5xl font-semibold tracking-tight text-gradient leading-[1.15]" data-i18n="function_h2">見えない部分に、工夫を。</h2>
+        <p class="mt-6 text-zinc-500" data-i18n="function_sub">強すぎない。弱すぎない。<br/>ちょうどいいバランス。</p>
+      </div>
+
+      <!-- 4 product cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 reveal mb-16" data-reveal>
+        <!-- Card 1: 空気が通る -->
+        <div class="glass rounded-3xl p-7 flex flex-col hover:-translate-y-1 transition-transform duration-300">
+          <div class="text-[18px] font-semibold mb-3 tracking-tight text-zinc-900" data-i18n="function_card1_title">自然に、空気が通る。</div>
+          <p class="text-[13px] text-zinc-500 leading-[1.9]" data-i18n="function_card1_desc">内部構造を最適化し、<br/>スムーズな空気の流れを<br/>サポート。</p>
+          <div class="mt-auto pt-8 flex items-end justify-center min-h-[200px]">
+            <img src="./assets/function_air.png?v=7" alt="" class="w-full max-h-[210px] object-contain" onerror="this.style.display='none'">
+          </div>
+        </div>
+
+        <!-- Card 2: つけている感覚がない -->
+        <div class="glass rounded-3xl p-7 flex flex-col hover:-translate-y-1 transition-transform duration-300">
+          <div class="text-[18px] font-semibold mb-3 tracking-tight text-zinc-900" data-i18n="function_card2_title">つけている感覚がない。</div>
+          <p class="text-[13px] text-zinc-500 leading-[1.9]" data-i18n="function_card2_desc">過度な圧迫はなく、<br/>肌に寄り添うように<br/>フィット。</p>
+          <div class="mt-auto pt-8 flex items-end justify-center min-h-[200px]">
+            <img src="./assets/function_fit.png?v=7" alt="" class="w-full max-h-[210px] object-contain" onerror="this.style.display='none'">
+          </div>
+        </div>
+
+        <!-- Card 3: 長時間でも、ズレない (Made in Germany) -->
+        <div class="glass rounded-3xl p-7 flex flex-col hover:-translate-y-1 transition-transform duration-300 relative">
+          <div class="text-[18px] font-semibold mb-3 tracking-tight text-zinc-900" data-i18n="function_card3_title">長時間でも、ズレない。</div>
+          <p class="text-[13px] text-zinc-500 leading-[1.9]" data-i18n="function_card3_desc">ドイツ製 HENKEL 社の<br/>粘着素材を採用。<br/>やさしさと確かな固定力。</p>
+          <div class="mt-auto pt-8 flex items-end justify-center min-h-[200px]">
+            <img src="./assets/function_grip.png?v=7" alt="" class="w-full max-h-[210px] object-contain" onerror="this.style.display='none'">
+          </div>
+          <div class="absolute bottom-5 right-5 text-[10px] tracking-[0.22em] uppercase text-zinc-400 bg-white/70 backdrop-blur px-2.5 py-1 rounded-full">Made in Germany</div>
+        </div>
+
+        <!-- Card 4: 強すぎず、弱すぎない -->
+        <div class="glass rounded-3xl p-7 flex flex-col hover:-translate-y-1 transition-transform duration-300">
+          <div class="text-[18px] font-semibold mb-3 tracking-tight text-zinc-900" data-i18n="function_card4_title">強すぎず、弱すぎない。</div>
+          <p class="text-[13px] text-zinc-500 leading-[1.9]" data-i18n="function_card4_desc">やさしさと固定力を両立。<br/>長時間でも違和感が少ない、<br/>最適なバランス設計。</p>
+          <div class="mt-auto pt-8 flex items-end justify-center min-h-[200px]">
+            <img src="./assets/function_balance.png?v=7" alt="" class="w-full max-h-[210px] object-contain" onerror="this.style.display='none'">
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom 4-feature summary strip -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-x-6 md:gap-x-8 gap-y-8 pt-2">
+        <div class="flex items-start gap-3">
+          <svg class="w-5 h-5 mt-0.5 text-zinc-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+            <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/>
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M3 3l18 18"/>
+          </svg>
+          <div>
+            <div class="text-[13px] font-semibold tracking-tight text-zinc-900" data-i18n="function_bottom1_title">目立たない透明デザイン</div>
+            <div class="text-[11px] text-zinc-500 mt-1 leading-relaxed" data-i18n="function_bottom1_desc">つけていることを忘れる自然さ。</div>
+          </div>
+        </div>
+        <div class="flex items-start gap-3">
+          <svg class="w-5 h-5 mt-0.5 text-zinc-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+            <path d="M2 8c4-3 6-3 10 0s6 3 10 0"/>
+            <path d="M2 14c4-3 6-3 10 0s6 3 10 0"/>
+            <path d="M2 20c4-3 6-3 10 0s6 3 10 0"/>
+          </svg>
+          <div>
+            <div class="text-[13px] font-semibold tracking-tight text-zinc-900" data-i18n="function_bottom2_title">3層構造の独自設計</div>
+            <div class="text-[11px] text-zinc-500 mt-1 leading-relaxed" data-i18n="function_bottom2_desc">機能と快適さを両立。</div>
+          </div>
+        </div>
+        <div class="flex items-start gap-3">
+          <svg class="w-5 h-5 mt-0.5 text-zinc-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+            <path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z"/>
+            <path d="M9 12l2 2 4-4"/>
+          </svg>
+          <div>
+            <div class="text-[13px] font-semibold tracking-tight text-zinc-900" data-i18n="function_bottom3_title">医療用テープ採用</div>
+            <div class="text-[11px] text-zinc-500 mt-1 leading-relaxed" data-i18n="function_bottom3_desc">肌にやさしく、安心の品質。</div>
+          </div>
+        </div>
+        <div class="flex items-start gap-3">
+          <svg class="w-5 h-5 mt-0.5 text-zinc-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M12 7v5l3 2"/>
+          </svg>
+          <div>
+            <div class="text-[13px] font-semibold tracking-tight text-zinc-900" data-i18n="function_bottom4_title">長時間しっかりサポート</div>
+            <div class="text-[11px] text-zinc-500 mt-1 leading-relaxed" data-i18n="function_bottom4_desc">朝から夜まで、変わらないサポート力。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== HOW TO USE ============== -->
+  <section id="wear" class="py-32 px-6">
+    <div class="max-w-7xl mx-auto reveal" data-reveal>
+      <div class="text-center mb-14">
+        <div class="text-[12px] tracking-[0.32em] uppercase text-zinc-500 mb-4">How to use</div>
+        <h2 class="text-4xl md:text-6xl font-semibold tracking-tight text-gradient leading-[1.15]" data-i18n="howto_h2">使い方は、シンプルに。</h2>
+      </div>
+
+      <!-- 2 main step cards with image on right -->
+      <div class="grid md:grid-cols-2 gap-5 mb-16">
+        <!-- Step 01 -->
+        <div class="rounded-[32px] bg-zinc-50 p-5 md:p-8 grid grid-cols-[1fr_70px] md:grid-cols-[minmax(0,1fr)_minmax(280px,46%)] gap-3 md:gap-6 items-stretch h-[180px] md:h-[320px] overflow-hidden">
+          <div class="self-center min-w-0">
+            <div class="text-[10px] md:text-[11px] tracking-[0.28em] uppercase text-zinc-400 mb-3 md:mb-5">Step 01</div>
+            <div class="text-lg md:text-[26px] font-semibold tracking-tight text-zinc-900 leading-[1.3]" data-i18n="howto_step1_title">鼻周りの油分を、<br/>軽く拭き取る。</div>
+            <p class="mt-3 md:mt-4 text-zinc-500 text-[11.5px] md:text-[12.5px] leading-[1.7] md:leading-[1.85]" data-i18n="howto_step1_desc">油分が残っていると、剥がれやすくなる場合があります。</p>
+          </div>
+          <div class="relative -my-5 md:-my-8 -mr-5 md:-mr-8 overflow-hidden">
+            <img src="./assets/howto_step1.png?v=7" alt="" class="absolute inset-0 w-full h-full object-cover object-center" onerror="this.style.display='none'">
+          </div>
+        </div>
+
+        <!-- Step 02 -->
+        <div class="rounded-[32px] bg-zinc-900 text-white p-5 md:p-8 grid grid-cols-[1fr_70px] md:grid-cols-[minmax(0,1fr)_minmax(280px,46%)] gap-3 md:gap-6 items-stretch h-[180px] md:h-[320px] overflow-hidden">
+          <div class="self-center min-w-0">
+            <div class="text-[10px] md:text-[11px] tracking-[0.28em] uppercase text-zinc-400 mb-3 md:mb-5">Step 02</div>
+            <div class="text-lg md:text-[26px] font-semibold tracking-tight leading-[1.3]" data-i18n="howto_step2_title">乾いた状態で、<br/>装着する。</div>
+            <p class="mt-3 md:mt-4 text-zinc-400 text-[11.5px] md:text-[12.5px] leading-[1.7] md:leading-[1.85]" data-i18n="howto_step2_desc">それだけ。肌へのやさしさを優先した設計です。</p>
+          </div>
+          <div class="relative -my-5 md:-my-8 -mr-5 md:-mr-8 overflow-hidden">
+            <img src="./assets/howto_step2.png?v=7" alt="" class="absolute inset-0 w-full h-full object-cover object-center" onerror="this.style.display='none'">
+          </div>
+        </div>
+      </div>
+
+      <!-- Variation header -->
+      <div class="text-center mb-6">
+        <div class="text-[13px] text-zinc-500" data-i18n="howto_variation_header">より快適に使うためのポイント（3パターン）</div>
+      </div>
+
+      <!-- 3 variation cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="rounded-2xl bg-zinc-50 p-5 grid grid-cols-[1fr_130px] gap-3 items-center">
+          <div>
+            <div class="flex items-center gap-2.5 mb-2">
+              <span class="w-7 h-7 rounded-full border border-zinc-200 grid place-items-center text-[10px] font-medium text-zinc-500 shrink-0">01</span>
+              <span class="text-[14px] font-semibold text-zinc-900" data-i18n="howto_pos1_title">しっかり固定したいとき</span>
+            </div>
+            <p class="text-[11.5px] text-zinc-500 leading-[1.85] pl-[38px]" data-i18n="howto_pos1_desc">鼻の中央にしっかりと装着。<br/>安定感を重視した使い方。</p>
+          </div>
+          <div class="flex items-center justify-center">
+            <img src="./assets/howto_pos1.png?v=7" alt="" class="w-[120px] h-[120px] object-contain" onerror="this.style.display='none'">
+          </div>
+        </div>
+
+        <div class="rounded-2xl bg-zinc-50 p-5 grid grid-cols-[1fr_130px] gap-3 items-center">
+          <div>
+            <div class="flex items-center gap-2.5 mb-2">
+              <span class="w-7 h-7 rounded-full border border-zinc-200 grid place-items-center text-[10px] font-medium text-zinc-500 shrink-0">02</span>
+              <span class="text-[14px] font-semibold text-zinc-900" data-i18n="howto_pos2_title">バランスよく使いたいとき</span>
+            </div>
+            <p class="text-[11.5px] text-zinc-500 leading-[1.85] pl-[38px]" data-i18n="howto_pos2_desc">やや上部に装着することで、<br/>自然なフィット感に。</p>
+          </div>
+          <div class="flex items-center justify-center">
+            <img src="./assets/howto_pos2.png?v=7" alt="" class="w-[120px] h-[120px] object-contain" onerror="this.style.display='none'">
+          </div>
+        </div>
+
+        <div class="rounded-2xl bg-zinc-50 p-5 grid grid-cols-[1fr_130px] gap-3 items-center">
+          <div>
+            <div class="flex items-center gap-2.5 mb-2">
+              <span class="w-7 h-7 rounded-full border border-zinc-200 grid place-items-center text-[10px] font-medium text-zinc-500 shrink-0">03</span>
+              <span class="text-[14px] font-semibold text-zinc-900" data-i18n="howto_pos3_title">軽いつけ心地がいいとき</span>
+            </div>
+            <p class="text-[11.5px] text-zinc-500 leading-[1.85] pl-[38px]" data-i18n="howto_pos3_desc">鼻の上部にやさしく装着。<br/>軽さを重視した使い方。</p>
+          </div>
+          <div class="flex items-center justify-center">
+            <img src="./assets/howto_pos3.png?v=7" alt="" class="w-[120px] h-[120px] object-contain" onerror="this.style.display='none'">
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer note -->
+      <p class="mt-7 text-center text-[11px] text-zinc-400" data-i18n="howto_footer_note">※ 肌の状態やお好みに合わせて、最適な位置をお選びください。</p>
+    </div>
+  </section>
+
+  <!-- ============== AMBASSADORS / USERS ============== -->
+  <section id="users" class="py-32 px-6">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-14 reveal" data-reveal>
+        <div class="text-[12px] tracking-[0.32em] uppercase text-zinc-500 mb-4">Ambassadors</div>
+        <h2 class="text-4xl md:text-5xl font-semibold tracking-tight text-gradient leading-[1.15]" data-i18n="ambassadors_h2">使っている人たち。</h2>
+        <p class="mt-6 text-zinc-500 max-w-xl mx-auto leading-relaxed" data-i18n="ambassadors_sub">それぞれの 1 日を支える、それぞれの呼吸。</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 reveal" data-reveal>
+
+        <!-- AMBASSADOR CARD 1 — Boxer (ricardobravofighter) -->
+        <div class="ig-card" role="button" tabindex="0" aria-label="@ricardobravofighter の証言を見る">
+          <div class="ig-photo">
+            <img src="./assets/10.png?v=7" alt="ricardobravofighter — ボクサー" class="ig-bg-photo">
+            <div class="ig-overlay-label">
+              <div class="ig-label-text" data-i18n="amb1_role">ボクサー</div>
+            </div>
+            <div class="ig-overlay-quote">
+              <div class="ig-role" data-i18n="amb1_role">ボクサー</div>
+              <p class="ig-quote" data-i18n="amb1_quote">毎日のトレーニングで、限界まで追い込む。だからこそ、回復の質にはこだわっています。<br/><br/>OPEN AIRは、呼吸を整えるために使っています。呼吸が安定することで、集中力とパフォーマンスがブレなくなる。<br/><br/>わずかな違いですが、その積み重ねが大きい。今では、欠かせない習慣の一つです。</p>
+              <a class="ig-quote-cta" href="https://instagram.com/ricardobravofighter" target="_blank" rel="noopener noreferrer" data-i18n="amb_cta_visit">Instagramを開く →</a>
+            </div>
+            <span class="card-plus" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+          </div>
+        </div>
+
+        <!-- AMBASSADOR CARD 2 — Desk Worker (willyosco) -->
+        <div class="ig-card" role="button" tabindex="0" aria-label="@willyosco の証言を見る">
+          <div class="ig-photo">
+            <img src="./assets/11.png?v=7" alt="willyosco — デスクワーカー" class="ig-bg-photo">
+            <div class="ig-overlay-label">
+              <div class="ig-label-text" data-i18n="amb2_role">デスクワーカー</div>
+            </div>
+            <div class="ig-overlay-quote">
+              <div class="ig-role" data-i18n="amb2_role">デスクワーカー</div>
+              <p class="ig-quote" data-i18n="amb2_quote">パソコンに向かう時間が長く、気づくと呼吸が浅くなっていることが多いです。<br/><br/>OPEN AIRを使い始めてから、呼吸がスムーズになり、集中しやすくなりました。<br/><br/>大きな変化ではないけど、その“少し”が、1日のパフォーマンスを変えてくれます。</p>
+              <a class="ig-quote-cta" href="https://instagram.com/willyosco" target="_blank" rel="noopener noreferrer" data-i18n="amb_cta_visit">Instagramを開く →</a>
+            </div>
+            <span class="card-plus" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+          </div>
+        </div>
+
+        <!-- AMBASSADOR CARD 3 — Chef (natalianzai) -->
+        <div class="ig-card" role="button" tabindex="0" aria-label="@natalianzai の証言を見る">
+          <div class="ig-photo">
+            <img src="./assets/12.png?v=7" alt="natalianzai — 料理人" class="ig-bg-photo">
+            <div class="ig-overlay-label">
+              <div class="ig-label-text" data-i18n="amb3_role">ケータリングシェフ</div>
+            </div>
+            <div class="ig-overlay-quote">
+              <div class="ig-role" data-i18n="amb3_role">ケータリングシェフ</div>
+              <p class="ig-quote" data-i18n="amb3_quote">現場では常に人の目があるから、使うものにも気を遣います。<br/><br/>OPEN AIRは透明で目立たないので、違和感なく自然に使える。<br/><br/>呼吸を整えながらも、自分のスタイルを崩さずにいられるのがいい。</p>
+              <a class="ig-quote-cta" href="https://instagram.com/natalianzai" target="_blank" rel="noopener noreferrer" data-i18n="amb_cta_visit">Instagramを開く →</a>
+            </div>
+            <span class="card-plus" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+          </div>
+        </div>
+      </div>
+
+      <p class="mt-10 text-center text-xs text-zinc-400 max-w-2xl mx-auto leading-relaxed" data-i18n="ambassadors_footnote">
+        ※ 個人差があります。
+      </p>
+    </div>
+  </section>
+
+  <!-- ============== HONEST LIMITS ============== -->
+  <section class="py-32 px-6 bg-zinc-50">
+    <div class="max-w-4xl mx-auto reveal" data-reveal>
+      <div class="text-center mb-12">
+        <div class="text-[12px] tracking-[0.32em] uppercase text-zinc-500 mb-4">Honest notes</div>
+        <h2 class="text-3xl md:text-4xl font-semibold tracking-tight text-gradient leading-[1.2]" data-i18n="honest_h2">正直に、お伝えします。</h2>
+        <p class="mt-5 text-zinc-500 leading-relaxed" data-i18n="honest_sub">いいことだけを伝えるより、知った上で選んでもらいたいから。</p>
+      </div>
+      <div class="rounded-[28px] bg-white border border-zinc-100 p-8 md:p-10">
+        <ul class="space-y-4 text-[15px] text-zinc-700 leading-relaxed">
+          <li class="flex gap-3"><span class="text-zinc-300 mt-1">·</span><span data-i18n="honest_li1">肌の状態によっては、剥がれやすい場合があります。</span></li>
+          <li class="flex gap-3"><span class="text-zinc-300 mt-1">·</span><span data-i18n="honest_li2">汗をかく環境では、粘着力が弱まる場合があります。</span></li>
+          <li class="flex gap-3"><span class="text-zinc-300 mt-1">·</span><span data-i18n="honest_li3">慣れるまで、違和感を覚える場合があります。</span></li>
+          <li class="flex gap-3"><span class="text-zinc-300 mt-1">·</span><span data-i18n="honest_li4">すべての方に同じフィット感を保証するものではありません。</span></li>
+          <li class="flex gap-3"><span class="text-zinc-300 mt-1">·</span><span data-i18n="honest_li5">医療目的の製品ではありません。</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== PRICING ============== -->
+  <section id="buy" class="py-32 px-6 max-w-6xl mx-auto">
+    <div class="text-center mb-14 reveal" data-reveal>
+      <div class="text-[12px] tracking-[0.32em] uppercase text-zinc-500 mb-4">Pricing</div>
+      <h2 class="text-4xl md:text-5xl font-semibold tracking-tight text-gradient leading-[1.15]" data-i18n="buy_h2">あなたのペースで、<br/>続けられる。</h2>
+      <p class="mt-5 text-zinc-500" data-i18n="buy_sub">送料無料 · 30 日返品保証</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 reveal" data-reveal>
+      <div class="rounded-[28px] glass p-8 transition-all duration-300 hover:-translate-y-1">
+        <div class="text-[12px] tracking-[0.18em] uppercase text-zinc-500">Single</div>
+        <div class="mt-6 text-4xl font-semibold tracking-tight" data-i18n="buy_plan1_price">¥1,980</div>
+        <div class="mt-1 text-zinc-500 text-sm" data-i18n="buy_plan1_desc">30 枚 · 1ヶ月分</div>
+        <button data-add-to-cart="single" class="mt-8 w-full py-3 rounded-full bg-zinc-900 text-white text-sm font-medium hover:bg-black transition" data-i18n="buy_btn_add">カートに追加</button>
+        <ul class="mt-6 space-y-2 text-sm text-zinc-600"><li data-i18n="buy_feat_ship">✓ 送料無料</li><li data-i18n="buy_feat_pack">✓ 個包装で清潔</li><li data-i18n="buy_feat_return">✓ 30日返品保証</li></ul>
+      </div>
+      <div class="relative rounded-[28px] bg-zinc-900 text-white p-8 shadow-2xl transition-all duration-300 hover:-translate-y-1">
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-white text-zinc-900 text-[11px] font-semibold tracking-[0.18em] uppercase px-3 py-1 rounded-full shadow">Best Value</div>
+        <div class="text-[12px] tracking-[0.18em] uppercase text-zinc-400">Three</div>
+        <div class="mt-6 flex items-baseline gap-2 flex-wrap">
+          <div class="text-4xl font-semibold tracking-tight" data-i18n="buy_plan2_price">¥4,980</div>
+          <div class="text-xs px-2 py-1 rounded-full bg-white/15 text-white" data-i18n="buy_plan2_discount">¥1,000 OFF</div>
+        </div>
+        <div class="mt-1 text-zinc-400 text-sm" data-i18n="buy_plan2_desc">90 枚 · 3ヶ月分</div>
+        <button data-add-to-cart="three" class="mt-8 w-full py-3 rounded-full bg-white text-zinc-900 text-sm font-medium hover:bg-zinc-100 transition" data-i18n="buy_btn_add">カートに追加</button>
+        <ul class="mt-6 space-y-2 text-sm text-zinc-300"><li data-i18n="buy_feat_ship">✓ 送料無料</li><li data-i18n="buy_feat_pack">✓ 個包装で清潔</li><li data-i18n="buy_feat_return">✓ 30日返品保証</li></ul>
+      </div>
+      <div class="rounded-[28px] glass p-8 transition-all duration-300 hover:-translate-y-1">
+        <div class="text-[12px] tracking-[0.18em] uppercase text-zinc-500">Six</div>
+        <div class="mt-6 flex items-baseline gap-2 flex-wrap">
+          <div class="text-4xl font-semibold tracking-tight" data-i18n="buy_plan3_price">¥8,980</div>
+          <div class="text-xs px-2 py-1 rounded-full bg-zinc-100 text-zinc-700" data-i18n="buy_plan3_discount">¥2,900 OFF</div>
+        </div>
+        <div class="mt-1 text-zinc-500 text-sm" data-i18n="buy_plan3_desc">180 枚 · 6ヶ月分</div>
+        <button data-add-to-cart="six" class="mt-8 w-full py-3 rounded-full bg-zinc-900 text-white text-sm font-medium hover:bg-black transition" data-i18n="buy_btn_add">カートに追加</button>
+        <ul class="mt-6 space-y-2 text-sm text-zinc-600"><li data-i18n="buy_feat_ship">✓ 送料無料</li><li data-i18n="buy_feat_pack">✓ 個包装で清潔</li><li data-i18n="buy_feat_return">✓ 30日返品保証</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== CLOSING MANIFESTO ============== -->
+  <section class="py-40 px-6 bg-zinc-50">
+    <div class="max-w-3xl mx-auto text-center reveal" data-reveal>
+      <div class="text-[12px] tracking-[0.32em] uppercase text-zinc-500 mb-6">Closing</div>
+      <div class="space-y-7 text-[19px] md:text-[22px] text-zinc-700 leading-[2.2]">
+        <p data-i18n="closing_p1">人は、1日に約2万回、呼吸する。</p>
+        <p data-i18n="closing_p2">そのほとんどは、無意識のまま。</p>
+        <p class="text-zinc-900 font-medium" data-i18n="closing_p3">だからこそ、<br/>整える意味がある。</p>
+        <p class="text-gradient font-semibold text-[22px] md:text-[28px] tracking-tight pt-4" data-i18n="closing_p4">OPEN AIR。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== FINAL CTA ============== -->
+  <section class="py-32 px-6 text-center">
+    <h2 class="text-4xl md:text-6xl font-semibold tracking-tight text-gradient leading-[1.1]" data-i18n="finalcta_h2">呼吸を、整える。</h2>
+    <p class="mt-6 text-zinc-500 max-w-md mx-auto text-[17px]" data-i18n="finalcta_sub">ただ、それだけでいい。</p>
+    <div class="mt-9 flex justify-center gap-3">
+      <a href="#buy" class="btn-dark" data-i18n="finalcta_btn_buy">今すぐ購入</a>
+      <a href="#cinematic" class="btn-light" data-i18n="finalcta_btn_again">もう一度見る</a>
+    </div>
+  </section>
+
+  <footer class="border-t border-zinc-200/60 py-10 px-6">
+    <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-6 text-zinc-500 text-sm">
+      <span class="text-xs text-zinc-400">© 2026 OPEN AIR, Inc.</span>
+      <div class="flex gap-6 items-center">
+        <a href="./privacy.html" class="hover:text-zinc-900" data-i18n="footer_privacy">プライバシー</a>
+        <a href="./terms.html" class="hover:text-zinc-900" data-i18n="footer_terms">利用規約</a>
+        <a href="./support.html" class="hover:text-zinc-900" data-i18n="footer_support">サポート</a>
+        <button id="lang-switcher" type="button" class="text-zinc-500 hover:text-zinc-900 transition flex items-center gap-1.5 cursor-pointer" aria-label="言語切替 / Cambiar idioma" title="言語を切り替える / Cambiar idioma">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>
+          </svg>
+          <span id="lang-current">日本語</span>
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Region selection modal -->
+  <div id="region-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/40 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="region-modal-title">
+    <div class="bg-white rounded-3xl p-7 max-w-sm w-full shadow-2xl" onclick="event.stopPropagation()">
+      <div class="text-[11px] tracking-[0.3em] uppercase text-zinc-500 mb-1">Region</div>
+      <h3 id="region-modal-title" class="text-xl font-semibold tracking-tight mb-1">配送地域を選択</h3>
+      <p class="text-[12px] text-zinc-500 mb-5" id="region-modal-sub">ご利用の地域に合わせて、言語と通貨が切り替わります。</p>
+      <ul class="space-y-1.5">
+        <li>
+          <button data-region="ja" class="region-option w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
+            <span class="text-2xl">🇯🇵</span>
+            <div class="flex-1">
+              <div class="text-[14px] font-medium text-zinc-900">日本</div>
+              <div class="text-[11px] text-zinc-500">日本語 · 全国配送 · ¥</div>
+            </div>
+            <span class="region-check text-zinc-900 hidden text-[18px]">✓</span>
+          </button>
+        </li>
+        <li>
+          <button data-region="es" class="region-option w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
+            <span class="text-2xl">🇪🇸</span>
+            <div class="flex-1">
+              <div class="text-[14px] font-medium text-zinc-900">España</div>
+              <div class="text-[11px] text-zinc-500">Español · Envío UE · €</div>
+            </div>
+            <span class="region-check text-zinc-900 hidden text-[18px]">✓</span>
+          </button>
+        </li>
+        <li>
+          <button data-region="br" class="region-option region-soon w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
+            <span class="text-2xl opacity-70">🇧🇷</span>
+            <div class="flex-1">
+              <div class="text-[14px] font-medium text-zinc-900">Brasil</div>
+              <div class="text-[11px] text-zinc-500" id="region-br-sub">ご購入できるよう、準備を進めています</div>
+            </div>
+            <span class="text-[10px] tracking-[0.18em] uppercase text-zinc-500 px-2.5 py-1 rounded-full border border-zinc-200" id="region-br-badge">Soon</span>
+          </button>
+        </li>
+        <li>
+          <button data-region="us" class="region-option region-soon w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
+            <span class="text-2xl opacity-70">🇺🇸</span>
+            <div class="flex-1">
+              <div class="text-[14px] font-medium text-zinc-900">United States</div>
+              <div class="text-[11px] text-zinc-500" id="region-us-sub">ご購入できるよう、準備を進めています</div>
+            </div>
+            <span class="text-[10px] tracking-[0.18em] uppercase text-zinc-500 px-2.5 py-1 rounded-full border border-zinc-200" id="region-us-badge">Soon</span>
+          </button>
+        </li>
+      </ul>
+      <button id="region-close" type="button" class="mt-5 w-full text-center text-[13px] text-zinc-500 hover:text-zinc-900 transition py-2">閉じる</button>
+    </div>
+  </div>
+</main>
+
+<script>
+(function(){
+  // ----- helpers -----
+  const $ = (id)=>document.getElementById(id);
+  const lerp = (a,b,t)=>a + (b-a)*t;
+  const clamp = (v,a,b)=>Math.max(a, Math.min(b, v));
+  const smooth = (t)=>{ // smoothstep
+    t = clamp(t,0,1);
+    return t*t*(3-2*t);
+  };
+  // map x in [a,b] to [0,1] (clamped)
+  const norm = (x,a,b)=>clamp((x-a)/(b-a), 0, 1);
+
+  // Pre-cache image elements
+  const els = {
+    logo:        $('logo'),
+    package:     $('package'),
+    strips_fan:  $('strips_fan'),
+    single:      $('single_strip'),
+    layers:      $('three_layers'),
+    united:      $('united_strip'),
+    nose:        $('nose'),
+    glow:        $('glow'),
+    hero:        $('hero-headline'),
+    cap1:        $('cap-1'),
+    cap2:        $('cap-2'),
+    cap3:        $('cap-3'),
+    cap4:        $('cap-4'),
+    cap5:        $('cap-5'),
+    cap6:        $('cap-6'),
+    breath:      $('breath'),
+    progFill:    $('progFill'),
+    nav:         $('nav'),
+    scrollHint:  $('scroll-hint')
+  };
+
+  // Set base sizes (vmin units approximated via vh)
+  function setBaseStyle(){
+    // initial centering
+    [els.logo, els.package, els.strips_fan, els.single, els.layers, els.united, els.nose].forEach(el=>{
+      el.style.maxWidth = '60vmin';
+      el.style.maxHeight = '60vmin';
+      el.style.width = 'auto';
+      el.style.height = 'auto';
+      el.draggable = false;
+    });
+    // Logo — smaller
+    els.logo.style.maxHeight = '18vmin';
+    els.logo.style.maxWidth  = '70vmin';
+    // Fan — smaller than default
+    els.strips_fan.style.maxWidth = '48vmin';
+    els.strips_fan.style.maxHeight = '48vmin';
+    // Nose: smaller, more subtle
+    els.nose.style.maxWidth = '42vmin';
+    els.nose.style.maxHeight = '42vmin';
+  }
+  setBaseStyle();
+
+  function transformImg(el, opts){
+    const tx = opts.tx ?? 0;
+    const ty = opts.ty ?? 0;
+    const sc = opts.sc ?? 1;
+    const rotZ = opts.rz ?? 0;
+    const rotX = opts.rx ?? 0;
+    const rotY = opts.ry ?? 0;
+    el.style.transform = `translate(-50%,-50%) translate3d(${tx}vmin, ${ty}vmin, 0) scale(${sc}) rotateX(${rotX}deg) rotateY(${rotY}deg) rotateZ(${rotZ}deg)`;
+    if (opts.opacity !== undefined) el.style.opacity = String(opts.opacity);
+    if (opts.blur !== undefined) el.style.filter = `blur(${opts.blur}px)`;
+  }
+  function transformCap(el, opts){
+    const tx = opts.tx ?? 0;
+    const ty = opts.ty ?? 0;
+    el.style.transform = `translate3d(${tx}vmin, ${ty}vmin, 0)`;
+    if (opts.opacity !== undefined) el.style.opacity = String(opts.opacity);
+  }
+
+  // ===== Phase animation logic =====
+  function update(){
+    const cinem = $('cinematic');
+    const rect = cinem.getBoundingClientRect();
+    const total = cinem.offsetHeight - window.innerHeight;
+    const scrolled = clamp(-rect.top, 0, total);
+    const p = total > 0 ? scrolled / total : 0; // 0..1 across the cinematic section
+
+    // Progress rail
+    els.progFill.style.height = (p * 100).toFixed(2) + '%';
+
+    // Scroll hint fades out fast
+    els.scrollHint.style.opacity = String(1 - smooth(p * 4));
+
+    // ----- Hero headline (initial text intro) -----
+    // P0: 0.00 - 0.08 — intro headline
+    const heroOpacity = 1 - smooth(norm(p, 0.04, 0.10));
+    els.hero.style.opacity = String(heroOpacity);
+    els.hero.style.transform = `translateY(-50%) translateY(${(-p * 24).toFixed(1)}vmin)`;
+
+    // ===== 10 phases =====
+    // P0  0.00-0.06   Hero text intro
+    // P1  0.06-0.16   Logo IN (fade + subtle scale)
+    // P2  0.16-0.24   Logo OUT (Apple-style: blur + Y + opacity)
+    // P3  0.22-0.34   Package CLOSED appears (scale-up)
+    // P4  0.34-0.44   Package OPENS (closed → open crossfade + bounce)
+    // P5  0.42-0.54   Strips fan emerges from open package
+    // P6  0.52-0.62   Single strip materializes
+    // P7  0.60-0.72   Single → 3 layers (decompose)
+    // P8  0.70-0.82   3 layers → single (re-merge with glow)
+    // P9  0.82-1.00   Apply to nose + breath/air flow
+
+    // ---- LOGO (P1 in, P2 out Apple-style) ----
+    let logoOp = 0, logoTy = 0, logoScale = 1.0, logoBlur = 0;
+    if (p < 0.16){
+      const t = smooth(norm(p, 0.06, 0.14));
+      logoOp = t * smooth(norm(p, 0.04, 0.10)); // gate by hero fade-out
+      logoTy = lerp(4, 0, t);
+      logoScale = lerp(0.94, 1.0, t);
+    } else if (p < 0.26){
+      // Apple-style exit: blur + slight zoom-out + Y up + opacity
+      const t = smooth(norm(p, 0.16, 0.24));
+      logoOp = lerp(1, 0, t);
+      logoTy = lerp(0, -6, t);
+      logoScale = lerp(1.0, 1.08, t);
+      logoBlur = lerp(0, 14, t);
+    }
+    transformImg(els.logo, { ty:logoTy, sc:logoScale, opacity:logoOp, blur:logoBlur });
+
+    // ---- PACKAGE (closed) — appears, holds, fades as fan emerges ----
+    let pkgOp = 0, pkgScale = 1.0, pkgTy = 0;
+    if (p > 0.18 && p < 0.46){
+      const a = norm(p, 0.20, 0.32); // fade in
+      const b = norm(p, 0.40, 0.46); // fade out as fan takes over
+      pkgOp = smooth(a) * (1 - smooth(b));
+      pkgScale = lerp(0.88, 1.0, smooth(a)) * lerp(1.0, 0.92, smooth(b));
+      pkgTy = lerp(4, 0, smooth(a));
+    }
+    transformImg(els.package, { ty:pkgTy, sc:pkgScale, opacity:pkgOp });
+
+    // (Package open phase removed — closed package fades out as fan emerges)
+
+    // ---- STRIPS FAN (emerges directly from package as it fades) ----
+    let fanOp = 0, fanTy = 0, fanScale = 0.8, fanRotZ = -8;
+    if (p > 0.40 && p < 0.60){
+      const a = norm(p, 0.40, 0.50); // emerge upward
+      const b = norm(p, 0.56, 0.60); // fade as single takes over
+      fanOp = smooth(a) * (1 - smooth(b));
+      fanScale = lerp(0.78, 1.02, smooth(a));
+      fanTy = lerp(8, -1, smooth(a));
+      fanRotZ = lerp(-8, 0, smooth(a));
+    }
+    transformImg(els.strips_fan, { ty:fanTy, sc:fanScale, rz:fanRotZ, opacity:fanOp });
+
+    // ---- SINGLE STRIP (P6: materializes from fan) ----
+    let singleOp = 0, singleScale = 1.0, singleTy = 0;
+    if (p > 0.52 && p < 0.68){
+      const a = norm(p, 0.52, 0.60);
+      const b = norm(p, 0.64, 0.68);
+      singleOp = smooth(a) * (1 - smooth(b));
+      singleScale = lerp(0.92, 1.05, smooth(a));
+      singleTy = Math.sin(p * Math.PI * 8) * 0.3; // gentle bob
+    }
+    transformImg(els.single, { ty:singleTy, sc:singleScale, opacity:singleOp });
+
+    // ---- THREE LAYERS (P7: decompose) ----
+    let layersOp = 0, layersScale = 1.0, layersRotZ = 0;
+    if (p > 0.60 && p < 0.78){
+      const a = norm(p, 0.60, 0.70); // appear via decomposition
+      const b = norm(p, 0.74, 0.78); // fade as united takes over
+      layersOp = smooth(a) * (1 - smooth(b));
+      layersScale = lerp(0.92, 1.05, smooth(a));
+      layersRotZ = lerp(-4, 0, smooth(a));
+    }
+    transformImg(els.layers, { sc:layersScale, rz:layersRotZ, opacity:layersOp });
+
+    // ---- UNITED (P8: re-merge to single) ----
+    let unitedOp = 0, unitedScale = 0.95, unitedTy = 0;
+    if (p > 0.70 && p < 0.86){
+      const a = norm(p, 0.70, 0.78);
+      const b = norm(p, 0.82, 0.86);
+      unitedOp = smooth(a) * (1 - smooth(b));
+      unitedScale = lerp(0.95, 1.10, smooth(a));
+      unitedTy = Math.sin(p * Math.PI * 12) * 0.3;
+    }
+    transformImg(els.united, { ty:unitedTy, sc:unitedScale, opacity:unitedOp });
+    if (unitedOp > 0){
+      const intensity = unitedOp;
+      els.united.style.filter = `drop-shadow(0 0 ${(intensity*36).toFixed(0)}px rgba(207,216,227,${(0.5*intensity).toFixed(2)})) drop-shadow(0 0 ${(intensity*14).toFixed(0)}px rgba(255,255,255,${(0.4*intensity).toFixed(2)}))`;
+    } else {
+      els.united.style.filter = '';
+    }
+
+    // Glow halo behind united phase
+    let glowOpacity = 0;
+    if (p > 0.68 && p < 0.88){
+      const a = norm(p, 0.68, 0.78);
+      const b = norm(p, 0.84, 0.88);
+      glowOpacity = smooth(a) * (1 - smooth(b));
+    }
+    els.glow.style.opacity = String(glowOpacity * 0.9);
+    els.glow.style.transform = `translate(-50%,-50%) scale(${(0.8 + glowOpacity * 0.6).toFixed(2)})`;
+
+    // ---- NOSE + BREATH (P9: final) ----
+    let noseOpacity = 0, noseScale = 0.95, noseTy = 0;
+    if (p > 0.82){
+      const a = norm(p, 0.82, 0.90);
+      noseOpacity = smooth(a);
+      noseScale = lerp(0.92, 1.04, smooth(a));
+      noseTy = lerp(2, 0, smooth(a));
+    }
+    transformImg(els.nose, { ty:noseTy, sc:noseScale, opacity:noseOpacity });
+    if (noseOpacity > 0){
+      els.nose.style.borderRadius = '32px';
+      els.nose.style.boxShadow = '0 30px 80px rgba(0,0,0,0.4)';
+    }
+
+    // ---- Captions (re-mapped to new phases) ----
+    function showCap(el, range){
+      const a = norm(p, range[0], range[0]+0.04);
+      const b = norm(p, range[1]-0.04, range[1]);
+      const op = smooth(a) * (1 - smooth(b));
+      transformCap(el, { ty: lerp(2, 0, smooth(a)) - smooth(b)*2, opacity: op });
+    }
+    // cap-1 disabled (duplicates hero headline). Caps 2-6 mapped to product phases.
+    transformCap(els.cap1, { opacity: 0 });
+    showCap(els.cap2, [0.22, 0.34]); // P3: closed package — "ひっそりと、待っている"
+    showCap(els.cap3, [0.42, 0.54]); // P5/P6: fan/single — "鼻のラインに、寄り添う"
+    showCap(els.cap4, [0.60, 0.72]); // P7: 3 layers — "見えない部分に、工夫を"
+    showCap(els.cap5, [0.72, 0.84]); // P8: united — "意識しなくても、整っている"
+    showCap(els.cap6, [0.86, 0.98]); // P9: nose + breath — "装着、たった2ステップ"
+
+    // ---- Breath arrows (P9 end) ----
+    if (p > 0.86){
+      const t = norm(p, 0.86, 0.95);
+      els.breath.style.opacity = String(smooth(t));
+      const drift = (Date.now() % 2000) / 2000;
+      els.breath.style.transform = `translateX(-50%) translateY(${(drift*-12).toFixed(1)}px)`;
+    } else {
+      els.breath.style.opacity = '0';
+    }
+
+    // ---- Stage background blends to light/gray during nose phase so the photo edges disappear ----
+    // 0 → 0.78: dark stage. 0.82 → 1.0: gradually light/gray that matches nose photo background.
+    const noseBgT = smooth(norm(p, 0.82, 0.95));
+    if (noseBgT > 0.001){
+      const sb = document.querySelector('.stage-bg');
+      // Lerp from dark (#15151a / #050507) to nose bg (#f4f4f6 / #e9eaed)
+      const mix = (a,b,t) => Math.round(a + (b-a)*t);
+      const r1 = mix(0x15, 0xf4, noseBgT), g1 = mix(0x15, 0xf4, noseBgT), b1 = mix(0x1a, 0xf6, noseBgT);
+      const r2 = mix(0x05, 0xe7, noseBgT), g2 = mix(0x05, 0xe8, noseBgT), b2 = mix(0x07, 0xeb, noseBgT);
+      const r3 = mix(0x00, 0xe2, noseBgT), g3 = mix(0x00, 0xe3, noseBgT), b3 = mix(0x00, 0xe6, noseBgT);
+      sb.style.background = `radial-gradient(ellipse at center, rgb(${r1},${g1},${b1}) 0%, rgb(${r2},${g2},${b2}) 70%, rgb(${r3},${g3},${b3}) 100%)`;
+    } else {
+      // restore default dark
+      const sb = document.querySelector('.stage-bg');
+      sb.style.background = '';
+    }
+
+    // ---- Nose image: at nose-phase, expand modestly to blend with bg ----
+    if (noseBgT > 0.001){
+      els.nose.style.maxWidth  = (42 + noseBgT * 18) + 'vmin';
+      els.nose.style.maxHeight = (42 + noseBgT * 18) + 'vmin';
+      els.nose.style.borderRadius = (32 - noseBgT * 32) + 'px';
+      els.nose.style.boxShadow = 'none';
+    } else {
+      els.nose.style.maxWidth = '42vmin';
+      els.nose.style.maxHeight = '42vmin';
+      els.nose.style.borderRadius = '0';
+      els.nose.style.boxShadow = 'none';
+    }
+
+    // ---- Nav theme: dark while inside cinematic, light after we leave it ----
+    // Cinematic occupies most of the screen until p≈1. After it, white sections show.
+    const cinemRect = cinem.getBoundingClientRect();
+    // If the bottom of cinematic is above viewport, we're past it
+    const pastCinem = cinemRect.bottom < window.innerHeight * 0.5;
+    const inNoseGray = p > 0.86; // gray section, dark text more readable
+    const want = (pastCinem || inNoseGray) ? 'light' : 'dark';
+    if (els.nav.getAttribute('data-theme') !== want){
+      els.nav.setAttribute('data-theme', want);
+    }
+    // glass class swap so background also adapts
+    if (want === 'light'){
+      els.nav.classList.remove('glass-pill-dark');
+      els.nav.classList.add('glass-pill');
+    } else {
+      els.nav.classList.add('glass-pill-dark');
+      els.nav.classList.remove('glass-pill');
+    }
+
+    // ---- DESIGN section animation (single → 3 layers) ----
+    updateDesignAnim();
+
+    requestAnimationFrame(update);
+  }
+
+  // ===== DESIGN section pinned scroll animation =====
+  function updateDesignAnim(){
+    const sec = document.getElementById('design-anim');
+    if (!sec) return;
+    const single = document.getElementById('design-single');
+    const layers = document.getElementById('design-layers');
+    const stepLabel = document.getElementById('design-step-label');
+    const stepFill = document.getElementById('design-step-fill');
+    const labelsBox = document.getElementById('design-labels');
+    if (!single || !layers) return;
+    const rect = sec.getBoundingClientRect();
+    const total = sec.offsetHeight - window.innerHeight;
+    const scrolled = clamp(-rect.top, 0, total);
+    const p = total > 0 ? scrolled / total : 0; // 0..1 across this section
+
+    // Phase split:
+    //   0.00 - 0.25  →  hold single
+    //   0.25 - 0.55  →  morph (single fades out, layers fades in + scales up)
+    //   0.55 - 1.00  →  hold layers (slight breathing)
+    let singleOp, layersOp, singleScale, layersScale;
+    if (p < 0.25){
+      singleOp = 1; layersOp = 0;
+      singleScale = lerp(1.0, 1.02, smooth(norm(p, 0, 0.25)));
+      layersScale = 0.9;
+    } else if (p < 0.55){
+      const t = smooth(norm(p, 0.25, 0.55));
+      singleOp = lerp(1, 0, t);
+      layersOp = lerp(0, 1, t);
+      singleScale = lerp(1.02, 1.20, t);
+      layersScale = lerp(0.9, 1.0, t);
+    } else {
+      singleOp = 0; layersOp = 1;
+      singleScale = 1.20;
+      const breath = Math.sin(p * Math.PI * 6) * 0.01;
+      layersScale = 1.0 + breath;
+    }
+
+    single.style.opacity = String(singleOp);
+    single.style.transform = `scale(${singleScale.toFixed(3)})`;
+    layers.style.opacity = String(layersOp);
+    layers.style.transform = `scale(${layersScale.toFixed(3)})`;
+
+    // Right-side labels: each appears at its own phase, sequentially
+    // Phase windows aligned with product transitions:
+    //   step 0 (Invisible Surface)  → 0.05 - 0.20 (single piece visible)
+    //   step 1 (3-Core Lift Struct) → 0.30 - 0.50 (during morph to 3 layers)
+    //   step 2 (Medical-Grade Grip) → 0.60 - 0.80 (3 layers settled)
+    if (labelsBox){
+      const labels = labelsBox.querySelectorAll('.design-label');
+      const ranges = [[0.05, 0.20], [0.30, 0.50], [0.60, 0.80]];
+      labels.forEach(el => {
+        const step = parseInt(el.dataset.designStep || '0', 10);
+        const r = ranges[step] || ranges[0];
+        const t = smooth(norm(p, r[0], r[1]));
+        el.style.opacity = String(t);
+        el.style.transform = `translateX(${((1-t)*16).toFixed(1)}px)`;
+      });
+    }
+
+    if (stepLabel && stepFill){
+      let label = '01 — Single piece';
+      if (p >= 0.55) label = '03 — Medical grip';
+      else if (p >= 0.30) label = '02 — Three layers';
+      stepLabel.textContent = label;
+      stepFill.style.width = (clamp(p,0,1)*100).toFixed(1) + '%';
+    }
+  }
+
+  // Wait for images to load to avoid flash
+  function whenImagesReady(cb){
+    const imgs = [els.logo, els.package, els.strips_fan, els.single, els.layers, els.united, els.nose];
+    let pending = imgs.length;
+    const done = ()=>{ if(--pending <= 0) cb(); };
+    imgs.forEach(im=>{
+      if (im.complete && im.naturalWidth) done();
+      else { im.addEventListener('load', done); im.addEventListener('error', done); }
+    });
+    // Fallback in case nothing fires
+    setTimeout(cb, 4000);
+  }
+
+  whenImagesReady(()=>{
+    requestAnimationFrame(update);
+  });
+
+  // Reveal-on-scroll for non-cinematic sections
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.18 });
+  document.querySelectorAll('[data-reveal]').forEach(el=>obs.observe(el));
+})();
+
+// ====== Cart logic (shared with cart.html / checkout.html) ======
+(function(){
+  const STORAGE_KEY = 'openair_cart';
+  function readCart(){
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+    catch(e){ return {}; }
+  }
+  function writeCart(c){ localStorage.setItem(STORAGE_KEY, JSON.stringify(c)); }
+  function addToCart(id){
+    const c = readCart();
+    c[id] = (c[id] || 0) + 1;
+    writeCart(c);
+    updateBadge();
+    showToast(id);
+  }
+  function totalQty(){
+    const c = readCart();
+    return Object.values(c).reduce((s,q)=>s+q,0);
+  }
+  function updateBadge(){
+    const badge = document.getElementById('nav-cart-badge');
+    if (!badge) return;
+    const q = totalQty();
+    if (q > 0){ badge.textContent = q; badge.classList.remove('hidden'); }
+    else { badge.classList.add('hidden'); }
+  }
+
+  // Toast (mobile-aware)
+  let toastTimer;
+  function showToast(id){
+    const labels = { single:'Single', three:'Three', six:'Six' };
+    const isMobile = window.innerWidth < 768;
+    let toast = document.getElementById('cart-toast');
+    if (!toast){
+      toast = document.createElement('div');
+      toast.id = 'cart-toast';
+      toast.setAttribute('role', 'status');
+      toast.setAttribute('aria-live', 'polite');
+      toast.setAttribute('aria-atomic', 'true');
+      document.body.appendChild(toast);
+    }
+    toast.style.cssText = `
+      position:fixed; bottom:24px; left:50%;
+      transform:translateX(-50%) translateY(20px);
+      background:rgba(10,10,10,.92); color:#fff;
+      padding:${isMobile?'12px 16px':'14px 22px 14px 18px'};
+      border-radius:${isMobile?'18px':'999px'};
+      font-size:${isMobile?'13px':'14px'};
+      font-weight:500;
+      z-index:60;
+      backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+      box-shadow:0 12px 40px rgba(0,0,0,.25);
+      opacity:0;
+      transition:transform .35s cubic-bezier(.2,.8,.2,1),opacity .25s;
+      display:flex; align-items:center; gap:10px;
+      max-width:92vw; line-height:1.4;
+    `;
+    toast.innerHTML = `
+      <span style="display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#fff;color:#0a0a0a;font-size:12px;font-weight:700;flex-shrink:0">✓</span>
+      <span style="flex:1;min-width:0">${labels[id]||id} ${(typeof getLang==='function'&&getLang()==='es')?'agregado al carrito':'を追加しました'}</span>
+      <a href="./cart.html" style="color:#fff;text-decoration:underline;font-size:13px;opacity:.9;flex-shrink:0">${(typeof getLang==='function'&&getLang()==='es')?'Ver carrito':'カート'}</a>
+    `;
+    requestAnimationFrame(()=>{
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateX(-50%) translateY(0)';
+    });
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=>{
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateX(-50%) translateY(20px)';
+    }, 2800);
+  }
+
+  document.addEventListener('click', (e) => {
+    const t = e.target.closest('[data-add-to-cart]');
+    if (!t) return;
+    e.preventDefault();
+    addToCart(t.dataset.addToCart);
+  });
+
+  updateBadge();
+  // Refresh badge on tab focus (in case other tab modified storage)
+  window.addEventListener('storage', updateBadge);
+  window.addEventListener('focus', updateBadge);
+})();
+
+// ============== Flip cards (Why) ==============
+document.querySelectorAll('.flip-card').forEach(card => {
+  card.addEventListener('click', () => {
+    const flipped = card.classList.toggle('flipped');
+    card.setAttribute('aria-pressed', flipped ? 'true' : 'false');
+  });
+});
+
+// ============== Ambassador cards: tap-to-reveal (touch devices) ==============
+(function(){
+  const isTouch = window.matchMedia('(hover: none)').matches;
+  if (!isTouch) return; // desktop uses :hover, no JS toggle needed
+  document.querySelectorAll('.ig-card').forEach(card => {
+    card.addEventListener('click', (e) => {
+      // If user tapped the explicit Instagram CTA link, let it navigate
+      if (e.target.closest('.ig-quote-cta')) return;
+      // Otherwise: toggle reveal state (no navigation)
+      const wasRevealed = card.classList.contains('is-revealed');
+      // close other revealed cards
+      document.querySelectorAll('.ig-card.is-revealed').forEach(c => {
+        if (c !== card) c.classList.remove('is-revealed');
+      });
+      if (wasRevealed) {
+        card.classList.remove('is-revealed');
+      } else {
+        card.classList.add('is-revealed');
+      }
+    });
+    // Keyboard support
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        card.click();
+      }
+    });
+  });
+  // Tap outside any card: close all revealed cards
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.ig-card')) {
+      document.querySelectorAll('.ig-card.is-revealed').forEach(c => c.classList.remove('is-revealed'));
+    }
+  });
+})();
+
+// ============== Scene cards (toggle on tap) ==============
+document.querySelectorAll('.scene-card').forEach(card => {
+  const toggle = () => {
+    const on = card.classList.toggle('is-on');
+    card.setAttribute('aria-pressed', on ? 'true' : 'false');
+  };
+  card.addEventListener('click', toggle);
+  card.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+  });
+});
+
+// ============== i18n: 日本語 / Español 切替 ==============
+const translations = {
+  // Navigation
+  "nav_concept":  { ja: "コンセプト", es: "Concepto" },
+  "nav_features": { ja: "特徴", es: "Características" },
+  "nav_scenes":   { ja: "シーン", es: "Momentos" },
+  "nav_buy":      { ja: "購入", es: "Comprar" },
+  "nav_cart":     { ja: "カート", es: "Carrito" },
+
+  // Cinematic captions
+  "cap_2_text": { ja: "ひっそりと、待っている。", es: "Esperando, en silencio." },
+  "cap_3_text": { ja: "鼻のラインに、寄り添う。", es: "Se adapta a tu nariz." },
+  "cap_4_text": { ja: "見えない部分に、工夫を。", es: "El detalle está por dentro." },
+  "cap_5_text": { ja: "意識しなくても、整っている。", es: "Funciona sin que lo pienses." },
+  "cap_6_text": { ja: "装着、たった2ステップ。", es: "Solo dos pasos para ponerlo." },
+
+  // Hero
+  "hero_headline": { ja: "呼吸を、整える。", es: "Respira mejor." },
+  "hero_subtext":  { ja: "意識しなくても、整う。<br/>ただ、それだけ。", es: "Sin pensarlo. Sin esfuerzo." },
+  "hero_btn_buy":  { ja: "今すぐ購入", es: "Comprar ahora" },
+  "hero_btn_scroll": { ja: "スクロールで見る", es: "Desliza para descubrir" },
+
+  // CONCEPT
+  "concept_h2": { ja: "無意識の時間を、<br/>アップグレードする。", es: "Una mejora<br/>para tus momentos inconscientes." },
+  "concept_p1": { ja: "人生の約3分の1は、睡眠。<br/>デスクワークは、1日の大半。<br/>トレーニングも、積み重ねの時間。", es: "Pasamos un tercio de la vida durmiendo.<br/>Casi todo el día frente al escritorio.<br/>Y horas entrenando, una y otra vez." },
+  "concept_p2": { ja: "その多くの呼吸は、<br/>感情やストレスによって乱れている。", es: "Y, en gran parte de ese tiempo,<br/>nuestra respiración se altera por las emociones y el estrés." },
+  "concept_p3": { ja: "気づけば、口で呼吸している。<br/>分かっていても、変えられない。", es: "Sin darte cuenta, respiras por la boca.<br/>Lo sabes, pero cambiarlo cuesta." },
+  "concept_p4": { ja: "だから私たちは、<br/>意識しなくても、鼻呼吸へ導く仕組みをつくった。", es: "Por eso creamos algo que te lleva a respirar por la nariz,<br/>sin que tengas que pensarlo." },
+
+  // WHY IT MATTERS
+  "why_h2":  { ja: "口呼吸は、<br/>“無意識のダメージ”です。", es: "Respirar por la boca<br/>es un daño que no notas." },
+  "why_sub": { ja: "日常の中で少しずつ、コンディションに影響を与えていきます。<br/>すぐに変わるものではないからこそ、 “気づかないまま積み重なる”。", es: "Día tras día, va afectando tu bienestar.<br/>Lento, casi imperceptible. Pero se acumula." },
+
+  "why_card1_front": { ja: "口の乾きや<br/>違和感", es: "Boca seca<br/>o molesta" },
+  "why_card1_back_eyebrow": { ja: "影響", es: "Impacto" },
+  "why_card1_back":  { ja: "睡眠の質の<br/>低下", es: "Sueño<br/>menos profundo" },
+
+  "why_card2_front": { ja: "呼吸の<br/>浅さ", es: "Respiración<br/>superficial" },
+  "why_card2_back_eyebrow": { ja: "影響", es: "Impacto" },
+  "why_card2_back":  { ja: "酸素供給の<br/>不足", es: "Menos oxígeno<br/>para el cuerpo" },
+
+  "why_card3_front": { ja: "集中<br/>しにくさ", es: "Cuesta<br/>concentrarse" },
+  "why_card3_back_eyebrow": { ja: "影響", es: "Impacto" },
+  "why_card3_back":  { ja: "パフォーマンス<br/>の低下", es: "Menor<br/>rendimiento" },
+
+  "why_card4_front": { ja: "フェイスラインの<br/>崩れ", es: "Pierdes<br/>tus facciones" },
+  "why_card4_back_eyebrow": { ja: "影響", es: "Impacto" },
+  "why_card4_back":  { ja: "顔のバランス<br/>低下", es: "Rostro<br/>menos armónico" },
+
+  // APPROACH
+  "approach_h2": { ja: "変化は、<br/>意志に頼らない。", es: "El cambio<br/>no depende de la voluntad." },
+  "approach_p1": { ja: "必要なのは、<span class=\"text-zinc-900 font-medium\">自然に続く仕組み。</span>", es: "Lo que necesitas: <span class=\"text-zinc-900 font-medium\">un sistema que fluya solo.</span>" },
+  "approach_p2": { ja: "自然に、<span class=\"text-zinc-900 font-medium\">鼻呼吸へ。</span>", es: "Naturalmente, <span class=\"text-zinc-900 font-medium\">hacia la respiración nasal.</span>" },
+
+  // BENEFITS
+  "benefits_h2": { ja: "気づかないうちに、<br/>変わっていく。", es: "Cambias<br/>sin darte cuenta." },
+  "benefits_pair1_before": { ja: "口の乾き", es: "Boca seca" },
+  "benefits_pair1_after":  { ja: "口呼吸から解放", es: "Libre de la boca" },
+  "benefits_pair2_before": { ja: "呼吸が浅い", es: "Respiración corta" },
+  "benefits_pair2_after":  { ja: "呼吸が深くなる", es: "Respiración profunda" },
+  "benefits_pair3_before": { ja: "集中できない", es: "Sin concentración" },
+  "benefits_pair3_after":  { ja: "無意識に続く", es: "Concentración natural" },
+  "benefits_pair4_before": { ja: "フェイスラインの崩れ", es: "Facciones desdibujadas" },
+  "benefits_pair4_after":  { ja: "フェイスラインを保つ", es: "Facciones definidas" },
+
+  // SCENES
+  "scenes_h2":  { ja: "「寝るためだけ」の<br/>ものではない。", es: "No solo para dormir." },
+  "scenes_sub": { ja: "あなたの 1 日を通して、使えます。", es: "Acompaña todo tu día." },
+
+  "scene1_title": { ja: "寝る前", es: "Antes de dormir" },
+  "scene1_desc":  { ja: "呼吸を整えて、<br/>リラックスした状態へ。<br/>深く、静かな夜を。", es: "Respira con calma<br/>y suéltate del día.<br/>Una noche profunda y silenciosa." },
+
+  "scene2_title": { ja: "トレーニング", es: "Entrenamiento" },
+  "scene2_desc":  { ja: "呼吸に集中することで、<br/>パフォーマンスの安定を<br/>サポート。", es: "Concéntrate en respirar<br/>y rinde con<br/>más constancia." },
+
+  "scene3_title": { ja: "デスクワーク", es: "En el escritorio" },
+  "scene3_desc":  { ja: "気づかないうちの口呼吸を<br/>防ぎ、安定したコンディション<br/>をサポート。", es: "Evita la respiración<br/>por la boca, casi sin notarlo.<br/>Y mantén el ritmo." },
+
+  // DESIGN
+  "design_h2": { ja: "目立たないことも、<br/>機能のひとつ。", es: "Discreto<br/>por diseño." },
+  "design_p1": { ja: "3つの層が、呼吸を支える。", es: "Tres capas que sostienen tu respiración." },
+  "design_p2": { ja: "見えない構造が、<br/>自然な鼻呼吸をつくる。", es: "Una estructura invisible<br/>que te lleva a respirar por la nariz." },
+
+  "design_feat1_desc": { ja: "目立たない設計。<br/>透明素材で自然に馴染む。", es: "Diseño que no se nota.<br/>Material transparente que se funde con tu piel." },
+  "design_feat2_desc": { ja: "空間をつくる3本構造。<br/>元に戻ろうとする力で、<br/>鼻腔をやさしく広げる。", es: "Tres núcleos que abren espacio.<br/>Su fuerza recuperadora<br/>expande las fosas con suavidad." },
+  "design_feat3_desc": { ja: "医療用テープを採用。<br/>肌にやさしく、しっかり固定。<br/>長時間でも、快適なつけ心地。", es: "Adhesivo de grado médico.<br/>Suave con la piel, firme en su lugar.<br/>Cómodo durante horas." },
+
+  // FUNCTION
+  "function_h2":  { ja: "見えない部分に、工夫を。", es: "El detalle está por dentro." },
+  "function_sub": { ja: "強すぎない。弱すぎない。<br/>ちょうどいいバランス。", es: "Ni demasiado firme. Ni demasiado suave.<br/>El equilibrio justo." },
+
+  "function_card1_title": { ja: "自然に、空気が通る。", es: "El aire fluye, natural." },
+  "function_card1_desc":  { ja: "内部構造を最適化し、<br/>スムーズな空気の流れを<br/>サポート。", es: "Una estructura interna<br/>pensada para que el aire<br/>circule sin esfuerzo." },
+
+  "function_card2_title": { ja: "つけている感覚がない。", es: "Casi no lo sientes." },
+  "function_card2_desc":  { ja: "過度な圧迫はなく、<br/>肌に寄り添うように<br/>フィット。", es: "Sin presión de más.<br/>Se adapta a tu piel<br/>como si fuera parte de ella." },
+
+  "function_card3_title": { ja: "長時間でも、ズレない。", es: "No se mueve, ni después de horas." },
+  "function_card3_desc":  { ja: "ドイツ製 HENKEL 社の<br/>粘着素材を採用。<br/>やさしさと確かな固定力。", es: "Adhesivo HENKEL,<br/>fabricado en Alemania.<br/>Suave, pero firme." },
+
+  "function_card4_title": { ja: "強すぎず、弱すぎない。", es: "Ni mucho, ni poco." },
+  "function_card4_desc":  { ja: "やさしさと固定力を両立。<br/>長時間でも違和感が少ない、<br/>最適なバランス設計。", es: "Suavidad y sujeción, juntas.<br/>Cómodo durante horas,<br/>en su punto exacto." },
+
+  "function_bottom1_title": { ja: "目立たない透明デザイン", es: "Diseño transparente, casi invisible" },
+  "function_bottom1_desc":  { ja: "つけていることを忘れる自然さ。", es: "Tan natural que olvidas que lo llevas." },
+  "function_bottom2_title": { ja: "3層構造の独自設計", es: "Diseño exclusivo de tres capas" },
+  "function_bottom2_desc":  { ja: "機能と快適さを両立。", es: "Función y comodidad, en una sola pieza." },
+  "function_bottom3_title": { ja: "医療用テープ採用", es: "Adhesivo de grado médico" },
+  "function_bottom3_desc":  { ja: "肌にやさしく、安心の品質。", es: "Suave con tu piel. Calidad confiable." },
+  "function_bottom4_title": { ja: "長時間しっかりサポート", es: "Sujeción que dura todo el día" },
+  "function_bottom4_desc":  { ja: "朝から夜まで、変わらないサポート力。", es: "De la mañana a la noche, sin variaciones." },
+
+  // HOW TO USE
+  "howto_h2": { ja: "使い方は、シンプルに。", es: "Simple de usar." },
+  "howto_step1_title": { ja: "鼻周りの油分を、<br/>軽く拭き取る。", es: "Limpia la zona de la nariz,<br/>solo un poco." },
+  "howto_step1_desc":  { ja: "油分が残っていると、剥がれやすくなる場合があります。", es: "Si queda grasa, puede despegarse antes de tiempo." },
+  "howto_step2_title": { ja: "乾いた状態で、<br/>装着する。", es: "Colócalo<br/>sobre la piel seca." },
+  "howto_step2_desc":  { ja: "それだけ。肌へのやさしさを優先した設計です。", es: "Eso es todo. Pensado para cuidar tu piel." },
+
+  "howto_variation_header": { ja: "より快適に使うためのポイント（3パターン）", es: "Tres formas de usarlo, a tu medida" },
+  "howto_pos1_title": { ja: "しっかり固定したいとき", es: "Para mayor sujeción" },
+  "howto_pos1_desc":  { ja: "鼻の中央にしっかりと装着。<br/>安定感を重視した使い方。", es: "Colócalo justo en el centro de la nariz.<br/>Para sentirlo más firme." },
+  "howto_pos2_title": { ja: "バランスよく使いたいとき", es: "Para un uso equilibrado" },
+  "howto_pos2_desc":  { ja: "やや上部に装着することで、<br/>自然なフィット感に。", es: "Un poco más arriba<br/>para un ajuste natural." },
+  "howto_pos3_title": { ja: "軽いつけ心地がいいとき", es: "Para algo más ligero" },
+  "howto_pos3_desc":  { ja: "鼻の上部にやさしく装着。<br/>軽さを重視した使い方。", es: "Colócalo suave en la parte alta de la nariz.<br/>Apenas se siente." },
+  "howto_footer_note": { ja: "※ 肌の状態やお好みに合わせて、最適な位置をお選びください。", es: "* Elige la posición que mejor se adapte a tu piel y a tu gusto." },
+
+  // AMBASSADORS
+  "ambassadors_h2":  { ja: "使っている人たち。", es: "Quienes ya lo usan." },
+  "ambassadors_sub": { ja: "それぞれの 1 日を支える、それぞれの呼吸。", es: "Una respiración distinta para cada día, para cada persona." },
+  "ambassadors_footnote": { ja: "※ 個人差があります。", es: "* Los resultados pueden variar según la persona." },
+  "amb1_role":  { ja: "ボクサー", es: "Boxeador" },
+  "amb1_quote": { ja: "毎日のトレーニングで、限界まで追い込む。だからこそ、回復の質にはこだわっています。<br/><br/>OPEN AIRは、呼吸を整えるために使っています。呼吸が安定することで、集中力とパフォーマンスがブレなくなる。<br/><br/>わずかな違いですが、その積み重ねが大きい。今では、欠かせない習慣の一つです。", es: "Cada día llevo mi entrenamiento al límite. Por eso me importa tanto la calidad de la recuperación.<br/><br/>Uso OPEN AIR para ordenar mi respiración. Cuando respiro estable, mi concentración y rendimiento no se desvían.<br/><br/>Es una diferencia pequeña, pero se acumula. Hoy es uno de mis hábitos imprescindibles." },
+  "amb2_role":  { ja: "デスクワーカー", es: "Profesional digital" },
+  "amb2_quote": { ja: "パソコンに向かう時間が長く、気づくと呼吸が浅くなっていることが多いです。<br/><br/>OPEN AIRを使い始めてから、呼吸がスムーズになり、集中しやすくなりました。<br/><br/>大きな変化ではないけど、その“少し”が、1日のパフォーマンスを変えてくれます。", es: "Paso muchas horas frente a la pantalla y, sin darme cuenta, mi respiración se vuelve corta.<br/><br/>Desde que uso OPEN AIR, respiro con más fluidez y me concentro mejor.<br/><br/>No es un gran cambio, pero ese “pequeño algo” transforma mi día." },
+  "amb3_role":  { ja: "ケータリングシェフ", es: "Chef de catering" },
+  "amb3_quote": { ja: "現場では常に人の目があるから、使うものにも気を遣います。<br/><br/>OPEN AIRは透明で目立たないので、違和感なく自然に使える。<br/><br/>呼吸を整えながらも、自分のスタイルを崩さずにいられるのがいい。", es: "En mi trabajo siempre hay miradas, así que cuido lo que uso.<br/><br/>OPEN AIR es transparente, casi invisible. Se siente natural.<br/><br/>Puedo respirar mejor sin perder mi estilo." },
+  "amb_cta_visit": { ja: "Instagramを開く →", es: "Abrir Instagram →" },
+
+  // HONEST NOTES
+  "honest_h2":  { ja: "正直に、お伝えします。", es: "Te lo decimos sin rodeos." },
+  "honest_sub": { ja: "いいことだけを伝えるより、知った上で選んでもらいたいから。", es: "Preferimos que elijas sabiéndolo todo, no solo lo bueno." },
+  "honest_li1": { ja: "肌の状態によっては、剥がれやすい場合があります。", es: "Según el tipo de piel, puede despegarse con más facilidad." },
+  "honest_li2": { ja: "汗をかく環境では、粘着力が弱まる場合があります。", es: "En ambientes con mucho sudor, la adherencia puede disminuir." },
+  "honest_li3": { ja: "慣れるまで、違和感を覚える場合があります。", es: "Al principio, puede sentirse algo extraño." },
+  "honest_li4": { ja: "すべての方に同じフィット感を保証するものではありません。", es: "El ajuste no es igual para todas las personas." },
+  "honest_li5": { ja: "医療目的の製品ではありません。", es: "No es un producto médico." },
+
+  // PRICING
+  "buy_h2":  { ja: "あなたのペースで、<br/>続けられる。", es: "A tu ritmo,<br/>todo el tiempo que quieras." },
+  "buy_sub": { ja: "送料無料 · 30 日返品保証", es: "Envío gratis · 30 días para devolverlo" },
+  "buy_plan1_desc": { ja: "30 枚 · 1ヶ月分", es: "30 unidades · 1 mes" },
+  "buy_plan2_desc": { ja: "90 枚 · 3ヶ月分", es: "90 unidades · 3 meses" },
+  "buy_plan3_desc": { ja: "180 枚 · 6ヶ月分", es: "180 unidades · 6 meses" },
+  "buy_plan1_price": { ja: "¥1,980", es: "€15" },
+  "buy_plan2_price": { ja: "¥4,980", es: "€39" },
+  "buy_plan3_price": { ja: "¥8,980", es: "€69" },
+  "buy_plan2_discount": { ja: "¥1,000 OFF", es: "€6 OFF" },
+  "buy_plan3_discount": { ja: "¥2,900 OFF", es: "€21 OFF" },
+  "buy_btn_add":    { ja: "カートに追加", es: "Agregar al carrito" },
+  "buy_feat_ship":  { ja: "✓ 送料無料", es: "✓ Envío gratis" },
+  "buy_feat_pack":  { ja: "✓ 個包装で清潔", es: "✓ Empaque individual e higiénico" },
+  "buy_feat_return":{ ja: "✓ 30日返品保証", es: "✓ 30 días para devolverlo" },
+
+  // CLOSING
+  "closing_p1": { ja: "人は、1日に約2万回、呼吸する。", es: "Respiramos cerca de 20 000 veces al día." },
+  "closing_p2": { ja: "そのほとんどは、無意識のまま。", es: "Casi siempre, sin darnos cuenta." },
+  "closing_p3": { ja: "だからこそ、<br/>整える意味がある。", es: "Por eso<br/>vale la pena cuidarla." },
+  "closing_p4": { ja: "OPEN AIR。", es: "OPEN AIR." },
+
+  // FINAL CTA
+  "finalcta_h2":  { ja: "呼吸を、整える。", es: "Respira mejor." },
+  "finalcta_sub": { ja: "ただ、それだけでいい。", es: "Nada más. Nada menos." },
+  "finalcta_btn_buy":   { ja: "今すぐ購入", es: "Comprar ahora" },
+  "finalcta_btn_again": { ja: "もう一度見る", es: "Verlo otra vez" },
+
+  // Footer
+  "footer_privacy": { ja: "プライバシー", es: "Privacidad" },
+  "footer_terms":   { ja: "利用規約", es: "Términos" },
+  "footer_support": { ja: "サポート", es: "Soporte" }
+};
+
+const I18N_KEY = 'openair_lang';
+function getLang(){ return localStorage.getItem(I18N_KEY) || 'ja'; }
+function applyLang(lang){
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const t = translations[key];
+    if (!t) return;
+    const text = t[lang] || t.ja;
+    el.innerHTML = text;
+  });
+  // Update aria-label on i18n-aria elements
+  document.querySelectorAll('[data-i18n-aria]').forEach(el => {
+    const key = el.getAttribute('data-i18n-aria');
+    const t = translations[key];
+    if (!t) return;
+    el.setAttribute('aria-label', t[lang] || t.ja);
+  });
+  // Update language switcher label (single label that shows current language)
+  const langLabel = document.getElementById('lang-current');
+  if (langLabel) langLabel.textContent = lang === 'es' ? 'Español' : '日本語';
+}
+function setLang(lang){
+  localStorage.setItem(I18N_KEY, lang);
+  applyLang(lang);
+}
+// Apply on load
+applyLang(getLang());
+// Wire up language switcher
+document.getElementById('lang-switcher')?.addEventListener('click', (e) => {
+  e.preventDefault();
+  const cur = getLang();
+  setLang(cur === 'ja' ? 'es' : 'ja');
+});
+
+// Region modal logic
+(function(){
+  const modal = document.getElementById('region-modal');
+  const switcher = document.getElementById('lang-switcher');
+  if (!modal || !switcher) return;
+
+  // Replace existing click handler: open modal instead of toggling lang
+  const newSwitcher = switcher.cloneNode(true);
+  switcher.parentNode.replaceChild(newSwitcher, switcher);
+
+  function openModal(){
+    modal.classList.remove('hidden');
+    updateChecks();
+    const lang = getLang();
+    const title = modal.querySelector('#region-modal-title');
+    const sub = modal.querySelector('#region-modal-sub');
+    const close = modal.querySelector('#region-close');
+    const brSub = modal.querySelector('#region-br-sub');
+    const usSub = modal.querySelector('#region-us-sub');
+    if (lang === 'es') {
+      if (title) title.textContent = 'Selecciona tu región';
+      if (sub) sub.textContent = 'El idioma y la moneda se ajustan a tu región.';
+      if (close) close.textContent = 'Cerrar';
+      if (brSub) brSub.textContent = 'Estamos trabajando para que pronto puedas comprarlo aquí.';
+      if (usSub) usSub.textContent = 'Estamos trabajando para que pronto puedas comprarlo aquí.';
+    } else {
+      if (title) title.textContent = '配送地域を選択';
+      if (sub) sub.textContent = 'ご利用の地域に合わせて、言語と通貨が切り替わります。';
+      if (close) close.textContent = '閉じる';
+      if (brSub) brSub.textContent = 'ご購入できるよう、準備を進めています。';
+      if (usSub) usSub.textContent = 'ご購入できるよう、準備を進めています。';
+    }
+  }
+  function closeModal(){ modal.classList.add('hidden'); }
+  function updateChecks(){
+    const lang = getLang();
+    modal.querySelectorAll('.region-option').forEach(btn => {
+      const check = btn.querySelector('.region-check');
+      if (!check) return;
+      const region = btn.dataset.region;
+      if ((region === 'ja' && lang === 'ja') || (region === 'es' && lang === 'es')) {
+        check.classList.remove('hidden');
+      } else {
+        check.classList.add('hidden');
+      }
+    });
+  }
+  function showSoonToast(region){
+    const lang = getLang();
+    const msg = lang === 'es'
+      ? 'Estamos trabajando para que pronto puedas comprarlo aquí.'
+      : 'ご購入できるよう、準備を進めています。';
+    let toast = document.getElementById('region-toast');
+    if (!toast){
+      toast = document.createElement('div');
+      toast.id = 'region-toast';
+      toast.setAttribute('role','status');
+      toast.setAttribute('aria-live','polite');
+      document.body.appendChild(toast);
+    }
+    toast.style.cssText = `
+      position:fixed; bottom:24px; left:50%;
+      transform:translateX(-50%) translateY(20px);
+      background:rgba(10,10,10,.92); color:#fff;
+      padding:14px 22px; border-radius:999px;
+      font-size:14px; max-width:90vw;
+      z-index:200; opacity:0;
+      transition:opacity .25s, transform .25s;
+      box-shadow:0 10px 40px rgba(0,0,0,.25);
+      backdrop-filter:blur(10px);
+    `;
+    toast.textContent = msg;
+    requestAnimationFrame(()=>{
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateX(-50%) translateY(0)';
+    });
+    clearTimeout(window.__regionToastT);
+    window.__regionToastT = setTimeout(()=>{
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateX(-50%) translateY(20px)';
+    }, 3200);
+  }
+
+  newSwitcher.addEventListener('click', (e) => { e.preventDefault(); openModal(); });
+  modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+  document.getElementById('region-close')?.addEventListener('click', closeModal);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal(); });
+
+  modal.querySelectorAll('.region-option').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const region = btn.dataset.region;
+      if (region === 'ja') { setLang('ja'); closeModal(); }
+      else if (region === 'es') { setLang('es'); closeModal(); }
+      else if (region === 'br' || region === 'us') {
+        showSoonToast(region);
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>

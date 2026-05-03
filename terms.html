@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-i18n="page_title">利用規約 — OPEN AIR</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  *{ -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+  html,body{
+    font-family: -apple-system, BlinkMacSystemFont,
+                 "Hiragino Kaku Gothic ProN","ヒラギノ角ゴ ProN W3","ヒラギノ角ゴシック ProN",
+                 "Hiragino Sans","Yu Gothic Medium","游ゴシック","Helvetica Neue",
+                 Arial, sans-serif;
+    color:#1d1d1f;
+    background:#fafafa;
+  }
+  html{ scroll-behavior:smooth; }
+  .glass{
+    background:rgba(255,255,255,.7);
+    backdrop-filter:blur(28px) saturate(180%);
+    -webkit-backdrop-filter:blur(28px) saturate(180%);
+    border:1px solid rgba(255,255,255,.7);
+    box-shadow:0 1px 3px rgba(0,0,0,.03),0 12px 40px rgba(0,0,0,.05),
+               inset 0 1px 0 rgba(255,255,255,1);
+  }
+  .glass-pill{
+    background:rgba(255,255,255,.65);
+    backdrop-filter:blur(20px) saturate(180%);
+    -webkit-backdrop-filter:blur(20px) saturate(180%);
+    border:1px solid rgba(255,255,255,.7);
+    box-shadow:0 1px 2px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.04),
+               inset 0 1px 0 rgba(255,255,255,1);
+  }
+  .text-gradient{ background:linear-gradient(180deg,#1d1d1f 0%,#6e6e73 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+  .reveal{ opacity:0; transform:translateY(16px); animation:rise .6s cubic-bezier(.2,.8,.2,1) forwards; }
+  .reveal.delay-1{ animation-delay:.05s; }
+  .reveal.delay-2{ animation-delay:.10s; }
+  @keyframes rise{ to{ opacity:1; transform:translateY(0); } }
+  .prose h2{ font-size:22px; font-weight:600; letter-spacing:-0.01em; color:#0a0a0a; margin-top:48px; margin-bottom:14px; }
+  .prose h2:first-child{ margin-top:0; }
+  .prose h3{ font-size:15px; font-weight:600; color:#0a0a0a; margin-top:24px; margin-bottom:8px; }
+  .prose p, .prose li{ font-size:15px; line-height:1.95; color:#3f3f46; }
+  .prose p{ margin-bottom:14px; }
+  .prose ol{ list-style:decimal; padding-left:1.4em; margin-bottom:18px; }
+  .prose ul{ list-style:disc; padding-left:1.2em; margin-bottom:18px; }
+  .prose li{ margin-bottom:6px; }
+  .prose a{ color:#0a0a0a; text-decoration:underline; text-underline-offset:3px; }
+  .toc-link{ display:block; padding:8px 12px; border-radius:10px; font-size:13px; color:#52525b; transition:background .2s, color .2s; }
+  .toc-link:hover{ background:rgba(0,0,0,.04); color:#0a0a0a; }
+  ::-webkit-scrollbar{ width:8px;height:8px; }
+  ::-webkit-scrollbar-track{ background:transparent; }
+  ::-webkit-scrollbar-thumb{ background:rgba(0,0,0,.10); border-radius:4px; }
+
+  /* === Mobile responsive === */
+  @media (max-width: 768px){
+    nav a[href*="openair.html#"]{ display: none; }
+    nav > a:first-child{ border-right: none; padding-right: 0; }
+    nav{ gap: 10px !important; padding-left: 14px; padding-right: 6px; }
+    h1.text-4xl, h1.md\:text-5xl,
+    h2.text-3xl, h2.md\:text-4xl, h2.md\:text-5xl{ font-size: 28px !important; line-height: 1.25 !important; }
+    main.pt-32{ padding-top: 96px !important; padding-bottom: 64px !important; }
+    main.pb-32{ padding-bottom: 64px !important; }
+    .lg\:grid-cols-\[1fr_360px\],
+    .lg\:grid-cols-\[240px_1fr\]{ grid-template-columns: 1fr !important; }
+    .lg\:sticky{ position: static !important; }
+    footer .flex.flex-wrap{ justify-content: center !important; flex-direction: column; gap: 16px !important; }
+    .glass.rounded-\[28px\],
+    .glass.rounded-\[24px\]{ padding: 24px !important; }
+    .field{ padding: 12px 14px !important; font-size: 16px !important; }
+    a, button{ -webkit-tap-highlight-color: transparent; }
+  }
+  @supports (padding: max(0px)){
+    nav{ top: max(16px, env(safe-area-inset-top)); }
+  }
+
+</style>
+</head>
+<body>
+
+<!-- ====== Persistent Nav ====== -->
+<nav class="fixed top-4 left-1/2 -translate-x-1/2 z-50 glass-pill rounded-full pl-3 pr-2 py-2 flex items-center gap-5">
+  <a href="./openair.html" class="pr-3 border-r border-black/10 flex items-center gap-2">
+    <span class="text-[15px] font-semibold tracking-tight text-zinc-900">OPEN AIR</span>
+  </a>
+  <a href="./openair.html#concept"  class="text-[13px] text-zinc-600 hover:text-zinc-900 transition" data-i18n="nav_concept">コンセプト</a>
+  <a href="./openair.html#features" class="text-[13px] text-zinc-600 hover:text-zinc-900 transition" data-i18n="nav_features">特徴</a>
+  <a href="./openair.html#scenes"   class="text-[13px] text-zinc-600 hover:text-zinc-900 transition" data-i18n="nav_scenes">シーン</a>
+  <a href="./openair.html#buy"      class="text-[13px] text-zinc-600 hover:text-zinc-900 transition" data-i18n="nav_buy">購入</a>
+  <a href="./cart.html" class="ml-1 px-4 py-1.5 rounded-full text-[13px] font-medium bg-zinc-900 text-white relative"><span data-i18n="nav_cart">カート</span><span id="nav-cart-badge" class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] grid place-items-center bg-red-500 text-white text-[10px] font-bold rounded-full px-1">0</span></a>
+</nav>
+
+<main class="pt-32 pb-32 px-6 max-w-6xl mx-auto">
+
+  <header class="text-center mb-14 reveal">
+    <div class="text-[12px] tracking-[0.32em] uppercase text-zinc-500 mb-4" data-i18n="hero_eyebrow">Terms</div>
+    <h1 class="text-4xl md:text-5xl font-semibold tracking-tight text-gradient leading-[1.15]" data-i18n="hero_title">利用規約</h1>
+    <p class="mt-4 text-zinc-500 text-[14px]" data-i18n="hero_updated">最終更新日：2026年5月1日</p>
+  </header>
+
+  <div class="grid lg:grid-cols-[240px_1fr] gap-8 items-start">
+
+    <!-- ====== Sticky TOC ====== -->
+    <aside class="lg:sticky lg:top-28 reveal delay-1">
+      <div class="glass rounded-[20px] p-3">
+        <div class="text-[11px] tracking-[0.28em] uppercase text-zinc-500 px-3 pt-2 pb-3" data-i18n="toc_label">Contents</div>
+        <a href="#article1" class="toc-link" data-i18n="toc_a1">第1条 適用</a>
+        <a href="#article2" class="toc-link" data-i18n="toc_a2">第2条 利用登録</a>
+        <a href="#article3" class="toc-link" data-i18n="toc_a3">第3条 アカウント管理</a>
+        <a href="#article4" class="toc-link" data-i18n="toc_a4">第4条 禁止事項</a>
+        <a href="#article5" class="toc-link" data-i18n="toc_a5">第5条 商品の販売</a>
+        <a href="#price" class="toc-link" data-es-only style="display:none" data-i18n="toc_price">Precios e IVA</a>
+        <a href="#shipping" class="toc-link" data-es-only style="display:none" data-i18n="toc_shipping">Envío y entrega</a>
+        <a href="#withdrawal" class="toc-link" data-es-only style="display:none" data-i18n="toc_withdrawal">Derecho de desistimiento</a>
+        <a href="#article6" class="toc-link" data-i18n="toc_a6">第6条 返品・交換</a>
+        <a href="#warranty" class="toc-link" data-es-only style="display:none" data-i18n="toc_warranty">Garantía legal</a>
+        <a href="#article7" class="toc-link" data-i18n="toc_a7">第7条 知的財産権</a>
+        <a href="#article8" class="toc-link" data-i18n="toc_a8">第8条 免責事項</a>
+        <a href="#odr" class="toc-link" data-es-only style="display:none" data-i18n="toc_odr">Resolución de conflictos / ODR</a>
+        <a href="#article9" class="toc-link" data-i18n="toc_a9">第9条 規約変更</a>
+        <a href="#article10" class="toc-link" data-i18n="toc_a10">第10条 準拠法・裁判管轄</a>
+      </div>
+    </aside>
+
+    <!-- ====== Body ====== -->
+    <article class="glass rounded-[28px] p-8 md:p-12 prose reveal delay-2">
+
+      <p class="text-zinc-500 italic" data-i18n="intro">この利用規約（以下「本規約」）は、OPEN AIR, Inc.（以下「当社」）が提供するウェブサイトおよび関連サービス（以下「本サービス」）の利用条件を定めるものです。本サービスをご利用いただくお客様（以下「ユーザー」）は、本規約に同意の上、本サービスをご利用ください。</p>
+
+      <h2 id="article1" data-i18n="a1_title">第1条（適用）</h2>
+      <ol data-i18n="a1_body">
+        <li>本規約は、ユーザーと当社との間の本サービス利用に関わる一切の関係に適用されます。</li>
+        <li>当社は、本サービスに関し、本規約のほか、ご利用にあたってのルール等、各種の定め（以下「個別規定」）をすることがあります。これら個別規定は、その名称のいかんに関わらず、本規約の一部を構成するものとします。</li>
+        <li>本規約の規定が前条の個別規定の規定と矛盾する場合には、個別規定において特段の定めなき限り、個別規定の規定が優先されるものとします。</li>
+      </ol>
+
+      <h2 id="article2" data-i18n="a2_title">第2条（利用登録）</h2>
+      <ol data-i18n="a2_body">
+        <li>本サービスの一部機能は、利用登録を行うことで利用が可能となります。</li>
+        <li>利用登録の申請者が以下のいずれかに該当する場合、当社は登録申請を承認しないことがあります。
+          <ul>
+            <li>虚偽の事項を届け出た場合</li>
+            <li>過去に本規約に違反したことがある者からの申請である場合</li>
+            <li>その他、当社が利用登録を相当でないと判断した場合</li>
+          </ul>
+        </li>
+      </ol>
+
+      <h2 id="article3" data-i18n="a3_title">第3条（アカウント管理）</h2>
+      <ol data-i18n="a3_body">
+        <li>ユーザーは、自己の責任において、本サービスのユーザーIDおよびパスワードを適切に管理するものとします。</li>
+        <li>ユーザーは、いかなる場合にも、ユーザーIDおよびパスワードを第三者に譲渡または貸与することはできません。</li>
+        <li>ユーザーIDとパスワードの組み合わせが登録情報と一致してログインされた場合には、そのユーザーIDを登録しているユーザー自身による利用とみなします。</li>
+      </ol>
+
+      <h2 id="article4" data-i18n="a4_title">第4条（禁止事項）</h2>
+      <p data-i18n="a4_intro">ユーザーは、本サービスの利用にあたり、以下の行為をしてはなりません。</p>
+      <ul data-i18n="a4_list">
+        <li>法令または公序良俗に違反する行為</li>
+        <li>犯罪行為に関連する行為</li>
+        <li>当社、ほかのユーザー、または第三者の知的財産権、肖像権、プライバシー、名誉その他の権利または利益を侵害する行為</li>
+        <li>本サービスによって得られた情報を商業的に利用する行為</li>
+        <li>当社のサービスの運営を妨害するおそれのある行為</li>
+        <li>不正アクセスをし、またはこれを試みる行為</li>
+        <li>他のユーザーに関する個人情報等を収集または蓄積する行為</li>
+        <li>不正な目的を持って本サービスを利用する行為</li>
+        <li>反社会的勢力等への利益供与</li>
+        <li>その他、当社が不適切と判断する行為</li>
+      </ul>
+
+      <h2 id="article5" data-i18n="a5_title">第5条（商品の販売）</h2>
+      <ol data-i18n="a5_body">
+        <li>当社は、本サービスにおいて、当社が定める商品を販売します。</li>
+        <li>商品の売買契約は、ユーザーが当社に対して購入申し込みを行い、当社がこれを承諾し、その旨をユーザーに通知（注文確認メール送信）した時点で成立するものとします。</li>
+        <li>商品の代金、配送方法、配送料その他販売に関する条件は、本サービス上に表示するとおりとします。</li>
+        <li>当社は、在庫切れ等の事情により商品をお届けできない場合、ユーザーに通知の上、売買契約を解除することができるものとします。</li>
+      </ol>
+
+      <!-- EU-only: Prices and VAT -->
+      <div data-es-only style="display:none">
+        <h2 id="price" data-i18n="es_price_title">Precios e IVA</h2>
+        <ol data-i18n="es_price_body">
+          <li>Todos los precios mostrados en el Servicio se expresan en euros (€) e incluyen el Impuesto sobre el Valor Añadido (IVA) y cualquier otro tributo aplicable, salvo indicación expresa en contrario.</li>
+          <li>Los gastos de envío se calculan y muestran de forma desglosada antes de la confirmación del pedido. Antes de pulsar el botón de pago verás siempre el precio total final.</li>
+          <li>OPEN AIR, Inc. se reserva el derecho a modificar los precios en cualquier momento; no obstante, los productos se facturarán al precio vigente en el momento de la confirmación del pedido.</li>
+        </ol>
+      </div>
+
+      <!-- EU-only: Shipping & delivery -->
+      <div data-es-only style="display:none">
+        <h2 id="shipping" data-i18n="es_shipping_title">Envío, entrega y plazos</h2>
+        <ol data-i18n="es_shipping_body">
+          <li><strong>Plazo de entrega:</strong> los pedidos se entregan habitualmente en un plazo de 3 a 7 días laborables dentro de la Unión Europea, salvo indicación expresa en la ficha del producto. En todo caso, conforme al art. 109 de la Ley General para la Defensa de los Consumidores y Usuarios, la entrega se efectuará en un plazo máximo de 30 días desde la celebración del contrato.</li>
+          <li><strong>Costes de envío:</strong> los gastos de envío y, en su caso, las tarifas adicionales por entrega urgente o a zonas remotas, se indican antes de la confirmación del pedido.</li>
+          <li><strong>Riesgo:</strong> el riesgo de pérdida o deterioro del producto se transmite al usuario en el momento en que tú o un tercero por ti designado (distinto del transportista) tome posesión material del bien.</li>
+          <li><strong>Falta de entrega:</strong> si no recibimos el pedido en el plazo acordado, podrás emplazarnos a entregarlo en un plazo adicional adecuado. Transcurrido este sin entrega, tendrás derecho a resolver el contrato y recuperar el importe pagado.</li>
+        </ol>
+      </div>
+
+      <!-- EU-only: Right of withdrawal -->
+      <div data-es-only style="display:none">
+        <h2 id="withdrawal" data-i18n="es_withdraw_title">Derecho de desistimiento (14 días)</h2>
+        <p data-i18n="es_withdraw_p1">Como consumidor con residencia en la Unión Europea, dispones de un plazo de <strong>catorce (14) días naturales</strong> para desistir del contrato sin necesidad de justificación, conforme a los artículos 102 y siguientes del Real Decreto Legislativo 1/2007 (LGDCU).</p>
+        <p data-i18n="es_withdraw_p2">El plazo se computa desde el día en que tú o un tercero por ti indicado (distinto del transportista) reciba el bien. Para ejercer el desistimiento basta con que nos notifiques tu decisión por correo electrónico a <a href="mailto:support@openair.example">support@openair.example</a>, mediante una declaración inequívoca, antes de que finalice dicho plazo. Puedes utilizar el modelo de formulario de desistimiento incluido en el Anexo I de la LGDCU.</p>
+        <p data-i18n="es_withdraw_p3"><strong>Consecuencias del desistimiento:</strong> te reembolsaremos todos los pagos recibidos, incluidos los gastos de envío estándar, sin demora indebida y, en cualquier caso, en un plazo máximo de 14 días naturales desde la fecha en que tengamos constancia de tu decisión. El reembolso se realizará por el mismo medio de pago utilizado en la compra, salvo acuerdo expreso en contrario; no incurrirás en gasto alguno por dicho reembolso. Podremos retener el reembolso hasta haber recibido los bienes o hasta que presentes una prueba de su devolución.</p>
+        <p data-i18n="es_withdraw_p4"><strong>Devolución del producto:</strong> deberás devolvernos los bienes sin demora indebida y, en cualquier caso, antes de 14 días naturales desde que comuniques tu desistimiento. Los costes directos de la devolución correrán por tu cuenta, salvo que el producto sea defectuoso o no conforme al contrato.</p>
+        <p data-i18n="es_withdraw_p5"><strong>Excepciones:</strong> por motivos de protección de la salud y la higiene, el derecho de desistimiento no se aplica a los productos precintados que hayan sido desprecintados tras la entrega (art. 103.e LGDCU). Por tanto, las tiras nasales que hayan sido abiertas no podrán devolverse salvo que sean defectuosas.</p>
+      </div>
+
+      <h2 id="article6" data-i18n="a6_title">第6条（返品・交換）</h2>
+      <ol data-i18n="a6_body">
+        <li>商品到着後 30 日以内に限り、未開封の商品については返品をお受けします。返品にかかる送料は、当社が負担します。</li>
+        <li>商品に欠陥がある場合、または当社の手違いにより異なる商品が届いた場合は、当社の負担で交換または返金いたします。</li>
+        <li>ユーザー都合による返品の場合、開封済みの商品の返品はお受けできません。</li>
+        <li>返品をご希望の場合は、サポート窓口までご連絡ください。</li>
+      </ol>
+
+      <!-- EU-only: Legal warranty -->
+      <div data-es-only style="display:none">
+        <h2 id="warranty" data-i18n="es_warranty_title">Garantía legal de conformidad</h2>
+        <p data-i18n="es_warranty_p1">Conforme a los artículos 115 y siguientes del Real Decreto Legislativo 1/2007 (LGDCU), modificado por el Real Decreto-ley 7/2021 que transpone la Directiva (UE) 2019/771, los productos vendidos a través del Servicio están cubiertos por una <strong>garantía legal de conformidad de tres (3) años</strong> desde la entrega del bien.</p>
+        <p data-i18n="es_warranty_p2">Durante este plazo, si el producto no es conforme al contrato podrás exigir, sin coste alguno, su reparación o sustitución, así como, en su caso, la rebaja proporcional del precio o la resolución del contrato. Se presume, salvo prueba en contrario, que las faltas de conformidad manifestadas en los dos años posteriores a la entrega ya existían en el momento de la entrega.</p>
+        <p data-i18n="es_warranty_p3">Para hacer valer la garantía, contacta con nosotros en <a href="mailto:support@openair.example">support@openair.example</a> indicando el número de pedido y describiendo el defecto. Conserva la factura como justificante de la compra.</p>
+      </div>
+
+      <h2 id="article7" data-i18n="a7_title">第7条（知的財産権）</h2>
+      <p data-i18n="a7_body">本サービスに含まれるコンテンツ（テキスト、画像、ロゴ、商品デザイン等）に関する著作権その他の知的財産権は、当社または当社にライセンスを許諾している者に帰属します。ユーザーは、当社の事前の書面による承諾なく、本サービスのコンテンツを複製、転載、改変、配布等することはできません。</p>
+
+      <h2 id="article8" data-i18n="a8_title">第8条（免責事項）</h2>
+      <ol data-i18n="a8_body">
+        <li>当社は、本サービスに関して、その完全性、正確性、確実性、有用性等について、いかなる保証も行うものではありません。</li>
+        <li>本サービスは医療目的の製品ではなく、当社の商品は治療・診断・予防を目的とするものではありません。</li>
+        <li>当社は、本サービスに起因してユーザーに生じたあらゆる損害について、当社の故意または重過失による場合を除き、一切の責任を負いません。</li>
+        <li>当社は、ユーザー間のトラブルについて、一切責任を負いません。</li>
+      </ol>
+
+      <!-- EU-only: ODR -->
+      <div data-es-only style="display:none">
+        <h2 id="odr" data-i18n="es_odr_title">Resolución alternativa de litigios</h2>
+        <p data-i18n="es_odr_p1">En caso de controversia, puedes presentar una reclamación a través de nuestro servicio de atención al cliente en <a href="mailto:support@openair.example">support@openair.example</a>. Nos comprometemos a responder en un plazo máximo de un mes.</p>
+        <p data-i18n="es_odr_p2">Conforme al Reglamento (UE) 524/2013, te informamos de que la Comisión Europea pone a tu disposición la <strong>Plataforma de Resolución de Litigios en Línea (ODR)</strong>, accesible en: <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener">ec.europa.eu/consumers/odr</a>.</p>
+        <p data-i18n="es_odr_p3">A efectos de dicha plataforma, nuestro correo electrónico de contacto es <a href="mailto:support@openair.example">support@openair.example</a>.</p>
+      </div>
+
+      <h2 id="article9" data-i18n="a9_title">第9条（規約変更）</h2>
+      <ol data-i18n="a9_body">
+        <li>当社は、必要と判断した場合には、ユーザーに通知することなくいつでも本規約を変更することができるものとします。</li>
+        <li>変更後の利用規約は、当社が別途定める場合を除いて、本サービス上に表示した時点より効力を生じるものとします。</li>
+        <li>本規約の変更後、本サービスの利用を継続したユーザーは、変更後の規約に同意したものとみなします。</li>
+      </ol>
+
+      <h2 id="article10" data-i18n="a10_title">第10条（準拠法・裁判管轄）</h2>
+      <ol data-i18n="a10_body">
+        <li>本規約の解釈にあたっては、日本法を準拠法とします。</li>
+        <li>本サービスに関して紛争が生じた場合には、東京地方裁判所を第一審の専属的合意管轄裁判所とします。</li>
+      </ol>
+
+      <p class="mt-12 text-zinc-400 text-[13px]" data-i18n="footer_dates">
+        制定日：2026年1月1日<br/>
+        最終改定日：2026年5月1日<br/>
+        OPEN AIR, Inc.
+      </p>
+    </article>
+  </div>
+</main>
+
+<footer class="border-t border-zinc-200/60 py-10 px-6 bg-white">
+  <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-6 text-zinc-500 text-sm">
+    <span class="text-xs text-zinc-400">© 2026 OPEN AIR, Inc.</span>
+    <div class="flex gap-6 items-center">
+      <a href="./privacy.html" class="hover:text-zinc-900" data-i18n="footer_privacy">プライバシー</a>
+      <a href="./terms.html" class="hover:text-zinc-900 text-zinc-900 font-medium" data-i18n="footer_terms">利用規約</a>
+      <a href="./support.html" class="hover:text-zinc-900" data-i18n="footer_support">サポート</a>
+      <button id="lang-switcher" type="button" class="text-zinc-500 hover:text-zinc-900 transition flex items-center gap-1.5 cursor-pointer" aria-label="言語切替 / Cambiar idioma" title="言語を切り替える / Cambiar idioma">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"/>
+          <path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>
+        </svg>
+        <span id="lang-current">日本語</span>
+      </button>
+    </div>
+  </div>
+</footer>
+
+<!-- Region selection modal -->
+<div id="region-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/40 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="region-modal-title">
+  <div class="bg-white rounded-3xl p-7 max-w-sm w-full shadow-2xl" onclick="event.stopPropagation()">
+    <div class="text-[11px] tracking-[0.3em] uppercase text-zinc-500 mb-1">Region</div>
+    <h3 id="region-modal-title" class="text-xl font-semibold tracking-tight mb-1">配送地域を選択</h3>
+    <p class="text-[12px] text-zinc-500 mb-5" id="region-modal-sub">ご利用の地域に合わせて、言語と通貨が切り替わります。</p>
+    <ul class="space-y-1.5">
+      <li>
+        <button data-region="ja" class="region-option w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
+          <span class="text-2xl">🇯🇵</span>
+          <div class="flex-1">
+            <div class="text-[14px] font-medium text-zinc-900">日本</div>
+            <div class="text-[11px] text-zinc-500">日本語 · 全国配送 · ¥</div>
+          </div>
+          <span class="region-check text-zinc-900 hidden text-[18px]">✓</span>
+        </button>
+      </li>
+      <li>
+        <button data-region="es" class="region-option w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
+          <span class="text-2xl">🇪🇸</span>
+          <div class="flex-1">
+            <div class="text-[14px] font-medium text-zinc-900">España</div>
+            <div class="text-[11px] text-zinc-500">Español · Envío UE · €</div>
+          </div>
+          <span class="region-check text-zinc-900 hidden text-[18px]">✓</span>
+        </button>
+      </li>
+      <li>
+        <button data-region="br" class="region-option region-soon w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
+          <span class="text-2xl opacity-70">🇧🇷</span>
+          <div class="flex-1">
+            <div class="text-[14px] font-medium text-zinc-900">Brasil</div>
+            <div class="text-[11px] text-zinc-500" id="region-br-sub">ご購入できるよう、準備を進めています</div>
+          </div>
+          <span class="text-[10px] tracking-[0.18em] uppercase text-zinc-500 px-2.5 py-1 rounded-full border border-zinc-200" id="region-br-badge">Soon</span>
+        </button>
+      </li>
+      <li>
+        <button data-region="us" class="region-option region-soon w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
+          <span class="text-2xl opacity-70">🇺🇸</span>
+          <div class="flex-1">
+            <div class="text-[14px] font-medium text-zinc-900">United States</div>
+            <div class="text-[11px] text-zinc-500" id="region-us-sub">ご購入できるよう、準備を進めています</div>
+          </div>
+          <span class="text-[10px] tracking-[0.18em] uppercase text-zinc-500 px-2.5 py-1 rounded-full border border-zinc-200" id="region-us-badge">Soon</span>
+        </button>
+      </li>
+    </ul>
+    <button id="region-close" type="button" class="mt-5 w-full text-center text-[13px] text-zinc-500 hover:text-zinc-900 transition py-2">閉じる</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  function updateBadge(){
+    const badge = document.getElementById('nav-cart-badge');
+    if (!badge) return;
+    let cart = {};
+    try { cart = JSON.parse(localStorage.getItem('openair_cart')) || {}; } catch(e){}
+    const q = Object.values(cart).reduce((s,v)=>s+v,0);
+    if (q > 0){ badge.textContent = q; badge.classList.remove('hidden'); }
+    else { badge.classList.add('hidden'); }
+  }
+  updateBadge();
+  window.addEventListener('storage', updateBadge);
+  window.addEventListener('focus', updateBadge);
+})();
+
+// ============== i18n ==============
+const translations = {
+  "page_title": { ja: "利用規約 — OPEN AIR", es: "Términos y Condiciones — OPEN AIR" },
+  // Nav
+  "nav_concept":  { ja: "コンセプト", es: "Concepto" },
+  "nav_features": { ja: "特徴",       es: "Características" },
+  "nav_scenes":   { ja: "シーン",     es: "Escenas" },
+  "nav_buy":      { ja: "購入",       es: "Comprar" },
+  "nav_cart":     { ja: "カート",     es: "Carrito" },
+  // Hero
+  "hero_eyebrow": { ja: "Terms",       es: "Términos" },
+  "hero_title":   { ja: "利用規約",     es: "Términos y Condiciones" },
+  "hero_updated": { ja: "最終更新日：2026年5月1日", es: "Última actualización: 1 de mayo de 2026" },
+  // TOC
+  "toc_label":      { ja: "Contents", es: "Contenido" },
+  "toc_a1":         { ja: "第1条 適用",         es: "1. Ámbito de aplicación" },
+  "toc_a2":         { ja: "第2条 利用登録",     es: "2. Registro de usuario" },
+  "toc_a3":         { ja: "第3条 アカウント管理", es: "3. Gestión de la cuenta" },
+  "toc_a4":         { ja: "第4条 禁止事項",     es: "4. Conductas prohibidas" },
+  "toc_a5":         { ja: "第5条 商品の販売",   es: "5. Venta de productos" },
+  "toc_price":      { ja: "",                    es: "6. Precios e IVA" },
+  "toc_shipping":   { ja: "",                    es: "7. Envío y entrega" },
+  "toc_withdrawal": { ja: "",                    es: "8. Derecho de desistimiento" },
+  "toc_a6":         { ja: "第6条 返品・交換",   es: "9. Devoluciones y cambios" },
+  "toc_warranty":   { ja: "",                    es: "10. Garantía legal" },
+  "toc_a7":         { ja: "第7条 知的財産権",   es: "11. Propiedad intelectual" },
+  "toc_a8":         { ja: "第8条 免責事項",     es: "12. Limitación de responsabilidad" },
+  "toc_odr":        { ja: "",                    es: "13. Resolución de conflictos" },
+  "toc_a9":         { ja: "第9条 規約変更",     es: "14. Modificaciones" },
+  "toc_a10":        { ja: "第10条 準拠法・裁判管轄", es: "15. Ley aplicable y jurisdicción" },
+
+  // Intro
+  "intro": { ja: "この利用規約（以下「本規約」）は、OPEN AIR, Inc.（以下「当社」）が提供するウェブサイトおよび関連サービス（以下「本サービス」）の利用条件を定めるものです。本サービスをご利用いただくお客様（以下「ユーザー」）は、本規約に同意の上、本サービスをご利用ください。",
+             es: "Los presentes Términos y Condiciones (en adelante, los \"Términos\") regulan el uso del sitio web y los servicios relacionados (en adelante, el \"Servicio\") prestados por OPEN AIR, Inc. (en adelante, \"nosotros\"). Al utilizar el Servicio, el usuario (en adelante, el \"Usuario\") declara haber leído y aceptar los presentes Términos." },
+
+  // Article 1
+  "a1_title": { ja: "第1条（適用）", es: "1. Ámbito de aplicación" },
+  "a1_body":  { ja: "<li>本規約は、ユーザーと当社との間の本サービス利用に関わる一切の関係に適用されます。</li><li>当社は、本サービスに関し、本規約のほか、ご利用にあたってのルール等、各種の定め（以下「個別規定」）をすることがあります。これら個別規定は、その名称のいかんに関わらず、本規約の一部を構成するものとします。</li><li>本規約の規定が前条の個別規定の規定と矛盾する場合には、個別規定において特段の定めなき限り、個別規定の規定が優先されるものとします。</li>",
+                es: "<li>Los presentes Términos se aplican a toda relación entre el Usuario y OPEN AIR, Inc. derivada del uso del Servicio.</li><li>Podremos publicar reglas o condiciones particulares aplicables a determinadas funcionalidades (en adelante, las \"Condiciones Particulares\"), que se considerarán parte integrante de estos Términos.</li><li>En caso de contradicción entre los presentes Términos y las Condiciones Particulares, prevalecerán estas últimas, salvo que en ellas se disponga lo contrario.</li>" },
+
+  // Article 2
+  "a2_title": { ja: "第2条（利用登録）", es: "2. Registro de usuario" },
+  "a2_body":  { ja: "<li>本サービスの一部機能は、利用登録を行うことで利用が可能となります。</li><li>利用登録の申請者が以下のいずれかに該当する場合、当社は登録申請を承認しないことがあります。<ul><li>虚偽の事項を届け出た場合</li><li>過去に本規約に違反したことがある者からの申請である場合</li><li>その他、当社が利用登録を相当でないと判断した場合</li></ul></li>",
+                es: "<li>Algunas funcionalidades del Servicio requieren registro previo. Para registrarte debes ser mayor de edad y tener capacidad legal para contratar.</li><li>Podremos denegar el registro o suspender la cuenta cuando concurra alguna de las siguientes circunstancias:<ul><li>Que los datos facilitados sean falsos o inexactos.</li><li>Que el solicitante haya incumplido previamente los presentes Términos.</li><li>Cualquier otro motivo razonable que a nuestro juicio justifique la denegación.</li></ul></li>" },
+
+  // Article 3
+  "a3_title": { ja: "第3条（アカウント管理）", es: "3. Gestión de la cuenta" },
+  "a3_body":  { ja: "<li>ユーザーは、自己の責任において、本サービスのユーザーIDおよびパスワードを適切に管理するものとします。</li><li>ユーザーは、いかなる場合にも、ユーザーIDおよびパスワードを第三者に譲渡または貸与することはできません。</li><li>ユーザーIDとパスワードの組み合わせが登録情報と一致してログインされた場合には、そのユーザーIDを登録しているユーザー自身による利用とみなします。</li>",
+                es: "<li>El Usuario es responsable de la custodia de su nombre de usuario y contraseña.</li><li>Queda prohibida la cesión, venta o préstamo de las credenciales de acceso a terceros.</li><li>Cualquier acceso al Servicio efectuado con credenciales válidas se presumirá realizado por el titular de la cuenta.</li>" },
+
+  // Article 4
+  "a4_title": { ja: "第4条（禁止事項）", es: "4. Conductas prohibidas" },
+  "a4_intro": { ja: "ユーザーは、本サービスの利用にあたり、以下の行為をしてはなりません。",
+                es: "El Usuario se compromete a no realizar, en relación con el Servicio, ninguna de las siguientes conductas:" },
+  "a4_list":  { ja: "<li>法令または公序良俗に違反する行為</li><li>犯罪行為に関連する行為</li><li>当社、ほかのユーザー、または第三者の知的財産権、肖像権、プライバシー、名誉その他の権利または利益を侵害する行為</li><li>本サービスによって得られた情報を商業的に利用する行為</li><li>当社のサービスの運営を妨害するおそれのある行為</li><li>不正アクセスをし、またはこれを試みる行為</li><li>他のユーザーに関する個人情報等を収集または蓄積する行為</li><li>不正な目的を持って本サービスを利用する行為</li><li>反社会的勢力等への利益供与</li><li>その他、当社が不適切と判断する行為</li>",
+                es: "<li>Conductas contrarias a la ley o al orden público.</li><li>Actividades vinculadas a conductas delictivas.</li><li>Vulneración de derechos de propiedad intelectual, imagen, intimidad, honor u otros derechos de OPEN AIR, Inc., de otros Usuarios o de terceros.</li><li>Uso comercial no autorizado de la información obtenida a través del Servicio.</li><li>Actos que puedan interferir o perturbar el funcionamiento del Servicio.</li><li>Acceso no autorizado o intento de acceso no autorizado a sistemas o redes.</li><li>Recogida o almacenamiento de datos personales de otros Usuarios sin su consentimiento.</li><li>Uso del Servicio con fines fraudulentos.</li><li>Cualquier conducta que, a nuestro juicio razonable, sea inadecuada o contraria a los presentes Términos.</li>" },
+
+  // Article 5
+  "a5_title": { ja: "第5条（商品の販売）", es: "5. Venta de productos" },
+  "a5_body":  { ja: "<li>当社は、本サービスにおいて、当社が定める商品を販売します。</li><li>商品の売買契約は、ユーザーが当社に対して購入申し込みを行い、当社がこれを承諾し、その旨をユーザーに通知（注文確認メール送信）した時点で成立するものとします。</li><li>商品の代金、配送方法、配送料その他販売に関する条件は、本サービス上に表示するとおりとします。</li><li>当社は、在庫切れ等の事情により商品をお届けできない場合、ユーザーに通知の上、売買契約を解除することができるものとします。</li>",
+                es: "<li>OPEN AIR, Inc. comercializa a través del Servicio los productos descritos en su catálogo digital.</li><li>El contrato de compraventa se perfecciona cuando, tras realizar el Usuario el pedido, OPEN AIR, Inc. confirma su aceptación mediante correo electrónico de confirmación.</li><li>Las características, el precio, los gastos de envío y cualquier otra condición aplicable se muestran en la ficha de producto y en el resumen del pedido antes de su confirmación.</li><li>En caso de ruptura de stock u otra causa que impida el suministro, OPEN AIR, Inc. lo notificará al Usuario y reembolsará íntegramente, en el plazo más breve posible, las cantidades abonadas.</li>" },
+
+  // EU-only: Prices
+  "es_price_title": { ja: "", es: "6. Precios e IVA" },
+  "es_price_body":  { ja: "", es: "<li>Todos los precios mostrados en el Servicio se expresan en euros (€) e incluyen el Impuesto sobre el Valor Añadido (IVA) y cualquier otro tributo aplicable, salvo indicación expresa en contrario.</li><li>Los gastos de envío se calculan y muestran de forma desglosada antes de la confirmación del pedido. Antes de pulsar el botón de pago verás siempre el precio total final.</li><li>OPEN AIR, Inc. se reserva el derecho a modificar los precios en cualquier momento; no obstante, los productos se facturarán al precio vigente en el momento de la confirmación del pedido.</li>" },
+
+  // EU-only: Shipping
+  "es_shipping_title": { ja: "", es: "7. Envío, entrega y plazos" },
+  "es_shipping_body":  { ja: "", es: "<li><strong>Plazo de entrega:</strong> los pedidos se entregan habitualmente en un plazo de 3 a 7 días laborables dentro de la Unión Europea, salvo indicación expresa en la ficha del producto. En todo caso, conforme al art. 109 de la Ley General para la Defensa de los Consumidores y Usuarios, la entrega se efectuará en un plazo máximo de 30 días desde la celebración del contrato.</li><li><strong>Costes de envío:</strong> los gastos de envío y, en su caso, las tarifas adicionales por entrega urgente o a zonas remotas, se indican antes de la confirmación del pedido.</li><li><strong>Riesgo:</strong> el riesgo de pérdida o deterioro del producto se transmite al Usuario en el momento en que tú o un tercero por ti designado (distinto del transportista) tome posesión material del bien.</li><li><strong>Falta de entrega:</strong> si no recibes el pedido en el plazo acordado, podrás emplazarnos a entregarlo en un plazo adicional adecuado. Transcurrido este sin entrega, tendrás derecho a resolver el contrato y recuperar el importe pagado.</li>" },
+
+  // EU-only: Withdrawal
+  "es_withdraw_title": { ja: "", es: "8. Derecho de desistimiento (14 días)" },
+  "es_withdraw_p1":    { ja: "", es: "Como consumidor con residencia en la Unión Europea, dispones de un plazo de <strong>catorce (14) días naturales</strong> para desistir del contrato sin necesidad de justificación, conforme a los artículos 102 y siguientes del Real Decreto Legislativo 1/2007 (LGDCU)." },
+  "es_withdraw_p2":    { ja: "", es: "El plazo se computa desde el día en que tú o un tercero por ti indicado (distinto del transportista) reciba el bien. Para ejercer el desistimiento basta con que nos notifiques tu decisión por correo electrónico a <a href=\"mailto:support@openair.example\">support@openair.example</a>, mediante una declaración inequívoca, antes de que finalice dicho plazo. Puedes utilizar el modelo de formulario de desistimiento incluido en el Anexo I de la LGDCU." },
+  "es_withdraw_p3":    { ja: "", es: "<strong>Consecuencias del desistimiento:</strong> te reembolsaremos todos los pagos recibidos, incluidos los gastos de envío estándar, sin demora indebida y, en cualquier caso, en un plazo máximo de 14 días naturales desde la fecha en que tengamos constancia de tu decisión. El reembolso se realizará por el mismo medio de pago utilizado en la compra, salvo acuerdo expreso en contrario; no incurrirás en gasto alguno por dicho reembolso. Podremos retener el reembolso hasta haber recibido los bienes o hasta que presentes una prueba de su devolución." },
+  "es_withdraw_p4":    { ja: "", es: "<strong>Devolución del producto:</strong> deberás devolvernos los bienes sin demora indebida y, en cualquier caso, antes de 14 días naturales desde que comuniques tu desistimiento. Los costes directos de la devolución correrán por tu cuenta, salvo que el producto sea defectuoso o no conforme al contrato." },
+  "es_withdraw_p5":    { ja: "", es: "<strong>Excepciones:</strong> por motivos de protección de la salud y la higiene, el derecho de desistimiento no se aplica a los productos precintados que hayan sido desprecintados tras la entrega (art. 103.e LGDCU). Por tanto, las tiras nasales que hayan sido abiertas no podrán devolverse salvo que sean defectuosas." },
+
+  // Article 6
+  "a6_title": { ja: "第6条（返品・交換）", es: "9. Devoluciones y cambios" },
+  "a6_body":  { ja: "<li>商品到着後 30 日以内に限り、未開封の商品については返品をお受けします。返品にかかる送料は、当社が負担します。</li><li>商品に欠陥がある場合、または当社の手違いにより異なる商品が届いた場合は、当社の負担で交換または返金いたします。</li><li>ユーザー都合による返品の場合、開封済みの商品の返品はお受けできません。</li><li>返品をご希望の場合は、サポート窓口までご連絡ください。</li>",
+                es: "<li>Adicionalmente al derecho legal de desistimiento, aceptamos devoluciones de productos sin abrir dentro de los 30 días naturales siguientes a la recepción. En tal caso, los costes de envío de la devolución correrán a nuestro cargo.</li><li>Si el producto presenta defectos o se ha entregado un artículo distinto al solicitado por error nuestro, asumiremos los costes de la sustitución o el reembolso.</li><li>Por razones de higiene, no se aceptan devoluciones de productos abiertos salvo defecto manifiesto.</li><li>Para iniciar una devolución, contacta con <a href=\"mailto:support@openair.example\">support@openair.example</a>.</li>" },
+
+  // EU-only: Warranty
+  "es_warranty_title": { ja: "", es: "10. Garantía legal de conformidad" },
+  "es_warranty_p1":    { ja: "", es: "Conforme a los artículos 115 y siguientes del Real Decreto Legislativo 1/2007 (LGDCU), modificado por el Real Decreto-ley 7/2021 que transpone la Directiva (UE) 2019/771, los productos vendidos a través del Servicio están cubiertos por una <strong>garantía legal de conformidad de tres (3) años</strong> desde la entrega del bien." },
+  "es_warranty_p2":    { ja: "", es: "Durante este plazo, si el producto no es conforme al contrato podrás exigir, sin coste alguno, su reparación o sustitución, así como, en su caso, la rebaja proporcional del precio o la resolución del contrato. Se presume, salvo prueba en contrario, que las faltas de conformidad manifestadas en los dos años posteriores a la entrega ya existían en el momento de la entrega." },
+  "es_warranty_p3":    { ja: "", es: "Para hacer valer la garantía, contacta con nosotros en <a href=\"mailto:support@openair.example\">support@openair.example</a> indicando el número de pedido y describiendo el defecto. Conserva la factura como justificante de la compra." },
+
+  // Article 7
+  "a7_title": { ja: "第7条（知的財産権）", es: "11. Propiedad intelectual e industrial" },
+  "a7_body":  { ja: "本サービスに含まれるコンテンツ（テキスト、画像、ロゴ、商品デザイン等）に関する著作権その他の知的財産権は、当社または当社にライセンスを許諾している者に帰属します。ユーザーは、当社の事前の書面による承諾なく、本サービスのコンテンツを複製、転載、改変、配布等することはできません。",
+                es: "Todos los contenidos del Servicio (textos, imágenes, marcas, logotipos, diseños de producto, etc.) son titularidad de OPEN AIR, Inc. o de los terceros que han autorizado su uso. Queda prohibida la reproducción, distribución, comunicación pública, transformación o cualquier otra forma de explotación sin nuestra autorización previa por escrito." },
+
+  // Article 8
+  "a8_title": { ja: "第8条（免責事項）", es: "12. Limitación de responsabilidad" },
+  "a8_body":  { ja: "<li>当社は、本サービスに関して、その完全性、正確性、確実性、有用性等について、いかなる保証も行うものではありません。</li><li>本サービスは医療目的の製品ではなく、当社の商品は治療・診断・予防を目的とするものではありません。</li><li>当社は、本サービスに起因してユーザーに生じたあらゆる損害について、当社の故意または重過失による場合を除き、一切の責任を負いません。</li><li>当社は、ユーザー間のトラブルについて、一切責任を負いません。</li>",
+                es: "<li>OPEN AIR, Inc. presta el Servicio con la diligencia profesional exigible, sin que pueda garantizar la ausencia total de interrupciones técnicas o errores.</li><li>Los productos comercializados no constituyen un producto sanitario ni tienen finalidad de diagnóstico, prevención o tratamiento de enfermedades.</li><li>La responsabilidad de OPEN AIR, Inc. queda limitada a los daños directamente imputables a su actuación dolosa o gravemente negligente, sin perjuicio de los derechos imperativos reconocidos al consumidor por la legislación aplicable.</li><li>OPEN AIR, Inc. no responde por las controversias que puedan surgir entre Usuarios.</li>" },
+
+  // EU-only: ODR
+  "es_odr_title": { ja: "", es: "13. Reclamaciones y resolución alternativa de litigios" },
+  "es_odr_p1":    { ja: "", es: "En caso de controversia, puedes presentar una reclamación a través de nuestro servicio de atención al cliente en <a href=\"mailto:support@openair.example\">support@openair.example</a>. Nos comprometemos a responder en un plazo máximo de un mes." },
+  "es_odr_p2":    { ja: "", es: "Conforme al Reglamento (UE) 524/2013, te informamos de que la Comisión Europea pone a tu disposición la <strong>Plataforma de Resolución de Litigios en Línea (ODR)</strong>, accesible en: <a href=\"https://ec.europa.eu/consumers/odr\" target=\"_blank\" rel=\"noopener\">ec.europa.eu/consumers/odr</a>." },
+  "es_odr_p3":    { ja: "", es: "A efectos de dicha plataforma, nuestro correo electrónico de contacto es <a href=\"mailto:support@openair.example\">support@openair.example</a>." },
+
+  // Article 9
+  "a9_title": { ja: "第9条（規約変更）", es: "14. Modificación de los Términos" },
+  "a9_body":  { ja: "<li>当社は、必要と判断した場合には、ユーザーに通知することなくいつでも本規約を変更することができるものとします。</li><li>変更後の利用規約は、当社が別途定める場合を除いて、本サービス上に表示した時点より効力を生じるものとします。</li><li>本規約の変更後、本サービスの利用を継続したユーザーは、変更後の規約に同意したものとみなします。</li>",
+                es: "<li>Podremos modificar los presentes Términos cuando sea necesario por motivos legales, técnicos o comerciales. Los cambios sustanciales se comunicarán al Usuario con una antelación razonable a través del Servicio o por correo electrónico.</li><li>Las modificaciones surtirán efecto a partir de la fecha indicada en la notificación.</li><li>El uso continuado del Servicio tras la entrada en vigor de las modificaciones implicará la aceptación de las mismas; en caso contrario, el Usuario podrá cancelar su cuenta sin penalización.</li>" },
+
+  // Article 10
+  "a10_title": { ja: "第10条（準拠法・裁判管轄）", es: "15. Ley aplicable y jurisdicción" },
+  "a10_body":  { ja: "<li>本規約の解釈にあたっては、日本法を準拠法とします。</li><li>本サービスに関して紛争が生じた場合には、東京地方裁判所を第一審の専属的合意管轄裁判所とします。</li>",
+                 es: "<li>Los presentes Términos se rigen por la legislación española. No obstante, si el Usuario actúa como consumidor, le serán de aplicación las disposiciones imperativas de protección al consumidor de su país de residencia habitual dentro de la Unión Europea, conforme al Reglamento (CE) 593/2008 (Roma I).</li><li>Para la resolución de cualquier controversia, las partes se someten a los Juzgados y Tribunales del domicilio del consumidor, sin perjuicio de los demás fueros que en derecho le correspondan.</li>" },
+
+  "footer_dates": { ja: "制定日：2026年1月1日<br/>最終改定日：2026年5月1日<br/>OPEN AIR, Inc.",
+                    es: "Fecha de entrada en vigor: 1 de enero de 2026<br/>Última actualización: 1 de mayo de 2026<br/>OPEN AIR, Inc." },
+
+  // Footer
+  "footer_privacy": { ja: "プライバシー", es: "Privacidad" },
+  "footer_terms":   { ja: "利用規約",     es: "Términos" },
+  "footer_support": { ja: "サポート",     es: "Soporte" }
+};
+
+const I18N_KEY = 'openair_lang';
+function getLang(){ return localStorage.getItem(I18N_KEY) || 'ja'; }
+function applyLang(lang){
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const t = translations[key];
+    if (!t) return;
+    const text = (lang === 'es' && t.es) ? t.es : t.ja;
+    if (text) el.innerHTML = text;
+  });
+  document.querySelectorAll('[data-jp-only]').forEach(el => { el.style.display = lang === 'es' ? 'none' : ''; });
+  document.querySelectorAll('[data-es-only]').forEach(el => { el.style.display = lang === 'es' ? '' : 'none'; });
+  const titleEntry = translations['page_title'];
+  if (titleEntry) document.title = (lang === 'es' && titleEntry.es) ? titleEntry.es : titleEntry.ja;
+  const langLabel = document.getElementById('lang-current');
+  if (langLabel) langLabel.textContent = lang === 'es' ? 'Español' : '日本語';
+}
+function setLang(lang){ localStorage.setItem(I18N_KEY, lang); applyLang(lang); }
+applyLang(getLang());
+document.getElementById('lang-switcher')?.addEventListener('click', (e) => {
+  e.preventDefault();
+  setLang(getLang() === 'ja' ? 'es' : 'ja');
+});
+
+// Region modal logic
+(function(){
+  const modal = document.getElementById('region-modal');
+  const switcher = document.getElementById('lang-switcher');
+  if (!modal || !switcher) return;
+
+  const newSwitcher = switcher.cloneNode(true);
+  switcher.parentNode.replaceChild(newSwitcher, switcher);
+
+  function openModal(){
+    modal.classList.remove('hidden');
+    updateChecks();
+    const lang = getLang();
+    const title = modal.querySelector('#region-modal-title');
+    const sub = modal.querySelector('#region-modal-sub');
+    const close = modal.querySelector('#region-close');
+    const brSub = modal.querySelector('#region-br-sub');
+    const usSub = modal.querySelector('#region-us-sub');
+    if (lang === 'es') {
+      if (title) title.textContent = 'Selecciona tu región';
+      if (sub) sub.textContent = 'El idioma y la moneda se ajustan a tu región.';
+      if (close) close.textContent = 'Cerrar';
+      if (brSub) brSub.textContent = 'Estamos trabajando para que pronto puedas comprarlo aquí.';
+      if (usSub) usSub.textContent = 'Estamos trabajando para que pronto puedas comprarlo aquí.';
+    } else {
+      if (title) title.textContent = '配送地域を選択';
+      if (sub) sub.textContent = 'ご利用の地域に合わせて、言語と通貨が切り替わります。';
+      if (close) close.textContent = '閉じる';
+      if (brSub) brSub.textContent = 'ご購入できるよう、準備を進めています。';
+      if (usSub) usSub.textContent = 'ご購入できるよう、準備を進めています。';
+    }
+  }
+  function closeModal(){ modal.classList.add('hidden'); }
+  function updateChecks(){
+    const lang = getLang();
+    modal.querySelectorAll('.region-option').forEach(btn => {
+      const check = btn.querySelector('.region-check');
+      if (!check) return;
+      const region = btn.dataset.region;
+      if ((region === 'ja' && lang === 'ja') || (region === 'es' && lang === 'es')) {
+        check.classList.remove('hidden');
+      } else {
+        check.classList.add('hidden');
+      }
+    });
+  }
+  function showSoonToast(region){
+    const lang = getLang();
+    const msg = lang === 'es'
+      ? 'Estamos trabajando para que pronto puedas comprarlo aquí.'
+      : 'ご購入できるよう、準備を進めています。';
+    let toast = document.getElementById('region-toast');
+    if (!toast){
+      toast = document.createElement('div');
+      toast.id = 'region-toast';
+      toast.setAttribute('role','status');
+      toast.setAttribute('aria-live','polite');
+      document.body.appendChild(toast);
+    }
+    toast.style.cssText = `
+      position:fixed; bottom:24px; left:50%;
+      transform:translateX(-50%) translateY(20px);
+      background:rgba(10,10,10,.92); color:#fff;
+      padding:14px 22px; border-radius:999px;
+      font-size:14px; max-width:90vw;
+      z-index:200; opacity:0;
+      transition:opacity .25s, transform .25s;
+      box-shadow:0 10px 40px rgba(0,0,0,.25);
+      backdrop-filter:blur(10px);
+    `;
+    toast.textContent = msg;
+    requestAnimationFrame(()=>{
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateX(-50%) translateY(0)';
+    });
+    clearTimeout(window.__regionToastT);
+    window.__regionToastT = setTimeout(()=>{
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateX(-50%) translateY(20px)';
+    }, 3200);
+  }
+
+  newSwitcher.addEventListener('click', (e) => { e.preventDefault(); openModal(); });
+  modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+  document.getElementById('region-close')?.addEventListener('click', closeModal);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal(); });
+
+  modal.querySelectorAll('.region-option').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const region = btn.dataset.region;
+      if (region === 'ja') { setLang('ja'); closeModal(); }
+      else if (region === 'es') { setLang('es'); closeModal(); }
+      else if (region === 'br' || region === 'us') {
+        showSoonToast(region);
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>

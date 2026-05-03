@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-i18n="page_title">サポート — OPEN AIR</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  *{ -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+  html,body{
+    font-family: -apple-system, BlinkMacSystemFont,
+                 "Hiragino Kaku Gothic ProN","ヒラギノ角ゴ ProN W3","ヒラギノ角ゴシック ProN",
+                 "Hiragino Sans","Yu Gothic Medium","游ゴシック","Helvetica Neue",
+                 Arial, sans-serif;
+    color:#1d1d1f;
+    background:#fafafa;
+  }
+  html{ scroll-behavior:smooth; }
+  .glass{
+    background:rgba(255,255,255,.7);
+    backdrop-filter:blur(28px) saturate(180%);
+    -webkit-backdrop-filter:blur(28px) saturate(180%);
+    border:1px solid rgba(255,255,255,.7);
+    box-shadow:0 1px 3px rgba(0,0,0,.03),0 12px 40px rgba(0,0,0,.05),
+               inset 0 1px 0 rgba(255,255,255,1);
+  }
+  .glass-pill{
+    background:rgba(255,255,255,.65);
+    backdrop-filter:blur(20px) saturate(180%);
+    -webkit-backdrop-filter:blur(20px) saturate(180%);
+    border:1px solid rgba(255,255,255,.7);
+    box-shadow:0 1px 2px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.04),
+               inset 0 1px 0 rgba(255,255,255,1);
+  }
+  .text-gradient{ background:linear-gradient(180deg,#1d1d1f 0%,#6e6e73 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+  .btn-dark{ background:#0a0a0a; color:#fff; padding:14px 28px; border-radius:999px; font-weight:600; font-size:15px; transition:transform .25s ease,background .25s ease; display:inline-block; text-align:center; border:none; cursor:pointer; }
+  .btn-dark:hover{ transform:translateY(-1px); background:#000; }
+  .btn-dark:disabled{ background:#71717a; cursor:not-allowed; transform:none; }
+  .field{
+    width:100%; padding:14px 16px; border-radius:14px;
+    background:rgba(255,255,255,.85); border:1px solid rgba(0,0,0,.08);
+    font-size:15px; color:#0a0a0a; transition: border .2s, box-shadow .2s, background .2s;
+  }
+  .field:focus{ outline:none; border-color:rgba(10,10,10,.6); background:#fff; box-shadow:0 0 0 4px rgba(10,10,10,.06); }
+  .field-label{ font-size:12px; color:#52525b; margin-bottom:6px; display:block; letter-spacing:.02em; font-weight:500; }
+  textarea.field{ resize:vertical; min-height:140px; line-height:1.7; }
+
+  .reveal{ opacity:0; transform:translateY(16px); animation:rise .6s cubic-bezier(.2,.8,.2,1) forwards; }
+  .reveal.delay-1{ animation-delay:.05s; }
+  .reveal.delay-2{ animation-delay:.10s; }
+  .reveal.delay-3{ animation-delay:.15s; }
+  .reveal.delay-4{ animation-delay:.20s; }
+  @keyframes rise{ to{ opacity:1; transform:translateY(0); } }
+
+  /* FAQ accordion */
+  .faq summary{ cursor:pointer; list-style:none; padding:22px 24px; display:flex; justify-content:space-between; align-items:center; gap:16px; transition:background .2s; }
+  .faq summary::-webkit-details-marker{ display:none; }
+  .faq summary:hover{ background:rgba(0,0,0,.025); }
+  .faq summary .icon{ width:28px; height:28px; border-radius:50%; background:rgba(0,0,0,.04); display:grid; place-items:center; transition:transform .35s, background .2s; flex-shrink:0; font-size:14px; color:#0a0a0a; font-weight:600; }
+  .faq[open] summary .icon{ transform:rotate(45deg); background:#0a0a0a; color:#fff; }
+  .faq .body{ padding:0 24px 22px; color:#3f3f46; line-height:1.95; font-size:14px; }
+  .faq + .faq{ border-top:1px solid rgba(0,0,0,.06); }
+
+  /* Channel cards */
+  .channel-card{ display:flex; gap:16px; padding:20px 22px; border-radius:18px; background:rgba(255,255,255,.6); border:1px solid rgba(0,0,0,.06); transition:transform .25s, background .25s, border .25s; }
+  .channel-card:hover{ transform:translateY(-2px); background:rgba(255,255,255,.85); border-color:rgba(0,0,0,.12); }
+
+  ::-webkit-scrollbar{ width:8px;height:8px; }
+  ::-webkit-scrollbar-track{ background:transparent; }
+  ::-webkit-scrollbar-thumb{ background:rgba(0,0,0,.10); border-radius:4px; }
+
+  /* === Mobile responsive === */
+  @media (max-width: 768px){
+    nav a[href*="openair.html#"]{ display: none; }
+    nav > a:first-child{ border-right: none; padding-right: 0; }
+    nav{ gap: 10px !important; padding-left: 14px; padding-right: 6px; }
+    h1.text-4xl, h1.md\:text-5xl,
+    h2.text-3xl, h2.md\:text-4xl, h2.md\:text-5xl{ font-size: 28px !important; line-height: 1.25 !important; }
+    main.pt-32{ padding-top: 96px !important; padding-bottom: 64px !important; }
+    main.pb-32{ padding-bottom: 64px !important; }
+    .lg\:grid-cols-\[1fr_360px\],
+    .lg\:grid-cols-\[240px_1fr\]{ grid-template-columns: 1fr !important; }
+    .lg\:sticky{ position: static !important; }
+    footer .flex.flex-wrap{ justify-content: center !important; flex-direction: column; gap: 16px !important; }
+    .glass.rounded-\[28px\],
+    .glass.rounded-\[24px\]{ padding: 24px !important; }
+    .field{ padding: 12px 14px !important; font-size: 16px !important; }
+    a, button{ -webkit-tap-highlight-color: transparent; }
+  }
+  @supports (padding: max(0px)){
+    nav{ top: max(16px, env(safe-area-inset-top)); }
+  }
+
+</style>
+</head>
+<body>
+
+<!-- ====== Persistent Nav ====== -->
+<nav class="fixed top-4 left-1/2 -translate-x-1/2 z-50 glass-pill rounded-full pl-3 pr-2 py-2 flex items-center gap-5">
+  <a href="./openair.html" class="pr-3 border-r border-black/10 flex items-center gap-2">
+    <span class="text-[15px] font-semibold tracking-tight text-zinc-900">OPEN AIR</span>
+  </a>
+  <a href="./openair.html#concept"  class="text-[13px] text-zinc-600 hover:text-zinc-900 transition" data-i18n="nav_concept">コンセプト</a>
+  <a href="./openair.html#features" class="text-[13px] text-zinc-600 hover:text-zinc-900 transition" data-i18n="nav_features">特徴</a>
+  <a href="./openair.html#scenes"   class="text-[13px] text-zinc-600 hover:text-zinc-900 transition" data-i18n="nav_scenes">シーン</a>
+  <a href="./openair.html#buy"      class="text-[13px] text-zinc-600 hover:text-zinc-900 transition" data-i18n="nav_buy">購入</a>
+  <a href="./cart.html" class="ml-1 px-4 py-1.5 rounded-full text-[13px] font-medium bg-zinc-900 text-white relative"><span data-i18n="nav_cart">カート</span><span id="nav-cart-badge" class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] grid place-items-center bg-red-500 text-white text-[10px] font-bold rounded-full px-1">0</span></a>
+</nav>
+
+<main class="pt-32 pb-32 px-6 max-w-5xl mx-auto">
+
+  <!-- ===== Hero ===== -->
+  <header class="text-center mb-14 reveal">
+    <div class="text-[12px] tracking-[0.32em] uppercase text-zinc-500 mb-4" data-i18n="hero_eyebrow">Support</div>
+    <h1 class="text-4xl md:text-5xl font-semibold tracking-tight text-gradient leading-[1.15]" data-i18n="hero_title">サポート</h1>
+    <p class="mt-5 text-zinc-500 leading-relaxed max-w-xl mx-auto" data-i18n="hero_lede">
+      お困りのことがあれば、以下からお探しください。<br/>
+      解決しない場合は、フォームからお気軽にご連絡ください。
+    </p>
+  </header>
+
+  <!-- ===== Quick search / channels ===== -->
+  <section class="mb-16 reveal delay-1">
+    <div class="grid md:grid-cols-3 gap-3">
+      <a href="#faq" class="channel-card">
+        <div class="w-11 h-11 rounded-xl bg-zinc-900 text-white grid place-items-center text-[18px] shrink-0">?</div>
+        <div>
+          <div class="text-[15px] font-semibold tracking-tight" data-i18n="ch_faq_title">よくある質問</div>
+          <div class="text-[12px] text-zinc-500 mt-1" data-i18n="ch_faq_sub">製品・配送・返品について</div>
+        </div>
+      </a>
+      <a href="mailto:support@openair.example" class="channel-card">
+        <div class="w-11 h-11 rounded-xl bg-zinc-900 text-white grid place-items-center text-[18px] shrink-0">✉</div>
+        <div>
+          <div class="text-[15px] font-semibold tracking-tight" data-i18n="ch_email_title">メール</div>
+          <div class="text-[12px] text-zinc-500 mt-1">support@openair.example</div>
+        </div>
+      </a>
+      <a href="#contact" class="channel-card">
+        <div class="w-11 h-11 rounded-xl bg-zinc-900 text-white grid place-items-center text-[18px] shrink-0">✎</div>
+        <div>
+          <div class="text-[15px] font-semibold tracking-tight" data-i18n="ch_form_title">お問い合わせフォーム</div>
+          <div class="text-[12px] text-zinc-500 mt-1" data-i18n="ch_form_sub">通常 1〜2 営業日で返信</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ===== FAQ ===== -->
+  <section id="faq" class="mb-20 reveal delay-2">
+    <div class="text-center mb-10">
+      <div class="text-[12px] tracking-[0.32em] uppercase text-zinc-500 mb-3" data-i18n="faq_eyebrow">FAQ</div>
+      <h2 class="text-3xl md:text-4xl font-semibold tracking-tight text-gradient leading-[1.2]" data-i18n="faq_title">よくある質問</h2>
+    </div>
+
+    <!-- ============== Product ============== -->
+    <h3 class="text-[11px] tracking-[0.28em] uppercase text-zinc-500 mb-3 mt-8 px-1" data-i18n="faq_h3_product">製品について</h3>
+    <div class="glass rounded-[24px] overflow-hidden">
+      <details class="faq">
+        <summary><span class="text-[15px] font-medium text-zinc-900" data-i18n="faq_p1_q">OPEN AIR はどんな製品ですか？</span><span class="icon">+</span></summary>
+        <div class="body" data-i18n="faq_p1_a">鼻の通りを整えるための鼻テープです。透明素材で目立たず、自然なフィット感で、寝るとき・トレーニング・デスクワークなど一日を通してお使いいただけます。医療目的の製品ではありません。</div>
+      </details>
+      <details class="faq">
+        <summary><span class="text-[15px] font-medium text-zinc-900" data-i18n="faq_p2_q">何回まで使い回せますか？</span><span class="icon">+</span></summary>
+        <div class="body" data-i18n="faq_p2_a">1 枚あたり 1 回のご使用を推奨しています。再利用すると粘着力が低下し、肌トラブルの原因となる場合があります。</div>
+      </details>
+      <details class="faq">
+        <summary><span class="text-[15px] font-medium text-zinc-900" data-i18n="faq_p3_q">敏感肌でも使えますか？</span><span class="icon">+</span></summary>
+        <div class="body" data-i18n="faq_p3_a">医療レベルの粘着素材（ドイツ製 HENKEL 社）を採用しており、肌へのやさしさを優先した設計です。ただし、すべての方に同じフィット感を保証するものではありません。違和感を感じた場合はご使用を中止してください。</div>
+      </details>
+      <details class="faq">
+        <summary><span class="text-[15px] font-medium text-zinc-900" data-i18n="faq_p4_q">メイクの上から貼っても大丈夫ですか？</span><span class="icon">+</span></summary>
+        <div class="body" data-i18n="faq_p4_a">油分やメイクが残っていると、剥がれやすくなる場合があります。装着前に鼻周りの油分を軽く拭き取り、乾いた状態で貼ることを推奨します。</div>
+      </details>
+      <details class="faq">
+        <summary><span class="text-[15px] font-medium text-zinc-900" data-i18n="faq_p5_q">運動中もずれませんか？</span><span class="icon">+</span></summary>
+        <div class="body" data-i18n="faq_p5_a">通常の運動であれば、しっかりフィットします。汗を多くかく環境では粘着力が弱まる場合がありますので、装着前に鼻周りを拭き取っていただくと効果的です。</div>
+      </details>
+    </div>
+
+    <!-- ============== Order & Shipping ============== -->
+    <h3 class="text-[11px] tracking-[0.28em] uppercase text-zinc-500 mb-3 mt-12 px-1" data-i18n="faq_h3_order">ご注文・配送について</h3>
+    <div class="glass rounded-[24px] overflow-hidden">
+      <details class="faq">
+        <summary><span class="text-[15px] font-medium text-zinc-900" data-i18n="faq_o1_q">配送料はかかりますか？</span><span class="icon">+</span></summary>
+        <div class="body" data-i18n="faq_o1_a">全国一律送料無料です。離島・一部地域も追加料金はかかりません。</div>
+      </details>
+      <details class="faq">
+        <summary><span class="text-[15px] font-medium text-zinc-900" data-i18n="faq_o2_q">注文してからどのくらいで届きますか？</span><span class="icon">+</span></summary>
+        <div class="body" data-i18n="faq_o2_a">通常、ご注文確定から 2〜4 営業日でお届けします。地域・繁忙期によって前後する場合があります。出荷後に追跡番号をメールでお送りします。</div>
+      </details>
+      <details class="faq">
+        <summary><span class="text-[15px] font-medium text-zinc-900" data-i18n="faq_o3_q">注文内容を変更・キャンセルしたい</span><span class="icon">+</span></summary>
+        <div class="body" data-i18n="faq_o3_a">出荷準備に入るまでであれば変更・キャンセルが可能です。ご注文後すぐに <a href="mailto:support@openair.example" class="underline">support@openair.example</a> までご連絡ください。</div>
+      </details>
+      <details class="faq">
+        <summary><span class="text-[15px] font-medium text-zinc-900" data-i18n="faq_o4_q">お支払い方法は何が使えますか？</span><span class="icon">+</span></summary>
+        <div class="body" data-i18n="faq_o4_a">クレジットカード（Visa / Master / JCB / AMEX）、Apple Pay、PayPay、コンビニ払いに対応しています。</div>
+      </details>
+      <details class="faq">
+        <summary><span class="text-[15px] font-medium text-zinc-900" data-i18n="faq_o5_q">領収書は発行できますか？</span><span class="icon">+</span></summary>
+        <div class="body" data-i18n="faq_o5_a">発送完了メールから PDF の領収書をダウンロードいただけます。インボイス（適格請求書）にも対応しています。</div>
+      </details>
+    </div>
+
+    <!-- ============== Returns ============== -->
+    <h3 class="text-[11px] tracking-[0.28em] uppercase text-zinc-500 mb-3 mt-12 px-1" data-i18n="faq_h3_return">返品・返金について</h3>
+    <div class="glass rounded-[24px] overflow-hidden">
+      <details class="faq">
+        <summary><span class="text-[15px] font-medium text-zinc-900" data-i18n="faq_r1_q">返品はできますか？</span><span class="icon">+</span></summary>
+        <div class="body" data-i18n="faq_r1_a">商品到着後 30 日以内、未開封のものに限り返品をお受けします。返送送料は当社負担です。お手続きは <a href="mailto:support@openair.example" class="underline">support@openair.example</a> までご連絡ください。</div>
+      </details>
+      <details class="faq">
+        <summary><span class="text-[15px] font-medium text-zinc-900" data-i18n="faq_r2_q">商品に不具合があった場合は？</span><span class="icon">+</span></summary>
+        <div class="body" data-i18n="faq_r2_a">商品の欠陥、配送間違いなど当社の手違いによる場合は、当社負担で交換・返金いたします。商品到着後 14 日以内にご連絡ください。</div>
+      </details>
+      <details class="faq">
+        <summary><span class="text-[15px] font-medium text-zinc-900" data-i18n="faq_r3_q">開封済みでも返品できますか？</span><span class="icon">+</span></summary>
+        <div class="body" data-i18n="faq_r3_a">衛生上の理由から、開封済み商品の返品はお受けできません。ただし、明らかな不具合がある場合はこの限りではありません。</div>
+      </details>
+      <details class="faq">
+        <summary><span class="text-[15px] font-medium text-zinc-900" data-i18n="faq_r4_q">返金にはどのくらいかかりますか？</span><span class="icon">+</span></summary>
+        <div class="body" data-i18n="faq_r4_a">返品商品到着後、5 営業日以内に返金処理を行います。クレジットカードの場合、ご利用明細への反映は カード会社により 1〜2 ヶ月程度かかる場合があります。</div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ===== Contact form ===== -->
+  <section id="contact" class="reveal delay-3">
+    <div class="text-center mb-10">
+      <div class="text-[12px] tracking-[0.32em] uppercase text-zinc-500 mb-3" data-i18n="contact_eyebrow">Contact</div>
+      <h2 class="text-3xl md:text-4xl font-semibold tracking-tight text-gradient leading-[1.2]" data-i18n="contact_title">お問い合わせ</h2>
+      <p class="mt-4 text-zinc-500 text-[14px]" data-i18n="contact_lede">通常 1〜2 営業日以内にご返信します。</p>
+      <p class="mt-3 text-zinc-500 text-[13px] max-w-xl mx-auto" data-es-only style="display:none" data-i18n="contact_intro_es">Cuéntanos en qué podemos ayudarte. Tus datos serán tratados conforme a nuestra <a href="./privacy.html" class="underline">Política de Privacidad</a>, exclusivamente para gestionar tu solicitud.</p>
+    </div>
+
+    <form id="contact-form" class="glass rounded-[28px] p-7 md:p-9 max-w-3xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="field-label" data-i18n="form_name">お名前</label>
+          <input type="text" required class="field" placeholder="山田 太郎" name="name" data-i18n-placeholder="form_name_ph">
+        </div>
+        <div>
+          <label class="field-label" data-i18n="form_email">メールアドレス</label>
+          <input type="email" required class="field" placeholder="you@example.com" name="email">
+        </div>
+        <div class="md:col-span-2">
+          <label class="field-label" data-i18n="form_topic">お問い合わせ種別</label>
+          <select required class="field" name="topic" id="topic-select">
+            <option value="" data-i18n="opt_choose">選択してください</option>
+            <option data-i18n="opt_product">製品について</option>
+            <option data-i18n="opt_order">注文・配送について</option>
+            <option data-i18n="opt_return">返品・返金について</option>
+            <option data-i18n="opt_defect">不具合のご報告</option>
+            <option data-i18n="opt_b2b">取引・卸について</option>
+            <option data-i18n="opt_other">その他</option>
+          </select>
+        </div>
+        <div class="md:col-span-2">
+          <label class="field-label" data-i18n="form_order">注文番号（任意）</label>
+          <input type="text" class="field" placeholder="OA-XXXXXX" name="orderId">
+        </div>
+        <div class="md:col-span-2">
+          <label class="field-label" data-i18n="form_message">お問い合わせ内容</label>
+          <textarea required class="field" placeholder="ご質問・ご要望をご記入ください。" name="message" data-i18n-placeholder="form_message_ph"></textarea>
+        </div>
+      </div>
+
+      <label class="flex items-start gap-3 text-[13px] text-zinc-600 mt-6">
+        <input type="checkbox" required class="mt-1">
+        <span data-i18n="form_consent"><a href="./privacy.html" class="underline">プライバシーポリシー</a>に同意します</span>
+      </label>
+
+      <p class="text-[12px] text-zinc-500 mt-3 leading-relaxed" data-es-only style="display:none" data-i18n="form_gdpr_notice">
+        <strong>Información básica sobre protección de datos:</strong> el responsable del tratamiento es OPEN AIR, Inc. La finalidad es atender tu consulta. La base legal es tu consentimiento. No cedemos tus datos a terceros salvo obligación legal. Puedes ejercer tus derechos de acceso, rectificación, supresión, oposición, limitación y portabilidad escribiendo a <a href="mailto:dpo@openair.example" class="underline">dpo@openair.example</a>. Más información en nuestra <a href="./privacy.html" class="underline">Política de Privacidad</a>.
+      </p>
+
+      <button type="submit" class="btn-dark mt-7" data-i18n="form_submit">送信する</button>
+
+      <!-- Success state -->
+      <div id="success" class="hidden mt-7 p-5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-900">
+        <div class="flex items-start gap-3">
+          <div class="w-7 h-7 rounded-full bg-emerald-600 text-white grid place-items-center text-[12px] font-bold shrink-0 mt-0.5">✓</div>
+          <div>
+            <div class="font-semibold tracking-tight" data-i18n="form_success_title">送信しました</div>
+            <div class="text-[13px] mt-1 opacity-90" data-i18n="form_success_body">通常 1〜2 営業日以内にご返信します。確認用メールを送信しました。</div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </section>
+
+  <!-- ===== Contact info ===== -->
+  <section class="mt-20 reveal delay-4">
+    <div class="grid md:grid-cols-3 gap-3">
+      <div class="glass rounded-[20px] p-7 text-center">
+        <div class="text-[11px] tracking-[0.28em] uppercase text-zinc-500 mb-2" data-i18n="info_email_label">Email</div>
+        <div class="text-[14px] font-medium text-zinc-900">support@openair.example</div>
+        <div class="text-[12px] text-zinc-500 mt-1" data-i18n="info_email_sub">24時間受付</div>
+      </div>
+      <div class="glass rounded-[20px] p-7 text-center">
+        <div class="text-[11px] tracking-[0.28em] uppercase text-zinc-500 mb-2" data-i18n="info_hours_label">Hours</div>
+        <div class="text-[14px] font-medium text-zinc-900" data-i18n="info_hours_value">平日 10:00 – 18:00</div>
+        <div class="text-[12px] text-zinc-500 mt-1" data-i18n="info_hours_sub">土日祝・年末年始を除く</div>
+      </div>
+      <div class="glass rounded-[20px] p-7 text-center">
+        <div class="text-[11px] tracking-[0.28em] uppercase text-zinc-500 mb-2" data-i18n="info_addr_label">Address</div>
+        <div class="text-[14px] font-medium text-zinc-900">OPEN AIR, Inc.</div>
+        <div class="text-[12px] text-zinc-500 mt-1" data-i18n="info_addr_value">東京都千代田区</div>
+      </div>
+    </div>
+
+    <!-- EU-only: data handling note -->
+    <div class="mt-6 text-center text-[12px] text-zinc-500" data-es-only style="display:none">
+      <a href="./privacy.html" class="underline" data-i18n="info_data_link">Cómo tratamos tus datos &rarr; Política de Privacidad</a>
+    </div>
+  </section>
+</main>
+
+<footer class="border-t border-zinc-200/60 py-10 px-6 bg-white">
+  <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-6 text-zinc-500 text-sm">
+    <span class="text-xs text-zinc-400">© 2026 OPEN AIR, Inc.</span>
+    <div class="flex gap-6 items-center">
+      <a href="./privacy.html" class="hover:text-zinc-900" data-i18n="footer_privacy">プライバシー</a>
+      <a href="./terms.html" class="hover:text-zinc-900" data-i18n="footer_terms">利用規約</a>
+      <a href="./support.html" class="hover:text-zinc-900 text-zinc-900 font-medium" data-i18n="footer_support">サポート</a>
+      <button id="lang-switcher" type="button" class="text-zinc-500 hover:text-zinc-900 transition flex items-center gap-1.5 cursor-pointer" aria-label="言語切替 / Cambiar idioma" title="言語を切り替える / Cambiar idioma">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"/>
+          <path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>
+        </svg>
+        <span id="lang-current">日本語</span>
+      </button>
+    </div>
+  </div>
+</footer>
+
+<!-- Region selection modal -->
+<div id="region-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/40 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="region-modal-title">
+  <div class="bg-white rounded-3xl p-7 max-w-sm w-full shadow-2xl" onclick="event.stopPropagation()">
+    <div class="text-[11px] tracking-[0.3em] uppercase text-zinc-500 mb-1">Region</div>
+    <h3 id="region-modal-title" class="text-xl font-semibold tracking-tight mb-1">配送地域を選択</h3>
+    <p class="text-[12px] text-zinc-500 mb-5" id="region-modal-sub">ご利用の地域に合わせて、言語と通貨が切り替わります。</p>
+    <ul class="space-y-1.5">
+      <li>
+        <button data-region="ja" class="region-option w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
+          <span class="text-2xl">🇯🇵</span>
+          <div class="flex-1">
+            <div class="text-[14px] font-medium text-zinc-900">日本</div>
+            <div class="text-[11px] text-zinc-500">日本語 · 全国配送 · ¥</div>
+          </div>
+          <span class="region-check text-zinc-900 hidden text-[18px]">✓</span>
+        </button>
+      </li>
+      <li>
+        <button data-region="es" class="region-option w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
+          <span class="text-2xl">🇪🇸</span>
+          <div class="flex-1">
+            <div class="text-[14px] font-medium text-zinc-900">España</div>
+            <div class="text-[11px] text-zinc-500">Español · Envío UE · €</div>
+          </div>
+          <span class="region-check text-zinc-900 hidden text-[18px]">✓</span>
+        </button>
+      </li>
+      <li>
+        <button data-region="br" class="region-option region-soon w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
+          <span class="text-2xl opacity-70">🇧🇷</span>
+          <div class="flex-1">
+            <div class="text-[14px] font-medium text-zinc-900">Brasil</div>
+            <div class="text-[11px] text-zinc-500" id="region-br-sub">ご購入できるよう、準備を進めています</div>
+          </div>
+          <span class="text-[10px] tracking-[0.18em] uppercase text-zinc-500 px-2.5 py-1 rounded-full border border-zinc-200" id="region-br-badge">Soon</span>
+        </button>
+      </li>
+      <li>
+        <button data-region="us" class="region-option region-soon w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
+          <span class="text-2xl opacity-70">🇺🇸</span>
+          <div class="flex-1">
+            <div class="text-[14px] font-medium text-zinc-900">United States</div>
+            <div class="text-[11px] text-zinc-500" id="region-us-sub">ご購入できるよう、準備を進めています</div>
+          </div>
+          <span class="text-[10px] tracking-[0.18em] uppercase text-zinc-500 px-2.5 py-1 rounded-full border border-zinc-200" id="region-us-badge">Soon</span>
+        </button>
+      </li>
+    </ul>
+    <button id="region-close" type="button" class="mt-5 w-full text-center text-[13px] text-zinc-500 hover:text-zinc-900 transition py-2">閉じる</button>
+  </div>
+</div>
+
+<script>
+// Cart badge
+(function(){
+  function updateBadge(){
+    const badge = document.getElementById('nav-cart-badge');
+    if (!badge) return;
+    let cart = {};
+    try { cart = JSON.parse(localStorage.getItem('openair_cart')) || {}; } catch(e){}
+    const q = Object.values(cart).reduce((s,v)=>s+v,0);
+    if (q > 0){ badge.textContent = q; badge.classList.remove('hidden'); }
+    else { badge.classList.add('hidden'); }
+  }
+  updateBadge();
+  window.addEventListener('storage', updateBadge);
+  window.addEventListener('focus', updateBadge);
+})();
+
+// ============== i18n ==============
+const translations = {
+  "page_title": { ja: "サポート — OPEN AIR", es: "Soporte — OPEN AIR" },
+  // Nav
+  "nav_concept":  { ja: "コンセプト", es: "Concepto" },
+  "nav_features": { ja: "特徴",       es: "Características" },
+  "nav_scenes":   { ja: "シーン",     es: "Escenas" },
+  "nav_buy":      { ja: "購入",       es: "Comprar" },
+  "nav_cart":     { ja: "カート",     es: "Carrito" },
+  // Hero
+  "hero_eyebrow": { ja: "Support", es: "Soporte" },
+  "hero_title":   { ja: "サポート", es: "Soporte" },
+  "hero_lede":    { ja: "お困りのことがあれば、以下からお探しください。<br/>解決しない場合は、フォームからお気軽にご連絡ください。",
+                    es: "¿Tienes alguna duda? Encuentra la respuesta a continuación.<br/>Si no resolvemos tu consulta, escríbenos a través del formulario." },
+  // Channels
+  "ch_faq_title":   { ja: "よくある質問", es: "Preguntas frecuentes" },
+  "ch_faq_sub":     { ja: "製品・配送・返品について", es: "Producto, envío y devoluciones" },
+  "ch_email_title": { ja: "メール", es: "Email" },
+  "ch_form_title":  { ja: "お問い合わせフォーム", es: "Formulario de contacto" },
+  "ch_form_sub":    { ja: "通常 1〜2 営業日で返信", es: "Respondemos en 1–2 días hábiles" },
+
+  // FAQ
+  "faq_eyebrow": { ja: "FAQ", es: "FAQ" },
+  "faq_title":   { ja: "よくある質問", es: "Preguntas frecuentes" },
+
+  "faq_h3_product": { ja: "製品について", es: "Sobre el producto" },
+  "faq_p1_q": { ja: "OPEN AIR はどんな製品ですか？", es: "¿Qué es OPEN AIR?" },
+  "faq_p1_a": { ja: "鼻の通りを整えるための鼻テープです。透明素材で目立たず、自然なフィット感で、寝るとき・トレーニング・デスクワークなど一日を通してお使いいただけます。医療目的の製品ではありません。",
+                es: "Es una tira nasal diseñada para favorecer el paso del aire por la nariz. Su material transparente pasa desapercibido y se adapta de forma natural; puedes usarla al dormir, entrenar o trabajar. No es un producto sanitario." },
+  "faq_p2_q": { ja: "何回まで使い回せますか？", es: "¿Se puede reutilizar?" },
+  "faq_p2_a": { ja: "1 枚あたり 1 回のご使用を推奨しています。再利用すると粘着力が低下し、肌トラブルの原因となる場合があります。",
+                es: "Recomendamos un solo uso por tira. Reutilizarla reduce la adherencia y puede irritar la piel." },
+  "faq_p3_q": { ja: "敏感肌でも使えますか？", es: "¿Es apta para piel sensible?" },
+  "faq_p3_a": { ja: "医療レベルの粘着素材（ドイツ製 HENKEL 社）を採用しており、肌へのやさしさを優先した設計です。ただし、すべての方に同じフィット感を保証するものではありません。違和感を感じた場合はご使用を中止してください。",
+                es: "Utilizamos un adhesivo de grado médico (HENKEL, Alemania) pensado para minimizar la irritación. Aun así, no podemos garantizar la misma respuesta en todas las pieles: si notas molestias, suspende el uso." },
+  "faq_p4_q": { ja: "メイクの上から貼っても大丈夫ですか？", es: "¿Puedo aplicarla sobre el maquillaje?" },
+  "faq_p4_a": { ja: "油分やメイクが残っていると、剥がれやすくなる場合があります。装着前に鼻周りの油分を軽く拭き取り、乾いた状態で貼ることを推奨します。",
+                es: "Los restos de grasa o maquillaje pueden hacer que se despegue antes. Limpia bien la zona y déjala seca antes de aplicarla." },
+  "faq_p5_q": { ja: "運動中もずれませんか？", es: "¿Aguanta durante el ejercicio?" },
+  "faq_p5_a": { ja: "通常の運動であれば、しっかりフィットします。汗を多くかく環境では粘着力が弱まる場合がありますので、装着前に鼻周りを拭き取っていただくと効果的です。",
+                es: "Para entrenamiento habitual, se adapta sin problema. En condiciones de mucho sudor la adherencia puede disminuir; limpia bien la zona antes de colocarla." },
+
+  "faq_h3_order": { ja: "ご注文・配送について", es: "Pedidos y envío" },
+  "faq_o1_q": { ja: "配送料はかかりますか？", es: "¿Hay gastos de envío?" },
+  "faq_o1_a": { ja: "全国一律送料無料です。離島・一部地域も追加料金はかかりません。",
+                es: "El envío estándar es gratuito en toda la Unión Europea. En zonas remotas o entregas urgentes pueden aplicarse tarifas adicionales, siempre indicadas antes de confirmar el pedido." },
+  "faq_o2_q": { ja: "注文してからどのくらいで届きますか？", es: "¿Cuánto tarda la entrega?" },
+  "faq_o2_a": { ja: "通常、ご注文確定から 2〜4 営業日でお届けします。地域・繁忙期によって前後する場合があります。出荷後に追跡番号をメールでお送りします。",
+                es: "Habitualmente entregamos en 3–7 días hábiles dentro de la UE. En cualquier caso, conforme al art. 109 LGDCU, el plazo máximo es de 30 días. Tras el envío recibirás el número de seguimiento por correo." },
+  "faq_o3_q": { ja: "注文内容を変更・キャンセルしたい", es: "¿Puedo modificar o cancelar mi pedido?" },
+  "faq_o3_a": { ja: "出荷準備に入るまでであれば変更・キャンセルが可能です。ご注文後すぐに <a href=\"mailto:support@openair.example\" class=\"underline\">support@openair.example</a> までご連絡ください。",
+                es: "Sí, mientras el pedido no haya entrado en preparación. Escríbenos cuanto antes a <a href=\"mailto:support@openair.example\" class=\"underline\">support@openair.example</a> indicando el número de pedido." },
+  "faq_o4_q": { ja: "お支払い方法は何が使えますか？", es: "¿Qué medios de pago aceptáis?" },
+  "faq_o4_a": { ja: "クレジットカード（Visa / Master / JCB / AMEX）、Apple Pay、PayPay、コンビニ払いに対応しています。",
+                es: "Tarjeta de crédito o débito (Visa, Mastercard, American Express), Apple Pay, Google Pay, PayPal y, en países seleccionados, Bizum." },
+  "faq_o5_q": { ja: "領収書は発行できますか？", es: "¿Emitís factura?" },
+  "faq_o5_a": { ja: "発送完了メールから PDF の領収書をダウンロードいただけます。インボイス（適格請求書）にも対応しています。",
+                es: "Sí. Tras el envío recibirás un correo con la factura en PDF. Si necesitas datos fiscales adicionales (NIF/CIF, razón social), indícalo en las observaciones del pedido o escríbenos a soporte." },
+
+  "faq_h3_return": { ja: "返品・返金について", es: "Devoluciones y reembolsos" },
+  "faq_r1_q": { ja: "返品はできますか？", es: "¿Puedo devolver el producto?" },
+  "faq_r1_a": { ja: "商品到着後 30 日以内、未開封のものに限り返品をお受けします。返送送料は当社負担です。お手続きは <a href=\"mailto:support@openair.example\" class=\"underline\">support@openair.example</a> までご連絡ください。",
+                es: "Sí. Como consumidor en la UE dispones de 14 días naturales desde la recepción para ejercer tu derecho de desistimiento sin justificación. Adicionalmente aceptamos devoluciones de productos sin abrir hasta 30 días. Escríbenos a <a href=\"mailto:support@openair.example\" class=\"underline\">support@openair.example</a> para iniciar el proceso." },
+  "faq_r2_q": { ja: "商品に不具合があった場合は？", es: "¿Y si el producto está defectuoso?" },
+  "faq_r2_a": { ja: "商品の欠陥、配送間違いなど当社の手違いによる場合は、当社負担で交換・返金いたします。商品到着後 14 日以内にご連絡ください。",
+                es: "Los productos están cubiertos por la garantía legal de conformidad de 3 años (art. 115 ss. LGDCU). Si detectas un defecto o un envío erróneo, contacta con nosotros y te enviaremos un sustituto o procederemos al reembolso, sin coste para ti." },
+  "faq_r3_q": { ja: "開封済みでも返品できますか？", es: "¿Puedo devolver un producto abierto?" },
+  "faq_r3_a": { ja: "衛生上の理由から、開封済み商品の返品はお受けできません。ただし、明らかな不具合がある場合はこの限りではありません。",
+                es: "Por motivos de higiene, los productos abiertos no admiten devolución (art. 103.e LGDCU), salvo que presenten un defecto manifiesto." },
+  "faq_r4_q": { ja: "返金にはどのくらいかかりますか？", es: "¿En cuánto tiempo recibo el reembolso?" },
+  "faq_r4_a": { ja: "返品商品到着後、5 営業日以内に返金処理を行います。クレジットカードの場合、ご利用明細への反映は カード会社により 1〜2 ヶ月程度かかる場合があります。",
+                es: "Procesamos el reembolso en un máximo de 14 días naturales desde que recibimos la devolución o la prueba de envío, mediante el mismo método de pago utilizado en la compra. La aparición en tu cuenta puede tardar unos días adicionales según tu banco." },
+
+  // Contact form
+  "contact_eyebrow":   { ja: "Contact", es: "Contacto" },
+  "contact_title":     { ja: "お問い合わせ", es: "Escríbenos" },
+  "contact_lede":      { ja: "通常 1〜2 営業日以内にご返信します。", es: "Respondemos en 1–2 días hábiles." },
+  "contact_intro_es":  { ja: "", es: 'Cuéntanos en qué podemos ayudarte. Tus datos serán tratados conforme a nuestra <a href="./privacy.html" class="underline">Política de Privacidad</a>, exclusivamente para gestionar tu solicitud.' },
+
+  "form_name":      { ja: "お名前", es: "Nombre" },
+  "form_email":     { ja: "メールアドレス", es: "Correo electrónico" },
+  "form_topic":     { ja: "お問い合わせ種別", es: "Tipo de consulta" },
+  "opt_choose":     { ja: "選択してください", es: "Selecciona una opción" },
+  "opt_product":    { ja: "製品について", es: "Producto" },
+  "opt_order":      { ja: "注文・配送について", es: "Pedidos y envío" },
+  "opt_return":     { ja: "返品・返金について", es: "Devoluciones y reembolsos" },
+  "opt_defect":     { ja: "不具合のご報告", es: "Reportar un defecto" },
+  "opt_b2b":        { ja: "取引・卸について", es: "Mayoristas y B2B" },
+  "opt_other":      { ja: "その他", es: "Otros" },
+  "form_order":     { ja: "注文番号（任意）", es: "Número de pedido (opcional)" },
+  "form_message":   { ja: "お問い合わせ内容", es: "Mensaje" },
+
+  "form_consent":         { ja: '<a href="./privacy.html" class="underline">プライバシーポリシー</a>に同意します',
+                            es: 'He leído y acepto la <a href="./privacy.html" class="underline">Política de Privacidad</a>' },
+  "form_gdpr_notice":     { ja: "",
+                            es: '<strong>Información básica sobre protección de datos:</strong> el responsable del tratamiento es OPEN AIR, Inc. La finalidad es atender tu consulta. La base legal es tu consentimiento. No cedemos tus datos a terceros salvo obligación legal. Puedes ejercer tus derechos de acceso, rectificación, supresión, oposición, limitación y portabilidad escribiendo a <a href="mailto:dpo@openair.example" class="underline">dpo@openair.example</a>. Más información en nuestra <a href="./privacy.html" class="underline">Política de Privacidad</a>.' },
+
+  "form_submit":        { ja: "送信する", es: "Enviar" },
+  "form_submit_done":   { ja: "送信完了", es: "Enviado" },
+  "form_success_title": { ja: "送信しました", es: "Mensaje enviado" },
+  "form_success_body":  { ja: "通常 1〜2 営業日以内にご返信します。確認用メールを送信しました。",
+                          es: "Responderemos en 1–2 días hábiles. Hemos enviado un correo de confirmación a tu dirección." },
+
+  // Form placeholders
+  "form_name_ph":    { ja: "山田 太郎", es: "Tu nombre" },
+  "form_message_ph": { ja: "ご質問・ご要望をご記入ください。", es: "Cuéntanos tu consulta o sugerencia." },
+
+  // Contact info
+  "info_email_label": { ja: "Email", es: "Email" },
+  "info_email_sub":   { ja: "24時間受付", es: "Disponible 24/7" },
+  "info_hours_label": { ja: "Hours", es: "Horario" },
+  "info_hours_value": { ja: "平日 10:00 – 18:00", es: "Lun–Vie · 9:00 – 18:00 (CET)" },
+  "info_hours_sub":   { ja: "土日祝・年末年始を除く", es: "Excepto festivos" },
+  "info_addr_label":  { ja: "Address", es: "Dirección" },
+  "info_addr_value":  { ja: "東京都千代田区", es: "Tokio, Japón" },
+  "info_data_link":   { ja: "", es: "Cómo tratamos tus datos &rarr; Política de Privacidad" },
+
+  // Footer
+  "footer_privacy": { ja: "プライバシー", es: "Privacidad" },
+  "footer_terms":   { ja: "利用規約",     es: "Términos" },
+  "footer_support": { ja: "サポート",     es: "Soporte" }
+};
+
+const I18N_KEY = 'openair_lang';
+function getLang(){ return localStorage.getItem(I18N_KEY) || 'ja'; }
+function applyLang(lang){
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const t = translations[key];
+    if (!t) return;
+    const text = (lang === 'es' && t.es) ? t.es : t.ja;
+    if (text) el.innerHTML = text;
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    const t = translations[key];
+    if (!t) return;
+    const text = (lang === 'es' && t.es) ? t.es : t.ja;
+    if (text) el.setAttribute('placeholder', text);
+  });
+  document.querySelectorAll('[data-jp-only]').forEach(el => { el.style.display = lang === 'es' ? 'none' : ''; });
+  document.querySelectorAll('[data-es-only]').forEach(el => { el.style.display = lang === 'es' ? '' : 'none'; });
+  const titleEntry = translations['page_title'];
+  if (titleEntry) document.title = (lang === 'es' && titleEntry.es) ? titleEntry.es : titleEntry.ja;
+  const langLabel = document.getElementById('lang-current');
+  if (langLabel) langLabel.textContent = lang === 'es' ? 'Español' : '日本語';
+}
+function setLang(lang){ localStorage.setItem(I18N_KEY, lang); applyLang(lang); }
+function t(key){
+  const lang = getLang();
+  const e = translations[key];
+  if (!e) return key;
+  return (lang === 'es' && e.es) ? e.es : e.ja;
+}
+applyLang(getLang());
+document.getElementById('lang-switcher')?.addEventListener('click', (e) => {
+  e.preventDefault();
+  setLang(getLang() === 'ja' ? 'es' : 'ja');
+});
+
+// Contact form (mock submit)
+document.getElementById('contact-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  document.getElementById('success').classList.remove('hidden');
+  const btn = e.target.querySelector('button[type="submit"]');
+  btn.disabled = true;
+  // Remove data-i18n so applyLang doesn't restore the original label
+  btn.removeAttribute('data-i18n');
+  btn.textContent = t('form_submit_done');
+  document.getElementById('success').scrollIntoView({behavior:'smooth', block:'center'});
+});
+
+// Region modal logic
+(function(){
+  const modal = document.getElementById('region-modal');
+  const switcher = document.getElementById('lang-switcher');
+  if (!modal || !switcher) return;
+
+  const newSwitcher = switcher.cloneNode(true);
+  switcher.parentNode.replaceChild(newSwitcher, switcher);
+
+  function openModal(){
+    modal.classList.remove('hidden');
+    updateChecks();
+    const lang = getLang();
+    const title = modal.querySelector('#region-modal-title');
+    const sub = modal.querySelector('#region-modal-sub');
+    const close = modal.querySelector('#region-close');
+    const brSub = modal.querySelector('#region-br-sub');
+    const usSub = modal.querySelector('#region-us-sub');
+    if (lang === 'es') {
+      if (title) title.textContent = 'Selecciona tu región';
+      if (sub) sub.textContent = 'El idioma y la moneda se ajustan a tu región.';
+      if (close) close.textContent = 'Cerrar';
+      if (brSub) brSub.textContent = 'Estamos trabajando para que pronto puedas comprarlo aquí.';
+      if (usSub) usSub.textContent = 'Estamos trabajando para que pronto puedas comprarlo aquí.';
+    } else {
+      if (title) title.textContent = '配送地域を選択';
+      if (sub) sub.textContent = 'ご利用の地域に合わせて、言語と通貨が切り替わります。';
+      if (close) close.textContent = '閉じる';
+      if (brSub) brSub.textContent = 'ご購入できるよう、準備を進めています。';
+      if (usSub) usSub.textContent = 'ご購入できるよう、準備を進めています。';
+    }
+  }
+  function closeModal(){ modal.classList.add('hidden'); }
+  function updateChecks(){
+    const lang = getLang();
+    modal.querySelectorAll('.region-option').forEach(btn => {
+      const check = btn.querySelector('.region-check');
+      if (!check) return;
+      const region = btn.dataset.region;
+      if ((region === 'ja' && lang === 'ja') || (region === 'es' && lang === 'es')) {
+        check.classList.remove('hidden');
+      } else {
+        check.classList.add('hidden');
+      }
+    });
+  }
+  function showSoonToast(region){
+    const lang = getLang();
+    const msg = lang === 'es'
+      ? 'Estamos trabajando para que pronto puedas comprarlo aquí.'
+      : 'ご購入できるよう、準備を進めています。';
+    let toast = document.getElementById('region-toast');
+    if (!toast){
+      toast = document.createElement('div');
+      toast.id = 'region-toast';
+      toast.setAttribute('role','status');
+      toast.setAttribute('aria-live','polite');
+      document.body.appendChild(toast);
+    }
+    toast.style.cssText = `
+      position:fixed; bottom:24px; left:50%;
+      transform:translateX(-50%) translateY(20px);
+      background:rgba(10,10,10,.92); color:#fff;
+      padding:14px 22px; border-radius:999px;
+      font-size:14px; max-width:90vw;
+      z-index:200; opacity:0;
+      transition:opacity .25s, transform .25s;
+      box-shadow:0 10px 40px rgba(0,0,0,.25);
+      backdrop-filter:blur(10px);
+    `;
+    toast.textContent = msg;
+    requestAnimationFrame(()=>{
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateX(-50%) translateY(0)';
+    });
+    clearTimeout(window.__regionToastT);
+    window.__regionToastT = setTimeout(()=>{
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateX(-50%) translateY(20px)';
+    }, 3200);
+  }
+
+  newSwitcher.addEventListener('click', (e) => { e.preventDefault(); openModal(); });
+  modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+  document.getElementById('region-close')?.addEventListener('click', closeModal);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal(); });
+
+  modal.querySelectorAll('.region-option').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const region = btn.dataset.region;
+      if (region === 'ja') { setLang('ja'); closeModal(); }
+      else if (region === 'es') { setLang('es'); closeModal(); }
+      else if (region === 'br' || region === 'us') {
+        showSoonToast(region);
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>

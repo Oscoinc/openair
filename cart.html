@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>カート — OPEN AIR</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  *{ -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+  html,body{
+    font-family: -apple-system, BlinkMacSystemFont,
+                 "Hiragino Kaku Gothic ProN","ヒラギノ角ゴ ProN W3","ヒラギノ角ゴシック ProN",
+                 "Hiragino Sans","Yu Gothic Medium","游ゴシック","Helvetica Neue",
+                 Arial, sans-serif;
+    color:#1d1d1f;
+    background:#fafafa;
+  }
+  html{ scroll-behavior:smooth; }
+  .glass{
+    background:rgba(255,255,255,.7);
+    backdrop-filter:blur(28px) saturate(180%);
+    -webkit-backdrop-filter:blur(28px) saturate(180%);
+    border:1px solid rgba(255,255,255,.7);
+    box-shadow:0 1px 3px rgba(0,0,0,.03),0 12px 40px rgba(0,0,0,.05),
+               inset 0 1px 0 rgba(255,255,255,1);
+  }
+  .glass-pill{
+    background:rgba(255,255,255,.65);
+    backdrop-filter:blur(20px) saturate(180%);
+    -webkit-backdrop-filter:blur(20px) saturate(180%);
+    border:1px solid rgba(255,255,255,.7);
+    box-shadow:0 1px 2px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.04),
+               inset 0 1px 0 rgba(255,255,255,1);
+  }
+  .text-gradient{ background:linear-gradient(180deg,#1d1d1f 0%,#6e6e73 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+  .btn-dark{ background:#0a0a0a; color:#fff; padding:14px 28px; border-radius:999px; font-weight:600; font-size:15px; transition:transform .25s ease,background .25s ease; display:inline-block; text-align:center; }
+  .btn-dark:hover{ transform:translateY(-1px); background:#000; }
+  .btn-light{ background:rgba(255,255,255,.9); color:#0a0a0a; padding:13px 27px; border-radius:999px; font-weight:500; font-size:15px; border:1px solid rgba(0,0,0,.08); backdrop-filter:blur(20px); transition:background .25s ease,transform .25s ease; display:inline-block; text-align:center; }
+  .btn-light:hover{ transform:translateY(-1px); background:#fff; }
+  .qty-btn{ width:32px; height:32px; border-radius:50%; background:rgba(0,0,0,.04); display:grid; place-items:center; font-size:14px; color:#0a0a0a; transition:background .2s; user-select:none; cursor:pointer; }
+  .qty-btn:hover{ background:rgba(0,0,0,.09); }
+  .qty-btn:active{ transform:scale(.95); }
+  .reveal{ opacity:0; transform:translateY(16px); animation:rise .6s cubic-bezier(.2,.8,.2,1) forwards; }
+  .reveal.delay-1{ animation-delay:.05s; }
+  .reveal.delay-2{ animation-delay:.10s; }
+  .reveal.delay-3{ animation-delay:.15s; }
+  @keyframes rise{ to{ opacity:1; transform:translateY(0); } }
+  ::-webkit-scrollbar{ width:8px;height:8px; }
+  ::-webkit-scrollbar-track{ background:transparent; }
+  ::-webkit-scrollbar-thumb{ background:rgba(0,0,0,.10); border-radius:4px; }
+
+  /* === Mobile responsive === */
+  @media (max-width: 768px){
+    nav a[href*="openair.html#"]{ display: none; }
+    nav > a:first-child{ border-right: none; padding-right: 0; }
+    nav{ gap: 10px !important; padding-left: 14px; padding-right: 6px; }
+    h1.text-4xl, h1.md\:text-5xl,
+    h2.text-3xl, h2.md\:text-4xl, h2.md\:text-5xl{ font-size: 28px !important; line-height: 1.25 !important; }
+    main.pt-32{ padding-top: 96px !important; padding-bottom: 64px !important; }
+    main.pb-32{ padding-bottom: 64px !important; }
+    .lg\:grid-cols-\[1fr_360px\],
+    .lg\:grid-cols-\[240px_1fr\]{ grid-template-columns: 1fr !important; }
+    .lg\:sticky{ position: static !important; }
+    footer .flex.flex-wrap{ justify-content: center !important; flex-direction: column; gap: 16px !important; }
+    .glass.rounded-\[28px\],
+    .glass.rounded-\[24px\]{ padding: 24px !important; }
+    .field{ padding: 12px 14px !important; font-size: 16px !important; }
+    a, button{ -webkit-tap-highlight-color: transparent; }
+
+    /* Cart item: 2行のグリッドで横詰まりを解消 */
+    #cart-items > div{
+      display: grid !important;
+      grid-template-columns: 64px 1fr auto !important;
+      grid-template-rows: auto auto !important;
+      gap: 12px 14px !important;
+      padding: 16px !important;
+      align-items: center !important;
+    }
+    #cart-items > div > div:nth-child(1){
+      width: 64px !important;
+      height: 64px !important;
+      grid-row: 1 / 3;
+      align-self: flex-start;
+    }
+    #cart-items > div > div:nth-child(2){
+      grid-column: 2 / 4;
+      grid-row: 1;
+      min-width: 0;
+    }
+    #cart-items > div > div:nth-child(3){
+      grid-column: 2;
+      grid-row: 2;
+      justify-self: flex-start;
+    }
+    #cart-items > div > div:nth-child(4){
+      grid-column: 3;
+      grid-row: 2;
+      width: auto !important;
+      text-align: right !important;
+    }
+
+    /* おすすめ商品グリッドの内側もパディング縮小 */
+    .glass.rounded-\[24px\]{ padding: 18px !important; }
+  }
+  @supports (padding: max(0px)){
+    nav{ top: max(16px, env(safe-area-inset-top)); }
+  }
+
+</style>
+</head>
+<body>
+
+<!-- ====== Persistent Nav ====== -->
+<nav class="fixed top-4 left-1/2 -translate-x-1/2 z-50 glass-pill rounded-full pl-3 pr-2 py-2 flex items-center gap-5">
+  <a href="./openair.html" class="pr-3 border-r border-black/10 flex items-center gap-2">
+    <span class="text-[15px] font-semibold tracking-tight text-zinc-900">OPEN AIR</span>
+  </a>
+  <a href="./openair.html#concept"  class="text-[13px] text-zinc-600 hover:text-zinc-900 transition" data-i18n="nav_concept">コンセプト</a>
+  <a href="./openair.html#features" class="text-[13px] text-zinc-600 hover:text-zinc-900 transition" data-i18n="nav_features">特徴</a>
+  <a href="./openair.html#scenes"   class="text-[13px] text-zinc-600 hover:text-zinc-900 transition" data-i18n="nav_scenes">シーン</a>
+  <a href="./openair.html#buy"      class="text-[13px] text-zinc-600 hover:text-zinc-900 transition" data-i18n="nav_buy">購入</a>
+  <a href="./cart.html" class="ml-1 px-4 py-1.5 rounded-full text-[13px] font-medium bg-zinc-900 text-white relative"><span data-i18n="nav_cart">カート</span><span id="nav-cart-badge" class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] grid place-items-center bg-red-500 text-white text-[10px] font-bold rounded-full px-1">0</span></a>
+</nav>
+
+<main class="pt-32 pb-32 px-6 max-w-5xl mx-auto">
+
+  <header class="text-center mb-14 reveal">
+    <div class="text-[12px] tracking-[0.32em] uppercase text-zinc-500 mb-4">Your cart</div>
+    <h1 class="text-4xl md:text-5xl font-semibold tracking-tight text-gradient leading-[1.15]" data-i18n="cart_h1">カート</h1>
+    <p class="mt-4 text-zinc-500 text-[14px]" id="cart-count-line" data-i18n="cart_count_loading">商品を確認しています…</p>
+  </header>
+
+  <!-- ===== Empty state ===== -->
+  <div id="cart-empty" class="hidden text-center py-20 reveal delay-1">
+    <div class="inline-block glass rounded-3xl px-10 py-12">
+      <div class="text-5xl mb-4 text-zinc-300">○</div>
+      <h2 class="text-xl font-semibold tracking-tight mb-2" data-i18n="cart_empty_h2">カートは空です</h2>
+      <p class="text-zinc-500 text-sm mb-7" data-i18n="cart_empty_sub">気になる商品をカートに追加してください。</p>
+      <a href="./openair.html#buy" class="btn-dark" data-i18n="cart_empty_btn">商品を見る</a>
+    </div>
+  </div>
+
+  <!-- ===== Cart with items ===== -->
+  <div id="cart-with-items" class="hidden grid lg:grid-cols-[1fr_360px] gap-6 items-start">
+
+    <!-- Items list -->
+    <div class="glass rounded-[28px] divide-y divide-black/5 overflow-hidden reveal delay-1" id="cart-items"></div>
+
+    <!-- Order summary -->
+    <aside class="glass rounded-[28px] p-7 lg:sticky lg:top-28 reveal delay-2">
+      <div class="text-[11px] tracking-[0.28em] uppercase text-zinc-500 mb-5">Order summary</div>
+      <dl class="space-y-3 text-[14px]">
+        <div class="flex justify-between text-zinc-600">
+          <dt data-i18n="sum_subtotal">小計</dt>
+          <dd id="sum-subtotal">¥0</dd>
+        </div>
+        <div class="flex justify-between text-zinc-600">
+          <dt data-i18n="sum_shipping">送料</dt>
+          <dd class="text-emerald-700 font-medium" data-i18n="sum_free">無料</dd>
+        </div>
+        <div class="flex justify-between text-zinc-600">
+          <dt data-i18n="sum_tax_label">消費税（込）</dt>
+          <dd id="sum-tax">¥0</dd>
+        </div>
+      </dl>
+      <div class="border-t border-black/10 my-5"></div>
+      <div class="flex justify-between items-baseline">
+        <div class="text-[13px] text-zinc-500" data-i18n="sum_total">合計</div>
+        <div class="text-3xl font-semibold tracking-tight" id="sum-total">¥0</div>
+      </div>
+      <a href="./checkout.html" class="btn-dark w-full mt-7" id="checkout-btn" data-i18n="cart_checkout_btn">購入手続きへ</a>
+      <a href="./openair.html#buy" class="block text-center text-[13px] text-zinc-500 hover:text-zinc-900 mt-4 transition" data-i18n="cart_continue">買い物を続ける</a>
+
+      <ul class="mt-7 space-y-2 text-[12px] text-zinc-500">
+        <li class="flex gap-2"><span class="text-zinc-300">✓</span><span data-i18n="cart_perk_return">30 日返品保証</span></li>
+        <li class="flex gap-2"><span class="text-zinc-300">✓</span><span data-i18n="cart_perk_shipping">送料無料（全国一律）</span></li>
+        <li class="flex gap-2"><span class="text-zinc-300">✓</span><span data-i18n="cart_perk_clean">個包装で清潔</span></li>
+      </ul>
+    </aside>
+  </div>
+
+  <!-- ===== "あわせて検討" — also from buy section ===== -->
+  <section class="mt-24 reveal delay-3" id="recommend-section">
+    <div class="text-[12px] tracking-[0.32em] uppercase text-zinc-500 mb-6 text-center">Also consider</div>
+    <h2 class="text-2xl md:text-3xl font-semibold tracking-tight text-gradient text-center leading-[1.2] mb-10" data-i18n="cart_recommend_h2">あわせて検討</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="recommend-grid"></div>
+  </section>
+</main>
+
+<footer class="border-t border-zinc-200/60 py-10 px-6 bg-white">
+  <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-6 text-zinc-500 text-sm">
+    <span class="text-xs text-zinc-400">© 2026 OPEN AIR, Inc.</span>
+    <div class="flex gap-6 items-center">
+      <a href="./privacy.html" class="hover:text-zinc-900" data-i18n="footer_privacy">プライバシー</a>
+      <a href="./terms.html" class="hover:text-zinc-900" data-i18n="footer_terms">利用規約</a>
+      <a href="./support.html" class="hover:text-zinc-900" data-i18n="footer_support">サポート</a>
+      <button id="lang-switcher" type="button" class="text-zinc-500 hover:text-zinc-900 transition flex items-center gap-1.5" aria-label="言語切替 / Cambiar idioma">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"/>
+          <path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>
+        </svg>
+        <span id="lang-current">日本語</span>
+      </button>
+    </div>
+  </div>
+</footer>
+
+<!-- Region selection modal -->
+<div id="region-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/40 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="region-modal-title">
+  <div class="bg-white rounded-3xl p-7 max-w-sm w-full shadow-2xl" onclick="event.stopPropagation()">
+    <div class="text-[11px] tracking-[0.3em] uppercase text-zinc-500 mb-1">Region</div>
+    <h3 id="region-modal-title" class="text-xl font-semibold tracking-tight mb-1">配送地域を選択</h3>
+    <p class="text-[12px] text-zinc-500 mb-5" id="region-modal-sub">ご利用の地域に合わせて、言語と通貨が切り替わります。</p>
+    <ul class="space-y-1.5">
+      <li>
+        <button data-region="ja" class="region-option w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
+          <span class="text-2xl">🇯🇵</span>
+          <div class="flex-1">
+            <div class="text-[14px] font-medium text-zinc-900">日本</div>
+            <div class="text-[11px] text-zinc-500">日本語 · 全国配送 · ¥</div>
+          </div>
+          <span class="region-check text-zinc-900 hidden text-[18px]">✓</span>
+        </button>
+      </li>
+      <li>
+        <button data-region="es" class="region-option w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
+          <span class="text-2xl">🇪🇸</span>
+          <div class="flex-1">
+            <div class="text-[14px] font-medium text-zinc-900">España</div>
+            <div class="text-[11px] text-zinc-500">Español · Envío UE · €</div>
+          </div>
+          <span class="region-check text-zinc-900 hidden text-[18px]">✓</span>
+        </button>
+      </li>
+      <li>
+        <button data-region="br" class="region-option region-soon w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
+          <span class="text-2xl opacity-70">🇧🇷</span>
+          <div class="flex-1">
+            <div class="text-[14px] font-medium text-zinc-900">Brasil</div>
+            <div class="text-[11px] text-zinc-500" id="region-br-sub">ご購入できるよう、準備を進めています</div>
+          </div>
+          <span class="text-[10px] tracking-[0.18em] uppercase text-zinc-500 px-2.5 py-1 rounded-full border border-zinc-200" id="region-br-badge">Soon</span>
+        </button>
+      </li>
+      <li>
+        <button data-region="us" class="region-option region-soon w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
+          <span class="text-2xl opacity-70">🇺🇸</span>
+          <div class="flex-1">
+            <div class="text-[14px] font-medium text-zinc-900">United States</div>
+            <div class="text-[11px] text-zinc-500" id="region-us-sub">ご購入できるよう、準備を進めています</div>
+          </div>
+          <span class="text-[10px] tracking-[0.18em] uppercase text-zinc-500 px-2.5 py-1 rounded-full border border-zinc-200" id="region-us-badge">Soon</span>
+        </button>
+      </li>
+    </ul>
+    <button id="region-close" type="button" class="mt-5 w-full text-center text-[13px] text-zinc-500 hover:text-zinc-900 transition py-2">閉じる</button>
+  </div>
+</div>
+
+<script>
+// ============== i18n ==============
+const translations = {
+  // Nav
+  "nav_concept":  { ja: "コンセプト", es: "Concepto" },
+  "nav_features": { ja: "特徴",       es: "Características" },
+  "nav_scenes":   { ja: "シーン",     es: "Escenas" },
+  "nav_buy":      { ja: "購入",       es: "Comprar" },
+  "nav_cart":     { ja: "カート",     es: "Carrito" },
+
+  // Header
+  "cart_h1":              { ja: "カート", es: "Tu carrito" },
+  "cart_count_loading":   { ja: "商品を確認しています…", es: "Revisando tus productos…" },
+  "cart_count_items":     { ja: "{n} 点の商品", es: "{n} producto(s)" },
+  "cart_count_empty":     { ja: "商品はまだ追加されていません。", es: "Aún no has agregado productos." },
+
+  // Empty state
+  "cart_empty_h2":  { ja: "カートは空です", es: "Tu carrito está vacío" },
+  "cart_empty_sub": { ja: "気になる商品をカートに追加してください。", es: "Agrega lo que te interese a tu carrito." },
+  "cart_empty_btn": { ja: "商品を見る", es: "Ver productos" },
+
+  // Order summary
+  "sum_subtotal":  { ja: "小計", es: "Subtotal" },
+  "sum_shipping":  { ja: "送料", es: "Envío" },
+  "sum_free":      { ja: "無料", es: "Gratis" },
+  "sum_tax_label": { ja: "消費税（込）", es: "Impuestos (incl.)" },
+  "sum_total":     { ja: "合計", es: "Total" },
+
+  // CTA / perks
+  "cart_checkout_btn":  { ja: "購入手続きへ", es: "Finalizar compra" },
+  "cart_continue":      { ja: "買い物を続ける", es: "Seguir comprando" },
+  "cart_perk_return":   { ja: "30 日返品保証", es: "30 días de garantía" },
+  "cart_perk_shipping": { ja: "送料無料（全国一律）", es: "Envío gratis a todo el país" },
+  "cart_perk_clean":    { ja: "個包装で清潔", es: "Empaque individual e higiénico" },
+
+  // Recommend
+  "cart_recommend_h2":  { ja: "あわせて検討", es: "También para ti" },
+
+  // Item card / dynamic
+  "item_brand":  { ja: "OPEN AIR Nasal Strip", es: "OPEN AIR Nasal Strip" },
+  "item_remove": { ja: "削除", es: "Eliminar" },
+  "item_add":    { ja: "カートに追加", es: "Agregar al carrito" },
+
+  // Footer
+  "footer_privacy": { ja: "プライバシー", es: "Privacidad" },
+  "footer_terms":   { ja: "利用規約",     es: "Términos" },
+  "footer_support": { ja: "サポート",     es: "Soporte" }
+};
+
+const I18N_KEY = 'openair_lang';
+function getLang(){ return localStorage.getItem(I18N_KEY) || 'ja'; }
+function t(key){
+  const entry = translations[key];
+  if (!entry) return key;
+  const lang = getLang();
+  return entry[lang] || entry.ja || key;
+}
+function applyLang(lang){
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const entry = translations[key];
+    if (!entry) return;
+    el.innerHTML = entry[lang] || entry.ja;
+  });
+  const langLabel = document.getElementById('lang-current');
+  if (langLabel) langLabel.textContent = lang === 'es' ? 'Español' : '日本語';
+  const langOther = document.getElementById('lang-other');
+  if (langOther) langOther.textContent = lang === 'es' ? '日本語' : 'Español';
+  // Re-render dynamic content so translated strings appear
+  if (typeof render === 'function') render();
+}
+function setLang(lang){
+  localStorage.setItem(I18N_KEY, lang);
+  applyLang(lang);
+}
+
+// ============== Shared cart logic ==============
+const PRODUCTS = {
+  single: { id:'single', name:'Single',  desc:{ ja:'30 枚 · 1ヶ月分',  es:'30 unidades · 1 mes' },  price:{ja:1980, es:15}, image:'./assets/part_package.png?v=7' },
+  three:  { id:'three',  name:'Three',   desc:{ ja:'90 枚 · 3ヶ月分',  es:'90 unidades · 3 meses' },  price:{ja:4980, es:39}, image:'./assets/part_package.png?v=7', discount:{ja:'¥1,000 OFF', es:'€6 OFF'} },
+  six:    { id:'six',    name:'Six',     desc:{ ja:'180 枚 · 6ヶ月分', es:'180 unidades · 6 meses' }, price:{ja:8980, es:69}, image:'./assets/part_package.png?v=7', discount:{ja:'¥2,900 OFF', es:'€21 OFF'} }
+};
+const STORAGE_KEY = 'openair_cart';
+function readCart(){
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+  catch(e){ return {}; }
+}
+function writeCart(c){ localStorage.setItem(STORAGE_KEY, JSON.stringify(c)); }
+function setQty(id, q){
+  const c = readCart();
+  if (q<=0){ delete c[id]; } else { c[id] = q; }
+  writeCart(c);
+  render();
+}
+function inc(id){ const c = readCart(); setQty(id, (c[id]||0) + 1); }
+function dec(id){ const c = readCart(); setQty(id, (c[id]||0) - 1); }
+function fmtYen(n){ return '¥' + n.toLocaleString('ja-JP'); }
+function fmtEur(n){ return '€' + n.toLocaleString('es-ES'); }
+function getPrice(p, lang){ return (typeof p.price === 'object') ? (p.price[lang] || p.price.ja) : p.price; }
+function getDiscount(p, lang){ return p.discount ? ((typeof p.discount === 'object') ? (p.discount[lang] || p.discount.ja) : p.discount) : null; }
+function fmtPrice(n, lang){ return lang === 'es' ? fmtEur(n) : fmtYen(n); }
+
+// ============== Render ==============
+function render(){
+  const cart = readCart();
+  const ids = Object.keys(cart).filter(id => PRODUCTS[id] && cart[id] > 0);
+  const empty = document.getElementById('cart-empty');
+  const withItems = document.getElementById('cart-with-items');
+  const countLine = document.getElementById('cart-count-line');
+
+  const lang = getLang();
+
+  if (ids.length === 0){
+    empty.classList.remove('hidden');
+    withItems.classList.add('hidden');
+    countLine.textContent = t('cart_count_empty');
+  } else {
+    empty.classList.add('hidden');
+    withItems.classList.remove('hidden');
+    const totalQty = ids.reduce((s,id)=>s+cart[id],0);
+    countLine.textContent = t('cart_count_items').replace('{n}', totalQty);
+
+    // Items list
+    const itemsHtml = ids.map(id => {
+      const p = PRODUCTS[id];
+      const q = cart[id];
+      const unitPrice = getPrice(p, lang);
+      const line = unitPrice * q;
+      const descText = (p.desc && typeof p.desc === 'object') ? (p.desc[lang] || p.desc.ja) : p.desc;
+      const discountText = getDiscount(p, lang);
+      return `
+        <div class="flex gap-5 p-6 items-center">
+          <div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-zinc-50 to-zinc-100 grid place-items-center shrink-0 overflow-hidden">
+            <img src="${p.image}" alt="${p.name}" class="max-w-[80%] max-h-[80%] object-contain" onerror="this.style.display='none'">
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="text-[11px] tracking-[0.18em] uppercase text-zinc-500 mb-1">${p.name}</div>
+            <div class="text-[15px] font-semibold tracking-tight text-zinc-900 truncate">${t('item_brand')}</div>
+            <div class="text-[13px] text-zinc-500 mt-0.5">${descText}${discountText ? ` <span class="ml-2 text-emerald-700 text-[11px] font-medium">${discountText}</span>`:''}</div>
+            <button data-action="remove" data-id="${p.id}" class="text-[12px] text-zinc-400 hover:text-zinc-900 mt-2 transition">${t('item_remove')}</button>
+          </div>
+          <div class="flex items-center gap-3 shrink-0">
+            <div class="qty-btn" data-action="dec" data-id="${p.id}">−</div>
+            <div class="text-[15px] font-semibold w-6 text-center tabular-nums">${q}</div>
+            <div class="qty-btn" data-action="inc" data-id="${p.id}">+</div>
+          </div>
+          <div class="text-right text-[15px] font-semibold tabular-nums w-24 shrink-0">${fmtPrice(line, lang)}</div>
+        </div>
+      `;
+    }).join('');
+    document.getElementById('cart-items').innerHTML = itemsHtml;
+
+    // Sums — tax handling (10% Japan / 21% IVA Spain)
+    const subtotal = ids.reduce((s,id)=>s + getPrice(PRODUCTS[id], lang) * cart[id], 0);
+    const taxRate = lang === 'es' ? 1.21 : 1.10;
+    const tax = Math.round((subtotal - subtotal / taxRate) * 100) / 100;
+    document.getElementById('sum-subtotal').textContent = fmtPrice(Math.round((subtotal - tax) * 100) / 100, lang);
+    document.getElementById('sum-tax').textContent = fmtPrice(tax, lang);
+    document.getElementById('sum-total').textContent = fmtPrice(subtotal, lang);
+  }
+
+  // Recommend (always show items NOT in cart)
+  const recIds = Object.keys(PRODUCTS).filter(id => !cart[id]);
+  const recGrid = document.getElementById('recommend-grid');
+  const recSection = document.getElementById('recommend-section');
+  if (recIds.length === 0){
+    recSection.style.display = 'none';
+  } else {
+    recSection.style.display = '';
+    recGrid.innerHTML = recIds.map(id => {
+      const p = PRODUCTS[id];
+      const descText = (p.desc && typeof p.desc === 'object') ? (p.desc[lang] || p.desc.ja) : p.desc;
+      return `
+        <div class="glass rounded-[24px] p-7">
+          <div class="text-[11px] tracking-[0.18em] uppercase text-zinc-500 mb-3">${p.name}</div>
+          <div class="text-2xl font-semibold tracking-tight">${fmtPrice(getPrice(p, lang), lang)}</div>
+          <div class="text-[13px] text-zinc-500 mt-1">${descText}</div>
+          <button data-action="add" data-id="${p.id}" class="mt-5 w-full py-2.5 rounded-full bg-zinc-900 text-white text-[13px] font-medium hover:bg-black transition">${t('item_add')}</button>
+        </div>
+      `;
+    }).join('');
+  }
+}
+
+document.addEventListener('click', (e) => {
+  const tgt = e.target.closest('[data-action]');
+  if (!tgt) return;
+  const a = tgt.dataset.action;
+  const id = tgt.dataset.id;
+  if (a === 'inc') inc(id);
+  else if (a === 'dec') dec(id);
+  else if (a === 'add') inc(id);
+  else if (a === 'remove') setQty(id, 0);
+});
+
+// Nav badge
+function updateBadge(){
+  const badge = document.getElementById('nav-cart-badge');
+  if (!badge) return;
+  const c = readCart();
+  const q = Object.values(c).reduce((s,v)=>s+v,0);
+  if (q > 0){ badge.textContent = q; badge.classList.remove('hidden'); }
+  else { badge.classList.add('hidden'); }
+}
+const _origRender = render;
+render = function(){ _origRender(); updateBadge(); };
+
+render();
+window.addEventListener('storage', () => { render(); });
+window.addEventListener('focus', updateBadge);
+
+// ============== i18n init ==============
+applyLang(getLang());
+document.getElementById('lang-switcher')?.addEventListener('click', (e) => {
+  e.preventDefault();
+  const cur = getLang();
+  setLang(cur === 'ja' ? 'es' : 'ja');
+});
+
+// Region modal logic
+(function(){
+  const modal = document.getElementById('region-modal');
+  const switcher = document.getElementById('lang-switcher');
+  if (!modal || !switcher) return;
+
+  const newSwitcher = switcher.cloneNode(true);
+  switcher.parentNode.replaceChild(newSwitcher, switcher);
+
+  function openModal(){
+    modal.classList.remove('hidden');
+    updateChecks();
+    const lang = getLang();
+    const title = modal.querySelector('#region-modal-title');
+    const sub = modal.querySelector('#region-modal-sub');
+    const close = modal.querySelector('#region-close');
+    const brSub = modal.querySelector('#region-br-sub');
+    const usSub = modal.querySelector('#region-us-sub');
+    if (lang === 'es') {
+      if (title) title.textContent = 'Selecciona tu región';
+      if (sub) sub.textContent = 'El idioma y la moneda se ajustan a tu región.';
+      if (close) close.textContent = 'Cerrar';
+      if (brSub) brSub.textContent = 'Estamos trabajando para que pronto puedas comprarlo aquí.';
+      if (usSub) usSub.textContent = 'Estamos trabajando para que pronto puedas comprarlo aquí.';
+    } else {
+      if (title) title.textContent = '配送地域を選択';
+      if (sub) sub.textContent = 'ご利用の地域に合わせて、言語と通貨が切り替わります。';
+      if (close) close.textContent = '閉じる';
+      if (brSub) brSub.textContent = 'ご購入できるよう、準備を進めています。';
+      if (usSub) usSub.textContent = 'ご購入できるよう、準備を進めています。';
+    }
+  }
+  function closeModal(){ modal.classList.add('hidden'); }
+  function updateChecks(){
+    const lang = getLang();
+    modal.querySelectorAll('.region-option').forEach(btn => {
+      const check = btn.querySelector('.region-check');
+      if (!check) return;
+      const region = btn.dataset.region;
+      if ((region === 'ja' && lang === 'ja') || (region === 'es' && lang === 'es')) {
+        check.classList.remove('hidden');
+      } else {
+        check.classList.add('hidden');
+      }
+    });
+  }
+  function showSoonToast(region){
+    const lang = getLang();
+    const msg = lang === 'es'
+      ? 'Estamos trabajando para que pronto puedas comprarlo aquí.'
+      : 'ご購入できるよう、準備を進めています。';
+    let toast = document.getElementById('region-toast');
+    if (!toast){
+      toast = document.createElement('div');
+      toast.id = 'region-toast';
+      toast.setAttribute('role','status');
+      toast.setAttribute('aria-live','polite');
+      document.body.appendChild(toast);
+    }
+    toast.style.cssText = `
+      position:fixed; bottom:24px; left:50%;
+      transform:translateX(-50%) translateY(20px);
+      background:rgba(10,10,10,.92); color:#fff;
+      padding:14px 22px; border-radius:999px;
+      font-size:14px; max-width:90vw;
+      z-index:200; opacity:0;
+      transition:opacity .25s, transform .25s;
+      box-shadow:0 10px 40px rgba(0,0,0,.25);
+      backdrop-filter:blur(10px);
+    `;
+    toast.textContent = msg;
+    requestAnimationFrame(()=>{
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateX(-50%) translateY(0)';
+    });
+    clearTimeout(window.__regionToastT);
+    window.__regionToastT = setTimeout(()=>{
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateX(-50%) translateY(20px)';
+    }, 3200);
+  }
+
+  newSwitcher.addEventListener('click', (e) => { e.preventDefault(); openModal(); });
+  modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+  document.getElementById('region-close')?.addEventListener('click', closeModal);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal(); });
+
+  modal.querySelectorAll('.region-option').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const region = btn.dataset.region;
+      if (region === 'ja') { setLang('ja'); closeModal(); }
+      else if (region === 'es') { setLang('es'); closeModal(); }
+      else if (region === 'br' || region === 'us') {
+        showSoonToast(region);
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>
