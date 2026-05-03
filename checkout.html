@@ -476,7 +476,13 @@ const translations = {
 };
 
 const I18N_KEY = 'openair_lang';
-function getLang(){ return localStorage.getItem(I18N_KEY) || 'ja'; }
+function getLang(){
+  const saved = localStorage.getItem(I18N_KEY);
+  if (saved === 'ja' || saved === 'es') return saved;
+  const browserLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
+  if (browserLang.startsWith('es')) return 'es';
+  return 'ja';
+}
 function t(key){
   const entry = translations[key];
   if (!entry) return key;
