@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OPEN AIR — 呼吸を、整える。</title>
+<script>
+  // Disable browser scroll restoration so initial visits start at top
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  // Strip any leading hash if present (so direct visits start clean)
+  if (location.hash && !location.hash.match(/^#[a-z][\w-]*$/i)) {
+    history.replaceState(null, '', location.pathname + location.search);
+  }
+</script>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
   *{ -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
@@ -403,7 +411,7 @@
       position: absolute;
       right: 14px;
       left: auto;
-      width: 50%;
+      width: 42%;
       padding: 4px 0;
       display: flex;
       align-items: flex-start;
@@ -2119,6 +2127,20 @@ document.querySelectorAll('.flip-card').forEach(card => {
   });
 })();
 
+// ============== Initial scroll position: force top on first visit ==============
+(function(){
+  // Only force-scroll-to-top if URL has no anchor (so deep links still work)
+  if (!window.location.hash){
+    // Run multiple times to overcome iOS Safari sticky-section quirks
+    const toTop = () => window.scrollTo(0, 0);
+    toTop();
+    requestAnimationFrame(toTop);
+    window.addEventListener('load', toTop);
+    setTimeout(toTop, 100);
+    setTimeout(toTop, 300);
+  }
+})();
+
 // ============== Custom smooth scroll (Apple-like easing) ==============
 function smoothScrollTo(targetY, duration){
   const startY = window.scrollY || window.pageYOffset;
@@ -2383,11 +2405,23 @@ const translations = {
 
 const I18N_KEY = 'openair_lang';
 function getLang(){
+  // 1) URL ?lang=xx override (e.g. share a forced-language link)
+  try {
+    const u = new URLSearchParams(location.search).get('lang');
+    if (u === 'ja' || u === 'es') { localStorage.setItem(I18N_KEY, u); return u; }
+  } catch(e){}
+  // 2) Saved manual preference
   const saved = localStorage.getItem(I18N_KEY);
   if (saved === 'ja' || saved === 'es') return saved;
-  // First visit: auto-detect from browser language
-  const browserLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
-  if (browserLang.startsWith('es')) return 'es';
+  // 3) Browser language detection — check the full navigator.languages array
+  const langs = (navigator.languages && navigator.languages.length)
+    ? navigator.languages
+    : [navigator.language || navigator.userLanguage || ''];
+  for (const l of langs){
+    const lc = (l || '').toLowerCase();
+    if (lc.startsWith('es')) return 'es';
+    if (lc.startsWith('ja')) return 'ja';
+  }
   return 'ja';
 }
 function applyLang(lang){

@@ -477,10 +477,23 @@ const translations = {
 
 const I18N_KEY = 'openair_lang';
 function getLang(){
+  // 1) URL ?lang=xx override (e.g. share a forced-language link)
+  try {
+    const u = new URLSearchParams(location.search).get('lang');
+    if (u === 'ja' || u === 'es') { localStorage.setItem(I18N_KEY, u); return u; }
+  } catch(e){}
+  // 2) Saved manual preference
   const saved = localStorage.getItem(I18N_KEY);
   if (saved === 'ja' || saved === 'es') return saved;
-  const browserLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
-  if (browserLang.startsWith('es')) return 'es';
+  // 3) Browser language detection — check the full navigator.languages array
+  const langs = (navigator.languages && navigator.languages.length)
+    ? navigator.languages
+    : [navigator.language || navigator.userLanguage || ''];
+  for (const l of langs){
+    const lc = (l || '').toLowerCase();
+    if (lc.startsWith('es')) return 'es';
+    if (lc.startsWith('ja')) return 'ja';
+  }
   return 'ja';
 }
 function t(key){
