@@ -1376,7 +1376,7 @@
             <div class="ig-overlay-quote">
               <div class="ig-role" data-i18n="amb1_role">ボクサー</div>
               <p class="ig-quote" data-i18n="amb1_quote">毎日のトレーニングで、限界まで追い込む。だからこそ、回復の質にはこだわっています。<br/><br/>OPEN AIRは、呼吸を整えるために使っています。呼吸が安定することで、集中力とパフォーマンスがブレなくなる。<br/><br/>わずかな違いですが、その積み重ねが大きい。今では、欠かせない習慣の一つです。</p>
-              <a class="ig-quote-cta" href="https://instagram.com/ricardobravofighter" target="_blank" rel="noopener noreferrer" data-i18n="amb_cta_visit">Instagramを開く →</a>
+              <a class="ig-quote-cta" href="https://www.instagram.com/reel/DTZ_bAxEz7q/" target="_blank" rel="noopener noreferrer" data-i18n="amb_cta_visit">リールを見る →</a>
             </div>
             <span class="card-plus" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
           </div>
@@ -1392,7 +1392,7 @@
             <div class="ig-overlay-quote">
               <div class="ig-role" data-i18n="amb2_role">デスクワーカー</div>
               <p class="ig-quote" data-i18n="amb2_quote">パソコンに向かう時間が長く、気づくと呼吸が浅くなっていることが多いです。<br/><br/>OPEN AIRを使い始めてから、呼吸がスムーズになり、集中しやすくなりました。<br/><br/>大きな変化ではないけど、その“少し”が、1日のパフォーマンスを変えてくれます。</p>
-              <a class="ig-quote-cta" href="https://instagram.com/willyosco" target="_blank" rel="noopener noreferrer" data-i18n="amb_cta_visit">Instagramを開く →</a>
+              <a class="ig-quote-cta" href="https://www.instagram.com/reel/DXXDjMHDEqZ/" target="_blank" rel="noopener noreferrer" data-i18n="amb_cta_visit">リールを見る →</a>
             </div>
             <span class="card-plus" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
           </div>
@@ -1408,7 +1408,7 @@
             <div class="ig-overlay-quote">
               <div class="ig-role" data-i18n="amb3_role">ケータリングシェフ</div>
               <p class="ig-quote" data-i18n="amb3_quote">現場では常に人の目があるから、使うものにも気を遣います。<br/><br/>OPEN AIRは透明で目立たないので、違和感なく自然に使える。<br/><br/>呼吸を整えながらも、自分のスタイルを崩さずにいられるのがいい。</p>
-              <a class="ig-quote-cta" href="https://instagram.com/natalianzai" target="_blank" rel="noopener noreferrer" data-i18n="amb_cta_visit">Instagramを開く →</a>
+              <a class="ig-quote-cta" href="https://www.instagram.com/reel/DADqgoryQ2I/" target="_blank" rel="noopener noreferrer" data-i18n="amb_cta_visit">リールを見る →</a>
             </div>
             <span class="card-plus" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
           </div>
@@ -2114,13 +2114,14 @@ document.querySelectorAll('.flip-card').forEach(card => {
 function smoothScrollTo(targetY, duration){
   const startY = window.scrollY || window.pageYOffset;
   const distance = targetY - startY;
-  const dur = duration || Math.min(2400, Math.max(900, Math.abs(distance) * 0.45));
+  // Longer duration for long cinematic scrolls; cap at 5s
+  const dur = duration || Math.min(5000, Math.max(1200, Math.abs(distance) * 0.85));
   const startT = performance.now();
   function step(now){
     const elapsed = now - startT;
     const t = Math.min(elapsed / dur, 1);
-    // easeInOutQuad — feels smooth and Apple-like for long scrolls
-    const eased = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+    // easeInOutSine — gentler than easeInOutQuad, no aggressive mid-acceleration
+    const eased = -(Math.cos(Math.PI * t) - 1) / 2;
     window.scrollTo(0, startY + distance * eased);
     if (t < 1) requestAnimationFrame(step);
   }
@@ -2330,7 +2331,7 @@ const translations = {
   "amb2_quote": { ja: "パソコンに向かう時間が長く、気づくと呼吸が浅くなっていることが多いです。<br/><br/>OPEN AIRを使い始めてから、呼吸がスムーズになり、集中しやすくなりました。<br/><br/>大きな変化ではないけど、その“少し”が、1日のパフォーマンスを変えてくれます。", es: "Paso muchas horas frente a la pantalla y, sin darme cuenta, mi respiración se vuelve corta.<br/><br/>Desde que uso OPEN AIR, respiro con más fluidez y me concentro mejor.<br/><br/>No es un gran cambio, pero ese “pequeño algo” transforma mi día." },
   "amb3_role":  { ja: "ケータリングシェフ", es: "Chef de catering" },
   "amb3_quote": { ja: "現場では常に人の目があるから、使うものにも気を遣います。<br/><br/>OPEN AIRは透明で目立たないので、違和感なく自然に使える。<br/><br/>呼吸を整えながらも、自分のスタイルを崩さずにいられるのがいい。", es: "En mi trabajo siempre hay miradas, así que cuido lo que uso.<br/><br/>OPEN AIR es transparente, casi invisible. Se siente natural.<br/><br/>Puedo respirar mejor sin perder mi estilo." },
-  "amb_cta_visit": { ja: "Instagramを開く →", es: "Abrir Instagram →" },
+  "amb_cta_visit": { ja: "リールを見る →", es: "Ver el Reel →" },
 
   // HONEST NOTES
   "honest_h2":  { ja: "正直に、お伝えします。", es: "Te lo decimos sin rodeos." },
