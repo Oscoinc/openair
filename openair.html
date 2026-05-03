@@ -61,34 +61,36 @@
   });
 
   // ============== Dynamic theme-color: match browser UI (top/bottom bars) to page bg ==============
-  // iOS Safari is finicky about <meta name="theme-color"> updates — best results come from
-  // (a) replacing the entire <meta> element rather than mutating its content attribute, and
-  // (b) also setting <html> and <body> background-color so the bottom toolbar follows.
+  // iOS Safari can be picky about <meta name="theme-color"> dynamic updates. We try every angle:
+  //  (a) wipe ALL theme-color metas and append a fresh one (Safari ignores attribute mutations sometimes)
+  //  (b) also mutate the .content of any remaining tag (covers the opposite quirk)
+  //  (c) set <html> AND <body> background-color (bottom toolbar reflects page bg on iOS)
+  //  (d) trigger a tiny reflow so iOS re-evaluates chrome color
   (function(){
     var last = null;
     function setColor(color){
-      // 1) Replace the <meta name="theme-color"> element entirely. iOS Safari sometimes
-      //    ignores attribute mutations but does react to a fresh meta node.
-      var oldMeta = document.querySelector('meta[name="theme-color"]');
-      if (oldMeta && oldMeta.parentNode) oldMeta.parentNode.removeChild(oldMeta);
+      // a) remove every existing theme-color meta
+      var metas = document.querySelectorAll('meta[name="theme-color"]');
+      metas.forEach(function(m){ if (m.parentNode) m.parentNode.removeChild(m); });
+      // b) add a fresh one
       var meta = document.createElement('meta');
       meta.setAttribute('name', 'theme-color');
       meta.setAttribute('content', color);
       document.head.appendChild(meta);
-      // 2) Drive <html>/<body> background-color too — iOS Safari reflects this for the
-      //    bottom toolbar (and as a fallback for older devices that ignore theme-color).
+      // c) drive html/body background — iOS uses this for bottom toolbar tint
       try {
         document.documentElement.style.backgroundColor = color;
         if (document.body) document.body.style.backgroundColor = color;
       } catch(e){}
+      // d) tiny reflow nudge
+      try { void document.documentElement.offsetHeight; } catch(e){}
     }
     function update(){
       var cin = document.getElementById('cinematic');
       if (!cin) return;
       var rect = cin.getBoundingClientRect();
       // When cinematic section's bottom passes above viewport top, switch to white.
-      // Use a small buffer (rect.bottom < 80) so the swap kicks in slightly BEFORE
-      // the user reaches the white concept section, avoiding a visible color flash.
+      // Buffer (rect.bottom < 80) lets the swap kick in just BEFORE the white section appears.
       var isPast = rect.bottom < 80;
       var next = isPast ? '#ffffff' : '#000000';
       if (next !== last){
