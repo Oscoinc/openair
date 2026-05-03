@@ -7,10 +7,56 @@
 <script>
   // Disable browser scroll restoration so initial visits start at top
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-  // Strip any leading hash if present (so direct visits start clean)
-  if (location.hash && !location.hash.match(/^#[a-z][\w-]*$/i)) {
+  // Strip ANY hash on direct page loads/refreshes so we never deep-link to a section
+  // (deep links to e.g. #concept will only be honored from explicit in-page nav clicks)
+  if (location.hash) {
     history.replaceState(null, '', location.pathname + location.search);
   }
+  // Hard scroll lock: force window.scrollY=0 every frame for ~900ms to defeat
+  // iOS Safari's scroll restoration which can run after our load handlers.
+  // Released early on the first user-initiated scroll (touch/wheel/key).
+  window.__openairScrollLock = function(){
+    if (window.location.hash) return; // never lock if user explicitly deep-linked
+    var locked = true;
+    var start = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+    var DURATION = 900;
+    function toTop(){
+      try { window.scrollTo(0, 0); } catch(e){}
+      if (document.scrollingElement) document.scrollingElement.scrollTop = 0;
+      if (document.documentElement) document.documentElement.scrollTop = 0;
+      if (document.body) document.body.scrollTop = 0;
+    }
+    function tick(now){
+      if (!locked) return;
+      toTop();
+      var elapsed = ((typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now()) - start;
+      if (elapsed < DURATION) requestAnimationFrame(tick);
+      else locked = false;
+    }
+    toTop();
+    requestAnimationFrame(tick);
+    // Release the lock on the FIRST genuine user interaction so we never fight a real scroll.
+    var release = function(){
+      locked = false;
+      ['touchstart','wheel','keydown','pointerdown'].forEach(function(ev){
+        window.removeEventListener(ev, release, { passive: true, capture: true });
+      });
+    };
+    ['touchstart','wheel','keydown','pointerdown'].forEach(function(ev){
+      window.addEventListener(ev, release, { passive: true, capture: true });
+    });
+  };
+  window.__openairScrollLock();
+  // bfcache restore (iOS back/forward cache) doesn't re-run inline scripts, but pageshow fires
+  window.addEventListener('pageshow', function(e){
+    if (window.location.hash) return;
+    window.__openairScrollLock();
+  });
+  // On refresh, scroll to 0 BEFORE iOS saves the position
+  window.addEventListener('beforeunload', function(){
+    if (window.location.hash) return;
+    try { window.scrollTo(0, 0); } catch(e){}
+  });
 </script>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
