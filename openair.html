@@ -3,8 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- Dynamic theme-color: starts black to match hero, JS swaps to white when user scrolls past cinematic -->
-<meta name="theme-color" content="#000000">
 <title>OPEN AIR — 呼吸を、整える。</title>
 <script>
   // Disable browser scroll restoration so initial visits start at top
@@ -60,34 +58,18 @@
     try { window.scrollTo(0, 0); } catch(e){}
   });
 
-  // ============== Dynamic browser UI color: toggle .bars-light class + theme-color meta ==============
-  // CSS handles the visible html/body bg via .bars-light (with !important).
-  // The meta theme-color tag is also updated as a belt-and-suspenders for iOS Safari.
+  // ============== Dynamic page bg: toggle .bars-light so iOS auto-samples chrome color ==============
+  // No <meta name="theme-color"> — we let iOS Safari sample the visible page bg itself.
+  // CSS toggles html/body background via .bars-light (with !important).
   (function(){
     var lastIsLight = null;
-    function setLight(isLight){
-      // 1) Toggle the CSS class — this is the reliable mechanism
-      document.documentElement.classList.toggle('bars-light', isLight);
-      // 2) Replace theme-color meta entirely (some Safari builds need a new node)
-      var color = isLight ? '#ffffff' : '#000000';
-      document.querySelectorAll('meta[name="theme-color"]').forEach(function(m){
-        if (m.parentNode) m.parentNode.removeChild(m);
-      });
-      var meta = document.createElement('meta');
-      meta.setAttribute('name', 'theme-color');
-      meta.setAttribute('content', color);
-      document.head.appendChild(meta);
-      // 3) Force tiny reflow to nudge iOS chrome reevaluation
-      try { void document.documentElement.offsetHeight; } catch(e){}
-    }
     function update(){
       var cin = document.getElementById('cinematic');
       if (!cin) return;
       var rect = cin.getBoundingClientRect();
-      // Switch to light when the cinematic section's bottom is approaching viewport top
       var isLight = rect.bottom < 80;
       if (isLight !== lastIsLight){
-        setLight(isLight);
+        document.documentElement.classList.toggle('bars-light', isLight);
         lastIsLight = isLight;
       }
     }
