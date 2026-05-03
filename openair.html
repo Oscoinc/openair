@@ -60,42 +60,35 @@
     try { window.scrollTo(0, 0); } catch(e){}
   });
 
-  // ============== Dynamic theme-color: match browser UI (top/bottom bars) to page bg ==============
-  // iOS Safari can be picky about <meta name="theme-color"> dynamic updates. We try every angle:
-  //  (a) wipe ALL theme-color metas and append a fresh one (Safari ignores attribute mutations sometimes)
-  //  (b) also mutate the .content of any remaining tag (covers the opposite quirk)
-  //  (c) set <html> AND <body> background-color (bottom toolbar reflects page bg on iOS)
-  //  (d) trigger a tiny reflow so iOS re-evaluates chrome color
+  // ============== Dynamic browser UI color: toggle .bars-light class + theme-color meta ==============
+  // CSS handles the visible html/body bg via .bars-light (with !important).
+  // The meta theme-color tag is also updated as a belt-and-suspenders for iOS Safari.
   (function(){
-    var last = null;
-    function setColor(color){
-      // a) remove every existing theme-color meta
-      var metas = document.querySelectorAll('meta[name="theme-color"]');
-      metas.forEach(function(m){ if (m.parentNode) m.parentNode.removeChild(m); });
-      // b) add a fresh one
+    var lastIsLight = null;
+    function setLight(isLight){
+      // 1) Toggle the CSS class — this is the reliable mechanism
+      document.documentElement.classList.toggle('bars-light', isLight);
+      // 2) Replace theme-color meta entirely (some Safari builds need a new node)
+      var color = isLight ? '#ffffff' : '#000000';
+      document.querySelectorAll('meta[name="theme-color"]').forEach(function(m){
+        if (m.parentNode) m.parentNode.removeChild(m);
+      });
       var meta = document.createElement('meta');
       meta.setAttribute('name', 'theme-color');
       meta.setAttribute('content', color);
       document.head.appendChild(meta);
-      // c) drive html/body background — iOS uses this for bottom toolbar tint
-      try {
-        document.documentElement.style.backgroundColor = color;
-        if (document.body) document.body.style.backgroundColor = color;
-      } catch(e){}
-      // d) tiny reflow nudge
+      // 3) Force tiny reflow to nudge iOS chrome reevaluation
       try { void document.documentElement.offsetHeight; } catch(e){}
     }
     function update(){
       var cin = document.getElementById('cinematic');
       if (!cin) return;
       var rect = cin.getBoundingClientRect();
-      // When cinematic section's bottom passes above viewport top, switch to white.
-      // Buffer (rect.bottom < 80) lets the swap kick in just BEFORE the white section appears.
-      var isPast = rect.bottom < 80;
-      var next = isPast ? '#ffffff' : '#000000';
-      if (next !== last){
-        setColor(next);
-        last = next;
+      // Switch to light when the cinematic section's bottom is approaching viewport top
+      var isLight = rect.bottom < 80;
+      if (isLight !== lastIsLight){
+        setLight(isLight);
+        lastIsLight = isLight;
       }
     }
     function init(){
@@ -109,7 +102,6 @@
     } else {
       init();
     }
-    // Re-evaluate after bfcache restore, since scroll position may differ
     window.addEventListener('pageshow', update);
   })();
 </script>
@@ -124,8 +116,12 @@
                  Arial, sans-serif;
     color:#1d1d1f;
   }
-  html{ scroll-behavior:smooth; }
-  body{ background:#0a0a0a; }
+  html{ scroll-behavior:smooth; background:#0a0a0a; transition: background-color .25s ease; }
+  body{ background:#0a0a0a; transition: background-color .25s ease; }
+  /* When the user scrolls past the dark cinematic hero, JS adds .bars-light to <html>
+     so iOS Safari's address bar / bottom toolbar (which sample html bg) turn white. */
+  html.bars-light{ background:#ffffff !important; }
+  html.bars-light body{ background:#ffffff !important; }
 
   /* === Hero stage colors === */
   .stage-bg{
