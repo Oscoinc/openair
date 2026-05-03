@@ -411,7 +411,7 @@
       position: absolute;
       right: 14px;
       left: auto;
-      width: 42%;
+      width: 50%;
       padding: 4px 0;
       display: flex;
       align-items: flex-start;
@@ -456,6 +456,7 @@
       line-height: 1.55;
       color: rgba(63,63,70,.95);
       display: block;
+      white-space: nowrap;
       text-shadow: 0 1px 6px rgba(255,255,255,.7);
     }
     /* Stage size */
@@ -2127,18 +2128,36 @@ document.querySelectorAll('.flip-card').forEach(card => {
   });
 })();
 
-// ============== Initial scroll position: force top on first visit ==============
+// ============== Initial scroll position: force top on every load/refresh ==============
 (function(){
   // Only force-scroll-to-top if URL has no anchor (so deep links still work)
-  if (!window.location.hash){
-    // Run multiple times to overcome iOS Safari sticky-section quirks
-    const toTop = () => window.scrollTo(0, 0);
+  if (window.location.hash) return;
+
+  const toTop = () => {
+    try { window.scrollTo(0, 0); } catch(e){}
+    if (document.scrollingElement) document.scrollingElement.scrollTop = 0;
+    if (document.documentElement) document.documentElement.scrollTop = 0;
+    if (document.body) document.body.scrollTop = 0;
+  };
+
+  // Fire as early and as often as possible to overcome iOS Safari scroll restoration on refresh
+  toTop();
+  requestAnimationFrame(toTop);
+  document.addEventListener('DOMContentLoaded', toTop);
+  window.addEventListener('load', toTop);
+  // pageshow fires on every page load INCLUDING bfcache restore (back/forward, iOS refresh quirks)
+  window.addEventListener('pageshow', function(e){
     toTop();
     requestAnimationFrame(toTop);
-    window.addEventListener('load', toTop);
-    setTimeout(toTop, 100);
-    setTimeout(toTop, 300);
-  }
+    setTimeout(toTop, 50);
+    setTimeout(toTop, 200);
+  });
+  // Before refresh/navigation, reset scroll so iOS doesn't save a non-zero position
+  window.addEventListener('beforeunload', toTop);
+  // Catch-all timed retries (sticky sections + image loads can shift layout late)
+  setTimeout(toTop, 100);
+  setTimeout(toTop, 300);
+  setTimeout(toTop, 600);
 })();
 
 // ============== Custom smooth scroll (Apple-like easing) ==============
