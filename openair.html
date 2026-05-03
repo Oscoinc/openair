@@ -421,6 +421,31 @@
     /* --- Pricing cards: tighten padding --- */
     section#buy .rounded-\[28px\]{ padding: 28px !important; }
 
+    /* === Mobile horizontal scroll carousel (Apple-style snap) === */
+    .mobile-h-scroll{
+      display: flex !important;
+      grid-template-columns: none !important;
+      overflow-x: auto;
+      overflow-y: visible;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-x: contain;
+      gap: 14px !important;
+      padding: 12px 24px 28px 24px;
+      margin-left: -24px;
+      margin-right: -24px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .mobile-h-scroll::-webkit-scrollbar{ display: none; }
+    .mobile-h-scroll > *{
+      flex: 0 0 86% !important;
+      scroll-snap-align: center;
+      min-width: 0;
+      width: auto !important;
+    }
+
     /* --- Footer: stack and align --- */
     footer .flex.flex-wrap{ justify-content: center !important; flex-direction: column; gap: 16px !important; }
 
@@ -612,7 +637,7 @@
 <!-- ====== Persistent Nav (テーマ自動切替) ====== -->
 <nav id="nav" data-theme="dark" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 glass-pill-dark rounded-full pl-3 pr-2 py-2 flex items-center gap-5">
   <span class="nav-divider pr-3 border-r border-white/10 flex items-center gap-2">
-    <span id="nav-logo" class="nav-link-strong text-[15px] font-semibold tracking-tight">OPEN AIR</span>
+    <span id="nav-logo" class="nav-link-strong text-[15px] font-semibold tracking-tight cursor-pointer" role="button" tabindex="0" aria-label="ページ上部へ戻る / Volver arriba">OPEN AIR</span>
   </span>
   <a href="#concept"  class="nav-link text-[13px] transition" data-i18n="nav_concept">コンセプト</a>
   <a href="#features" class="nav-link text-[13px] transition" data-i18n="nav_features">特徴</a>
@@ -941,7 +966,7 @@
         <h2 class="text-4xl md:text-5xl font-semibold tracking-tight text-gradient leading-[1.15]" data-i18n="scenes_h2">「寝るためだけ」の<br/>ものではない。</h2>
         <p class="mt-6 text-zinc-500 max-w-xl mx-auto leading-relaxed" data-i18n="scenes_sub">あなたの 1 日を通して、使えます。</p>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 reveal" data-reveal>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 reveal mobile-h-scroll" data-reveal>
 
         <!-- SCENE 1 — 寝る前 (assets/20.png) -->
         <div class="scene-card rounded-3xl aspect-[4/5]" role="button" tabindex="0" aria-pressed="false" aria-label="寝る前のシーン: タップで詳細を表示">
@@ -1074,7 +1099,7 @@
       </div>
 
       <!-- 4 product cards -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 reveal mb-16" data-reveal>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 reveal mb-16 mobile-h-scroll" data-reveal>
         <!-- Card 1: 空気が通る -->
         <div class="glass rounded-3xl p-7 flex flex-col hover:-translate-y-1 transition-transform duration-300">
           <div class="text-[18px] font-semibold mb-3 tracking-tight text-zinc-900" data-i18n="function_card1_title">自然に、空気が通る。</div>
@@ -1202,7 +1227,7 @@
       </div>
 
       <!-- 3 variation cards -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mobile-h-scroll">
         <div class="rounded-2xl bg-zinc-50 p-5 grid grid-cols-[1fr_130px] gap-3 items-center">
           <div>
             <div class="flex items-center gap-2.5 mb-2">
@@ -1256,7 +1281,7 @@
         <h2 class="text-4xl md:text-5xl font-semibold tracking-tight text-gradient leading-[1.15]" data-i18n="ambassadors_h2">使っている人たち。</h2>
         <p class="mt-6 text-zinc-500 max-w-xl mx-auto leading-relaxed" data-i18n="ambassadors_sub">それぞれの 1 日を支える、それぞれの呼吸。</p>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 reveal" data-reveal>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 reveal mobile-h-scroll" data-reveal>
 
         <!-- AMBASSADOR CARD 1 — Boxer (ricardobravofighter) -->
         <div class="ig-card" role="button" tabindex="0" aria-label="@ricardobravofighter の証言を見る">
@@ -1340,7 +1365,7 @@
       <h2 class="text-4xl md:text-5xl font-semibold tracking-tight text-gradient leading-[1.15]" data-i18n="buy_h2">あなたのペースで、<br/>続けられる。</h2>
       <p class="mt-5 text-zinc-500" data-i18n="buy_sub">送料無料 · 30 日返品保証</p>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 reveal" data-reveal>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 reveal mobile-h-scroll" data-reveal>
       <div class="rounded-[28px] glass p-8 transition-all duration-300 hover:-translate-y-1">
         <div class="text-[12px] tracking-[0.18em] uppercase text-zinc-500">Single</div>
         <div class="mt-6 text-4xl font-semibold tracking-tight" data-i18n="buy_plan1_price">¥1,980</div>
@@ -1978,6 +2003,17 @@ document.querySelectorAll('.flip-card').forEach(card => {
     if (!e.target.closest('.ig-card')) {
       document.querySelectorAll('.ig-card.is-revealed').forEach(c => c.classList.remove('is-revealed'));
     }
+  });
+})();
+
+// ============== Logo click → scroll to top ==============
+(function(){
+  const logo = document.getElementById('nav-logo');
+  if (!logo) return;
+  const scrollTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+  logo.addEventListener('click', scrollTop);
+  logo.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); scrollTop(); }
   });
 })();
 
