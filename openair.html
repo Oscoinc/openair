@@ -394,8 +394,21 @@
     }
     #design-anim .design-pin h2{ font-size: 24px !important; line-height: 1.2 !important; }
     #design-anim .design-pin .text-\[12px\]{ font-size: 10px !important; }
-    /* Hide step indicator and right-side detailed labels on mobile (too cramped) */
-    #design-labels{ display: none !important; }
+    /* Show feature labels on mobile, position above the product, compact layout */
+    #design-labels{
+      display: block !important;
+      order: -1 !important;
+      max-width: 100% !important;
+      padding: 0 !important;
+    }
+    #design-labels .space-y-10{ gap: 18px !important; display: flex; flex-direction: column; }
+    #design-labels .design-label{ padding: 0 8px; }
+    #design-labels .design-label .text-\[15px\]{ font-size: 14px !important; }
+    #design-labels .design-label p{ font-size: 11.5px !important; line-height: 1.7 !important; }
+    #design-labels .design-label svg[width="44"]{ width: 32px; height: auto; }
+    #design-labels .design-label .w-9{ width: 28px; height: 28px; }
+    /* Henkel pill smaller */
+    #design-labels > .design-label.mt-8{ margin-top: 16px !important; font-size: 9.5px; padding: 4px 10px; }
     /* Stage size */
     #design-anim .design-pin .aspect-\[5\/4\]{
       max-height: 42vh !important;
@@ -641,10 +654,15 @@
   <span class="nav-divider pr-3 border-r border-white/10 flex items-center gap-2">
     <span id="nav-logo" class="nav-link-strong text-[15px] font-semibold tracking-tight cursor-pointer" role="button" tabindex="0" aria-label="ページ上部へ戻る / Volver arriba">OPEN AIR</span>
   </span>
-  <a href="#concept"  class="nav-link text-[13px] transition" data-i18n="nav_concept">コンセプト</a>
-  <a href="#features" class="nav-link text-[13px] transition" data-i18n="nav_features">特徴</a>
-  <a href="#scenes"   class="nav-link text-[13px] transition" data-i18n="nav_scenes">シーン</a>
-  <a href="#buy"      class="nav-link text-[13px] transition" data-i18n="nav_buy">購入</a>
+  <a href="#concept"     class="nav-link text-[13px] transition" data-i18n="nav_concept">コンセプト</a>
+  <a href="#why"         class="nav-link text-[13px] transition" data-i18n="nav_why">課題</a>
+  <a href="#benefits"    class="nav-link text-[13px] transition" data-i18n="nav_benefits">効果</a>
+  <a href="#scenes"      class="nav-link text-[13px] transition" data-i18n="nav_scenes">シーン</a>
+  <a href="#design-anim" class="nav-link text-[13px] transition" data-i18n="nav_design">デザイン</a>
+  <a href="#features"    class="nav-link text-[13px] transition" data-i18n="nav_features">特徴</a>
+  <a href="#wear"        class="nav-link text-[13px] transition" data-i18n="nav_howto">使い方</a>
+  <a href="#users"       class="nav-link text-[13px] transition" data-i18n="nav_users">声</a>
+  <a href="#buy"         class="nav-link text-[13px] transition" data-i18n="nav_buy">購入</a>
   <a href="./cart.html" id="nav-cart" class="ml-1 px-4 py-1.5 rounded-full text-[13px] font-medium transition relative"><span data-i18n="nav_cart">カート</span><span id="nav-cart-badge" class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] grid place-items-center bg-red-500 text-white text-[10px] font-bold rounded-full px-1">0</span></a>
 </nav>
 
@@ -744,7 +762,7 @@
   </section>
 
   <!-- ============== WHY ============== -->
-  <section class="py-32 px-6 bg-zinc-50">
+  <section id="why" class="py-32 px-6 bg-zinc-50">
     <div class="max-w-5xl mx-auto">
       <div class="text-center mb-16 reveal" data-reveal>
         <div class="text-[12px] tracking-[0.32em] uppercase text-zinc-500 mb-4">Why it matters</div>
@@ -856,7 +874,7 @@
   </section>
 
   <!-- ============== BENEFITS ============== -->
-  <section class="py-32 px-6">
+  <section id="benefits" class="py-32 px-6">
     <div class="max-w-4xl mx-auto reveal" data-reveal>
       <div class="text-center mb-14">
         <div class="text-[12px] tracking-[0.32em] uppercase text-zinc-500 mb-4">Benefits</div>
@@ -1406,8 +1424,7 @@
       <div class="space-y-7 text-[19px] md:text-[22px] text-zinc-700 leading-[2.2]">
         <p data-i18n="closing_p1">人は、1日に約2万回、呼吸する。</p>
         <p data-i18n="closing_p2">そのほとんどは、無意識のまま。</p>
-        <p class="text-zinc-900 font-medium" data-i18n="closing_p3">だからこそ、<br/>整える意味がある。</p>
-        <p class="text-gradient font-semibold text-[22px] md:text-[28px] tracking-tight pt-4" data-i18n="closing_p4">OPEN AIR。</p>
+        <p class="text-zinc-900 font-medium" data-i18n="closing_p3">だからこそ、</p>
       </div>
     </div>
   </section>
@@ -1837,13 +1854,21 @@
     //   step 2 (Medical-Grade Grip) → 0.60 - 0.80 (3 layers settled)
     if (labelsBox){
       const labels = labelsBox.querySelectorAll('.design-label');
-      const ranges = [[0.05, 0.20], [0.30, 0.50], [0.60, 0.80]];
+      const isMobile = window.matchMedia('(max-width: 768px)').matches;
+      // Mobile: all features fade in AFTER morph completes (sequential, top-stacked)
+      // Desktop: features sync with the product phase changes
+      const ranges = isMobile
+        ? [[0.55, 0.65], [0.65, 0.75], [0.78, 0.88]]
+        : [[0.05, 0.20], [0.30, 0.50], [0.60, 0.80]];
       labels.forEach(el => {
         const step = parseInt(el.dataset.designStep || '0', 10);
         const r = ranges[step] || ranges[0];
         const t = smooth(norm(p, r[0], r[1]));
         el.style.opacity = String(t);
-        el.style.transform = `translateX(${((1-t)*16).toFixed(1)}px)`;
+        // mobile: fade up from below; desktop: from right
+        el.style.transform = isMobile
+          ? `translateY(${((1-t)*14).toFixed(1)}px)`
+          : `translateX(${((1-t)*16).toFixed(1)}px)`;
       });
     }
 
@@ -2091,8 +2116,13 @@ document.querySelectorAll('.scene-card').forEach(card => {
 const translations = {
   // Navigation
   "nav_concept":  { ja: "コンセプト", es: "Concepto" },
-  "nav_features": { ja: "特徴", es: "Características" },
+  "nav_why":      { ja: "課題", es: "Por qué" },
+  "nav_benefits": { ja: "効果", es: "Beneficios" },
   "nav_scenes":   { ja: "シーン", es: "Momentos" },
+  "nav_design":   { ja: "デザイン", es: "Diseño" },
+  "nav_features": { ja: "特徴", es: "Características" },
+  "nav_howto":    { ja: "使い方", es: "Cómo usar" },
+  "nav_users":    { ja: "声", es: "Voces" },
   "nav_buy":      { ja: "購入", es: "Comprar" },
   "nav_cart":     { ja: "カート", es: "Carrito" },
 
@@ -2255,8 +2285,7 @@ const translations = {
   // CLOSING
   "closing_p1": { ja: "人は、1日に約2万回、呼吸する。", es: "Respiramos cerca de 20 000 veces al día." },
   "closing_p2": { ja: "そのほとんどは、無意識のまま。", es: "Casi siempre, sin darnos cuenta." },
-  "closing_p3": { ja: "だからこそ、<br/>整える意味がある。", es: "Por eso<br/>vale la pena cuidarla." },
-  "closing_p4": { ja: "OPEN AIR。", es: "OPEN AIR." },
+  "closing_p3": { ja: "だからこそ、", es: "Por eso," },
 
   // FINAL CTA
   "finalcta_h2":  { ja: "呼吸を、整える。", es: "Respira mejor." },
