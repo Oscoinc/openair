@@ -1916,10 +1916,19 @@
       layersScale = 1.0 + breath;
     }
 
+    // Mobile: after morph completes, slide the layers image to the LEFT
+    // so the right-side feature pills don't overlap with the product
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    let layersSlideX = 0;
+    if (isMobile && p >= 0.45){
+      // Smoothly slide left from p=0.45 → p=0.60, then hold
+      layersSlideX = lerp(0, -16, smooth(norm(p, 0.45, 0.60)));
+    }
+
     single.style.opacity = String(singleOp);
     single.style.transform = `scale(${singleScale.toFixed(3)})`;
     layers.style.opacity = String(layersOp);
-    layers.style.transform = `scale(${layersScale.toFixed(3)})`;
+    layers.style.transform = `translateX(${layersSlideX}vw) scale(${layersScale.toFixed(3)})`;
 
     // Right-side labels: each appears at its own phase, sequentially
     // Phase windows aligned with product transitions:
