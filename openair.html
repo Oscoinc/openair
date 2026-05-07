@@ -785,9 +785,9 @@
 
 <!-- ====== Persistent Nav (テーマ自動切替) ====== -->
 <nav id="nav" data-theme="dark" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 glass-pill-dark rounded-full pl-3 pr-2 py-2 flex items-center gap-5">
-  <span class="nav-divider pr-3 border-r border-white/10 flex items-center" style="gap:10px;">
-    <img id="nav-osco" src="./assets/osco_logo.png?v=1" alt="OSCO" class="block" style="height:18px; width:auto; transform:translateY(0.5px);" onerror="this.style.display='none'">
-    <span id="nav-logo" class="nav-link-strong text-[15px] font-semibold tracking-tight cursor-pointer leading-none" role="button" tabindex="0" aria-label="ページ上部へ戻る / Volver arriba">OPEN AIR</span>
+  <span class="nav-divider pr-3 border-r border-white/10 flex items-center flex-shrink-0" style="gap:10px; white-space:nowrap;">
+    <img id="nav-osco" src="./assets/osco_logo.png?v=1" alt="OSCO" class="block flex-shrink-0" style="height:18px; width:auto; transform:translateY(0.5px);" onerror="this.style.display='none'">
+    <span id="nav-logo" class="nav-link-strong text-[15px] font-semibold tracking-tight cursor-pointer leading-none whitespace-nowrap" role="button" tabindex="0" aria-label="ページ上部へ戻る / Volver arriba">OPEN AIR</span>
   </span>
   <a href="#concept"     class="nav-link text-[13px] transition" data-i18n="nav_concept">コンセプト</a>
   <a href="#why"         class="nav-link text-[13px] transition" data-i18n="nav_why">課題</a>
@@ -796,7 +796,7 @@
   <a href="#features"    class="nav-link text-[13px] transition" data-i18n="nav_features">特徴</a>
   <a href="#wear"        class="nav-link text-[13px] transition" data-i18n="nav_howto">使い方</a>
   <a href="#buy"         class="nav-link text-[13px] transition" data-i18n="nav_buy">購入</a>
-  <a href="./cart.html" id="nav-cart" class="ml-1 px-4 py-1.5 rounded-full text-[13px] font-medium transition relative"><span data-i18n="nav_cart">カート</span><span id="nav-cart-badge" class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] grid place-items-center bg-red-500 text-white text-[10px] font-bold rounded-full px-1">0</span></a>
+  <a href="./cart.html" id="nav-cart" class="ml-1 px-4 py-1.5 rounded-full text-[13px] font-medium transition relative whitespace-nowrap flex-shrink-0"><span data-i18n="nav_cart">カート</span><span id="nav-cart-badge" class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] grid place-items-center bg-red-500 text-white text-[10px] font-bold rounded-full px-1">0</span></a>
 </nav>
 
 <!-- ====== Cinematic Scroll Hero ====== -->
