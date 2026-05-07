@@ -545,9 +545,11 @@
     }
     /* Mobile Henkel pill: matches the desktop rounded-border pill — overrides the generic .info span styling */
     .design-mobile-pill .info span.design-mobile-henkel{
-      display: inline-flex !important;
+      display: flex !important;
       align-items: center;
-      margin-top: 6px;
+      justify-content: center;
+      width: fit-content;
+      margin: 8px auto 0 auto;
       padding: 3px 9px;
       border: 1px solid rgba(63,63,70,.22);
       border-radius: 999px;
@@ -1099,7 +1101,7 @@
                       stroke-dasharray="87.96 263.89" transform="rotate(-90 50 50)"/>
                   </svg>
                 </div>
-                <div class="flip-stat-number">1/3</div>
+                <div class="flip-stat-number" data-counter-target="1" data-counter-suffix="/3">1/3</div>
                 <div class="flip-stat-label" data-i18n="why_card1_stat_label">人生の睡眠時間</div>
               </div>
               <div class="flip-back-divider"></div>
@@ -1168,7 +1170,7 @@
                     <circle cx="50" cy="50" r="2" fill="#fff"/>
                   </svg>
                 </div>
-                <div class="flip-stat-number">8h+</div>
+                <div class="flip-stat-number" data-counter-target="8" data-counter-suffix="h+">8h+</div>
                 <div class="flip-stat-label" data-i18n="why_card3_stat_label">毎日の集中時間</div>
               </div>
               <div class="flip-back-divider"></div>
@@ -1205,7 +1207,7 @@
                     </g>
                   </svg>
                 </div>
-                <div class="flip-stat-number">365</div>
+                <div class="flip-stat-number" data-counter-target="365">365</div>
                 <div class="flip-stat-label" data-i18n="why_card4_stat_label">日の積み重ね</div>
               </div>
               <div class="flip-back-divider"></div>
