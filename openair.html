@@ -672,6 +672,51 @@
     text-transform:uppercase;
     margin-bottom:8px;
   }
+  /* Stat block on flip-back: big number + label + subtle visualization */
+  .flip-stat{
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    margin-bottom:10px;
+    position:relative;
+  }
+  .flip-stat-viz{
+    position:absolute;
+    inset:0;
+    display:flex; align-items:center; justify-content:center;
+    pointer-events:none;
+    opacity:.18;
+  }
+  .flip-stat-viz svg{ width:96px; height:96px; }
+  .flip-stat-number{
+    position:relative;
+    font-size:40px;
+    line-height:1;
+    font-weight:600;
+    letter-spacing:-0.02em;
+    color:#fff;
+    background: linear-gradient(180deg, #ffffff 0%, rgba(255,255,255,.72) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom:4px;
+  }
+  .flip-stat-label{
+    position:relative;
+    font-size:9.5px;
+    letter-spacing:.18em;
+    color:rgba(255,255,255,.55);
+    text-transform:uppercase;
+  }
+  .flip-back-divider{
+    width:24px;
+    height:1px;
+    background:rgba(255,255,255,.22);
+    margin:8px auto;
+  }
+  @media (max-width:768px){
+    .flip-stat-number{ font-size:32px; }
+    .flip-stat-viz svg{ width:78px; height:78px; }
+    .flip-stat-label{ font-size:8.5px; }
+  }
   @media (hover:hover){
     .flip-card:hover .flip-inner{ transform:scale(1.02); }
     .flip-card.flipped:hover .flip-inner{ transform:rotateY(180deg) scale(1.02); }
@@ -779,6 +824,41 @@
   .card-plus.card-plus-sm svg{ width: 12px; height: 12px; stroke-width: 2.4; }
   /* Flip back face: show "×" by default (rotated 45deg) */
   .flip-back .card-plus{ transform: rotate(45deg); }
+
+  /* ===== Closing manifesto: giant number reveal ===== */
+  .closing-bignum-wrap{
+    position:relative;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    line-height:.9;
+  }
+  .closing-bignum{
+    font-size: clamp(96px, 22vw, 320px);
+    font-weight: 600;
+    letter-spacing: -0.045em;
+    line-height: 0.9;
+    color: #0a0a0a;
+    background: linear-gradient(180deg, #0a0a0a 0%, #6e6e73 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-variant-numeric: tabular-nums;
+    transition: opacity .4s cubic-bezier(.22,.8,.2,1);
+    will-change: opacity;
+  }
+  .closing-bignum-caption{
+    margin-top: 18px;
+    font-size: 11px;
+    letter-spacing: .32em;
+    text-transform: uppercase;
+    color: rgba(63,63,70,.6);
+    transition: opacity .8s cubic-bezier(.22,.8,.2,1) .3s, transform .8s cubic-bezier(.22,.8,.2,1) .3s;
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  .closing-bignum-wrap.is-revealed .closing-bignum-caption{
+    opacity: 1;
+    transform: translateY(0);
+  }
 </style>
 </head>
 <body class="overflow-x-hidden">
@@ -879,6 +959,18 @@
 <!-- ====== After-cinematic content (white sections) ====== -->
 <main id="post" class="bg-white relative">
 
+  <!-- ============== INTERLUDE — Giant 20,000 reveal (right after cinematic) ============== -->
+  <section id="interlude" class="py-28 md:py-40 px-6 overflow-hidden">
+    <div class="max-w-6xl mx-auto text-center reveal" data-reveal>
+      <div class="text-[12px] tracking-[0.32em] uppercase text-zinc-500 mb-10" data-i18n="interlude_eyebrow">知っていますか？</div>
+      <div class="closing-bignum-wrap">
+        <div id="closing-bignum" class="closing-bignum" data-counter-target="20000">0</div>
+        <div class="closing-bignum-caption" data-i18n="interlude_caption">1日あたりの呼吸</div>
+      </div>
+      <p class="mt-12 md:mt-16 text-[17px] md:text-[20px] text-zinc-500 leading-[1.9] max-w-xl mx-auto" data-i18n="interlude_lede">そのほぼすべてが、気づかないうちに。</p>
+    </div>
+  </section>
+
   <!-- ============== CONCEPT ============== -->
   <section id="concept" class="py-40 px-6 max-w-4xl mx-auto text-center">
     <div class="text-[12px] tracking-[0.32em] uppercase text-zinc-500 mb-6">Concept</div>
@@ -923,7 +1015,20 @@
             </div>
             <div class="flip-face flip-back rounded-3xl">
               <div class="flip-eyebrow" data-i18n="why_card1_back_eyebrow">影響</div>
-              <div class="text-[14px] font-medium leading-snug" data-i18n="why_card1_back">睡眠の質の<br/>低下</div>
+              <div class="flip-stat">
+                <!-- Donut: 1/3 segment highlighted (representing one-third of life spent sleeping) -->
+                <div class="flip-stat-viz" aria-hidden="true">
+                  <svg viewBox="0 0 100 100" fill="none">
+                    <circle cx="50" cy="50" r="42" stroke="rgba(255,255,255,.18)" stroke-width="6"/>
+                    <circle cx="50" cy="50" r="42" stroke="#fff" stroke-width="6" stroke-linecap="round"
+                      stroke-dasharray="87.96 263.89" transform="rotate(-90 50 50)"/>
+                  </svg>
+                </div>
+                <div class="flip-stat-number">1/3</div>
+                <div class="flip-stat-label" data-i18n="why_card1_stat_label">人生の睡眠時間</div>
+              </div>
+              <div class="flip-back-divider"></div>
+              <div class="text-[13px] font-medium leading-snug" data-i18n="why_card1_back">睡眠の質の<br/>低下</div>
               <span class="card-plus card-plus-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
             </div>
           </div>
@@ -944,7 +1049,20 @@
             </div>
             <div class="flip-face flip-back rounded-3xl">
               <div class="flip-eyebrow" data-i18n="why_card2_back_eyebrow">影響</div>
-              <div class="text-[14px] font-medium leading-snug" data-i18n="why_card2_back">酸素供給の<br/>不足</div>
+              <div class="flip-stat">
+                <!-- Wave/breath visualization -->
+                <div class="flip-stat-viz" aria-hidden="true">
+                  <svg viewBox="0 0 100 100" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
+                    <path d="M10 50 Q 25 30 40 50 T 70 50 T 100 50" opacity=".7"/>
+                    <path d="M10 65 Q 25 45 40 65 T 70 65 T 100 65" opacity=".4"/>
+                    <path d="M10 35 Q 25 15 40 35 T 70 35 T 100 35" opacity=".4"/>
+                  </svg>
+                </div>
+                <div class="flip-stat-number" data-counter-target="20000" data-counter-suffix="+">20,000+</div>
+                <div class="flip-stat-label" data-i18n="why_card2_stat_label">回／日の呼吸</div>
+              </div>
+              <div class="flip-back-divider"></div>
+              <div class="text-[13px] font-medium leading-snug" data-i18n="why_card2_back">酸素供給の<br/>不足</div>
               <span class="card-plus card-plus-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
             </div>
           </div>
@@ -965,7 +1083,21 @@
             </div>
             <div class="flip-face flip-back rounded-3xl">
               <div class="flip-eyebrow" data-i18n="why_card3_back_eyebrow">影響</div>
-              <div class="text-[14px] font-medium leading-snug" data-i18n="why_card3_back">パフォーマンス<br/>の低下</div>
+              <div class="flip-stat">
+                <!-- Clock face -->
+                <div class="flip-stat-viz" aria-hidden="true">
+                  <svg viewBox="0 0 100 100" fill="none" stroke="#fff" stroke-width="2">
+                    <circle cx="50" cy="50" r="40"/>
+                    <line x1="50" y1="50" x2="50" y2="22" stroke-linecap="round"/>
+                    <line x1="50" y1="50" x2="72" y2="50" stroke-linecap="round" stroke-width="1.5"/>
+                    <circle cx="50" cy="50" r="2" fill="#fff"/>
+                  </svg>
+                </div>
+                <div class="flip-stat-number">8h+</div>
+                <div class="flip-stat-label" data-i18n="why_card3_stat_label">毎日の集中時間</div>
+              </div>
+              <div class="flip-back-divider"></div>
+              <div class="text-[13px] font-medium leading-snug" data-i18n="why_card3_back">パフォーマンス<br/>の低下</div>
               <span class="card-plus card-plus-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
             </div>
           </div>
@@ -985,7 +1117,24 @@
             </div>
             <div class="flip-face flip-back rounded-3xl">
               <div class="flip-eyebrow" data-i18n="why_card4_back_eyebrow">影響</div>
-              <div class="text-[14px] font-medium leading-snug" data-i18n="why_card4_back">顔のバランス<br/>低下</div>
+              <div class="flip-stat">
+                <!-- Calendar dot grid (suggesting accumulated days) -->
+                <div class="flip-stat-viz" aria-hidden="true">
+                  <svg viewBox="0 0 100 100" fill="#fff">
+                    <g>
+                      <circle cx="20" cy="20" r="2"/><circle cx="35" cy="20" r="2"/><circle cx="50" cy="20" r="2"/><circle cx="65" cy="20" r="2"/><circle cx="80" cy="20" r="2"/>
+                      <circle cx="20" cy="35" r="2"/><circle cx="35" cy="35" r="2"/><circle cx="50" cy="35" r="2"/><circle cx="65" cy="35" r="2"/><circle cx="80" cy="35" r="2"/>
+                      <circle cx="20" cy="50" r="2"/><circle cx="35" cy="50" r="2"/><circle cx="50" cy="50" r="2"/><circle cx="65" cy="50" r="2"/><circle cx="80" cy="50" r="2"/>
+                      <circle cx="20" cy="65" r="2"/><circle cx="35" cy="65" r="2"/><circle cx="50" cy="65" r="2"/><circle cx="65" cy="65" r="2"/><circle cx="80" cy="65" r="2"/>
+                      <circle cx="20" cy="80" r="2"/><circle cx="35" cy="80" r="2"/><circle cx="50" cy="80" r="2"/><circle cx="65" cy="80" r="2"/><circle cx="80" cy="80" r="2"/>
+                    </g>
+                  </svg>
+                </div>
+                <div class="flip-stat-number">365</div>
+                <div class="flip-stat-label" data-i18n="why_card4_stat_label">日の積み重ね</div>
+              </div>
+              <div class="flip-back-divider"></div>
+              <div class="text-[13px] font-medium leading-snug" data-i18n="why_card4_back">顔のバランス<br/>低下</div>
               <span class="card-plus card-plus-sm" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
             </div>
           </div>
@@ -2179,13 +2328,53 @@
   window.addEventListener('focus', updateBadge);
 })();
 
-// ============== Flip cards (Why) ==============
+// ============== Flip cards (Why) — with counter animation on flip ==============
 document.querySelectorAll('.flip-card').forEach(card => {
   card.addEventListener('click', () => {
     const flipped = card.classList.toggle('flipped');
     card.setAttribute('aria-pressed', flipped ? 'true' : 'false');
+    if (flipped){
+      // Animate any counters inside this card
+      const counters = card.querySelectorAll('[data-counter-target]');
+      counters.forEach(animateCounter);
+    }
   });
 });
+function animateCounter(el, opts){
+  const target = parseInt(el.dataset.counterTarget, 10);
+  const suffix = el.dataset.counterSuffix || '';
+  if (!Number.isFinite(target)) return;
+  const duration = (opts && opts.duration) || 1200;
+  const start = performance.now();
+  const startVal = 0;
+  function step(now){
+    const t = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - t, 3); // easeOutCubic
+    const v = Math.round(startVal + (target - startVal) * eased);
+    el.textContent = v.toLocaleString('en-US') + suffix;
+    if (t < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+// ============== Closing big number: count up when in view ==============
+(function(){
+  const el = document.getElementById('closing-bignum');
+  if (!el) return;
+  let played = false;
+  const wrap = el.closest('.closing-bignum-wrap');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && !played){
+        played = true;
+        animateCounter(el, { duration: 2000 });
+        if (wrap) wrap.classList.add('is-revealed');
+        io.disconnect();
+      }
+    });
+  }, { threshold: 0.4 });
+  io.observe(el);
+})();
 
 // ============== Ambassador cards: tap-to-reveal (touch devices) ==============
 (function(){
@@ -2384,6 +2573,12 @@ const translations = {
   "why_card4_back_eyebrow": { ja: "影響", en: "Impact", es: "Impacto", pt: "Impacto" },
   "why_card4_back":  { ja: "顔のバランス<br/>低下", en: "Less defined<br/>features",         es: "Rostro<br/>menos armónico", pt: "Rosto<br/>menos harmônico" },
 
+  // Stat labels (back of WHY IT MATTERS cards)
+  "why_card1_stat_label": { ja: "人生の睡眠時間",   en: "Of your life",         es: "De tu vida",          pt: "Da sua vida" },
+  "why_card2_stat_label": { ja: "回／日の呼吸",     en: "Breaths a day",         es: "Respiraciones / día", pt: "Respirações / dia" },
+  "why_card3_stat_label": { ja: "毎日の集中時間",   en: "Hours focused daily",   es: "Horas de foco / día", pt: "Horas de foco / dia" },
+  "why_card4_stat_label": { ja: "日の積み重ね",     en: "Days a year",           es: "Días al año",         pt: "Dias por ano" },
+
   // APPROACH
   "approach_h2": { ja: "変化は、<br/>意志に頼らない。", en: "Change<br/>shouldn't depend on willpower.", es: "El cambio<br/>no depende de la voluntad.", pt: "A mudança<br/>não depende da força de vontade." },
   "approach_p1": { ja: "必要なのは、<span class=\"text-zinc-900 font-medium\">自然に続く仕組み。</span>", en: "What you need: <span class=\"text-zinc-900 font-medium\">a system that simply continues.</span>", es: "Lo que necesitas: <span class=\"text-zinc-900 font-medium\">un sistema que fluya solo.</span>", pt: "O que você precisa: <span class=\"text-zinc-900 font-medium\">um sistema que continua sozinho.</span>" },
@@ -2504,6 +2699,11 @@ const translations = {
   "closing_p1": { ja: "人は、1日に約2万回、呼吸する。", en: "We breathe about 20,000 times a day.", es: "Respiramos cerca de 20 000 veces al día.", pt: "Respiramos cerca de 20 000 vezes por dia." },
   "closing_p2": { ja: "そのほとんどは、無意識のまま。", en: "Most of it, without thinking.", es: "Casi siempre, sin darnos cuenta.", pt: "Quase tudo, sem pensar." },
   "closing_p3": { ja: "だからこそ、",                   en: "Which is why,",                   es: "Por eso,",                          pt: "Por isso," },
+
+  // INTERLUDE — Giant 20,000 reveal between cinematic and concept
+  "interlude_eyebrow": { ja: "知っていますか？",          en: "Did you know?",                  es: "¿Sabías?",                          pt: "Você sabia?" },
+  "interlude_caption": { ja: "1日あたりの呼吸",           en: "Breaths a day",                  es: "Respiraciones al día",              pt: "Respirações por dia" },
+  "interlude_lede":    { ja: "そのほぼすべてが、気づかないうちに。", en: "Almost all of it, without you noticing.", es: "Casi todas, sin que te des cuenta.", pt: "Quase todas, sem você perceber." },
 
   // FINAL CTA
   "finalcta_h2":  { ja: "呼吸を、整える。", en: "Breathe, refined.",   es: "Respira mejor.",          pt: "Respire melhor." },
