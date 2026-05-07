@@ -300,6 +300,16 @@
         </button>
       </li>
       <li>
+        <button data-region="en" class="region-option w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
+          <span class="text-2xl">🇺🇸</span>
+          <div class="flex-1">
+            <div class="text-[14px] font-medium text-zinc-900">United States</div>
+            <div class="text-[11px] text-zinc-500">English · USA shipping · $</div>
+          </div>
+          <span class="region-check text-zinc-900 hidden text-[18px]">✓</span>
+        </button>
+      </li>
+      <li>
         <button data-region="es" class="region-option w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
           <span class="text-2xl">🇪🇸</span>
           <div class="flex-1">
@@ -310,23 +320,13 @@
         </button>
       </li>
       <li>
-        <button data-region="br" class="region-option region-soon w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
-          <span class="text-2xl opacity-70">🇧🇷</span>
+        <button data-region="pt" class="region-option w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
+          <span class="text-2xl">🇧🇷</span>
           <div class="flex-1">
             <div class="text-[14px] font-medium text-zinc-900">Brasil</div>
-            <div class="text-[11px] text-zinc-500" id="region-br-sub">ご購入できるよう、準備を進めています</div>
+            <div class="text-[11px] text-zinc-500">Português · Envio Brasil · R$</div>
           </div>
-          <span class="text-[10px] tracking-[0.18em] uppercase text-zinc-500 px-2.5 py-1 rounded-full border border-zinc-200" id="region-br-badge">Soon</span>
-        </button>
-      </li>
-      <li>
-        <button data-region="us" class="region-option region-soon w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
-          <span class="text-2xl opacity-70">🇺🇸</span>
-          <div class="flex-1">
-            <div class="text-[14px] font-medium text-zinc-900">United States</div>
-            <div class="text-[11px] text-zinc-500" id="region-us-sub">ご購入できるよう、準備を進めています</div>
-          </div>
-          <span class="text-[10px] tracking-[0.18em] uppercase text-zinc-500 px-2.5 py-1 rounded-full border border-zinc-200" id="region-us-badge">Soon</span>
+          <span class="region-check text-zinc-900 hidden text-[18px]">✓</span>
         </button>
       </li>
     </ul>
@@ -352,173 +352,201 @@
 
 // ============== i18n ==============
 const translations = {
-  "page_title": { ja: "利用規約 — OPEN AIR", es: "Términos y Condiciones — OPEN AIR" },
+  "page_title": { ja: "利用規約 — OPEN AIR", en: "Terms of Service — OPEN AIR", es: "Términos y Condiciones — OPEN AIR", pt: "Termos de Serviço — OPEN AIR" },
   // Nav
-  "nav_concept":  { ja: "コンセプト", es: "Concepto" },
-  "nav_features": { ja: "特徴",       es: "Características" },
-  "nav_scenes":   { ja: "シーン",     es: "Escenas" },
-  "nav_buy":      { ja: "購入",       es: "Comprar" },
-  "nav_cart":     { ja: "カート",     es: "Carrito" },
+  "nav_concept":  { ja: "コンセプト", en: "Concept",  es: "Concepto",        pt: "Conceito" },
+  "nav_features": { ja: "特徴",       en: "Features", es: "Características", pt: "Recursos" },
+  "nav_scenes":   { ja: "シーン",     en: "Scenes",   es: "Escenas",         pt: "Cenas" },
+  "nav_buy":      { ja: "購入",       en: "Buy",      es: "Comprar",         pt: "Comprar" },
+  "nav_cart":     { ja: "カート",     en: "Cart",     es: "Carrito",         pt: "Carrinho" },
   // Hero
-  "hero_eyebrow": { ja: "Terms",       es: "Términos" },
-  "hero_title":   { ja: "利用規約",     es: "Términos y Condiciones" },
-  "hero_updated": { ja: "最終更新日：2026年5月1日", es: "Última actualización: 1 de mayo de 2026" },
+  "hero_eyebrow": { ja: "Terms",       en: "Terms",                es: "Términos", pt: "Termos" },
+  "hero_title":   { ja: "利用規約",     en: "Terms of Service",     es: "Términos y Condiciones", pt: "Termos de Serviço" },
+  "hero_updated": { ja: "最終更新日：2026年5月1日", en: "Last updated: May 1, 2026", es: "Última actualización: 1 de mayo de 2026", pt: "Última atualização: 1 de maio de 2026" },
   // TOC
-  "toc_label":      { ja: "Contents", es: "Contenido" },
-  "toc_a1":         { ja: "第1条 適用",         es: "1. Ámbito de aplicación" },
-  "toc_a2":         { ja: "第2条 利用登録",     es: "2. Registro de usuario" },
-  "toc_a3":         { ja: "第3条 アカウント管理", es: "3. Gestión de la cuenta" },
-  "toc_a4":         { ja: "第4条 禁止事項",     es: "4. Conductas prohibidas" },
-  "toc_a5":         { ja: "第5条 商品の販売",   es: "5. Venta de productos" },
-  "toc_price":      { ja: "",                    es: "6. Precios e IVA" },
-  "toc_shipping":   { ja: "",                    es: "7. Envío y entrega" },
-  "toc_withdrawal": { ja: "",                    es: "8. Derecho de desistimiento" },
-  "toc_a6":         { ja: "第6条 返品・交換",   es: "9. Devoluciones y cambios" },
-  "toc_warranty":   { ja: "",                    es: "10. Garantía legal" },
-  "toc_a7":         { ja: "第7条 知的財産権",   es: "11. Propiedad intelectual" },
-  "toc_a8":         { ja: "第8条 免責事項",     es: "12. Limitación de responsabilidad" },
-  "toc_odr":        { ja: "",                    es: "13. Resolución de conflictos" },
-  "toc_a9":         { ja: "第9条 規約変更",     es: "14. Modificaciones" },
-  "toc_a10":        { ja: "第10条 準拠法・裁判管轄", es: "15. Ley aplicable y jurisdicción" },
+  "toc_label":      { ja: "Contents",                 en: "Contents",                       es: "Contenido",                      pt: "Conteúdo" },
+  "toc_a1":         { ja: "第1条 適用",               en: "1. Scope",                       es: "1. Ámbito de aplicación",        pt: "1. Aplicação" },
+  "toc_a2":         { ja: "第2条 利用登録",           en: "2. Account registration",        es: "2. Registro de usuario",         pt: "2. Cadastro de usuário" },
+  "toc_a3":         { ja: "第3条 アカウント管理",     en: "3. Account management",          es: "3. Gestión de la cuenta",        pt: "3. Gestão da conta" },
+  "toc_a4":         { ja: "第4条 禁止事項",           en: "4. Prohibited conduct",          es: "4. Conductas prohibidas",        pt: "4. Condutas proibidas" },
+  "toc_a5":         { ja: "第5条 商品の販売",         en: "5. Sale of products",            es: "5. Venta de productos",          pt: "5. Venda de produtos" },
+  "toc_price":      { ja: "",                          en: "",                                es: "6. Precios e IVA",               pt: "" },
+  "toc_shipping":   { ja: "",                          en: "",                                es: "7. Envío y entrega",             pt: "" },
+  "toc_withdrawal": { ja: "",                          en: "",                                es: "8. Derecho de desistimiento",    pt: "" },
+  "toc_a6":         { ja: "第6条 返品・交換",         en: "6. Returns and exchanges",       es: "9. Devoluciones y cambios",      pt: "6. Trocas e devoluções" },
+  "toc_warranty":   { ja: "",                          en: "",                                es: "10. Garantía legal",             pt: "" },
+  "toc_a7":         { ja: "第7条 知的財産権",         en: "7. Intellectual property",       es: "11. Propiedad intelectual",      pt: "7. Propriedade intelectual" },
+  "toc_a8":         { ja: "第8条 免責事項",           en: "8. Limitation of liability",     es: "12. Limitación de responsabilidad", pt: "8. Limitação de responsabilidade" },
+  "toc_odr":        { ja: "",                          en: "",                                es: "13. Resolución de conflictos",   pt: "" },
+  "toc_a9":         { ja: "第9条 規約変更",           en: "9. Changes to these Terms",      es: "14. Modificaciones",             pt: "9. Alterações dos Termos" },
+  "toc_a10":        { ja: "第10条 準拠法・裁判管轄",  en: "10. Governing law",              es: "15. Ley aplicable y jurisdicción", pt: "10. Lei aplicável e foro" },
 
   // Intro
   "intro": { ja: "この利用規約（以下「本規約」）は、OPEN AIR, Inc.（以下「当社」）が提供するウェブサイトおよび関連サービス（以下「本サービス」）の利用条件を定めるものです。本サービスをご利用いただくお客様（以下「ユーザー」）は、本規約に同意の上、本サービスをご利用ください。",
-             es: "Los presentes Términos y Condiciones (en adelante, los \"Términos\") regulan el uso del sitio web y los servicios relacionados (en adelante, el \"Servicio\") prestados por OPEN AIR, Inc. (en adelante, \"nosotros\"). Al utilizar el Servicio, el usuario (en adelante, el \"Usuario\") declara haber leído y aceptar los presentes Términos." },
+             en: "These Terms of Service (the \"Terms\") govern your access to and use of the website and related services (the \"Service\") provided by OPEN AIR, Inc. (\"we,\" \"us,\" or \"our\"). By using the Service, you (the \"User\") agree to these Terms.",
+             es: "Los presentes Términos y Condiciones (en adelante, los \"Términos\") regulan el uso del sitio web y los servicios relacionados (en adelante, el \"Servicio\") prestados por OPEN AIR, Inc. (en adelante, \"nosotros\"). Al utilizar el Servicio, el usuario (en adelante, el \"Usuario\") declara haber leído y aceptar los presentes Términos.",
+             pt: "Estes Termos de Serviço (\"Termos\") regulam o uso do site e dos serviços relacionados (o \"Serviço\") prestados pela OPEN AIR, Inc. (\"nós\"). Ao utilizar o Serviço, o usuário (\"Usuário\") declara ter lido e aceito estes Termos." },
 
   // Article 1
-  "a1_title": { ja: "第1条（適用）", es: "1. Ámbito de aplicación" },
+  "a1_title": { ja: "第1条（適用）", en: "1. Scope", es: "1. Ámbito de aplicación", pt: "1. Aplicação" },
   "a1_body":  { ja: "<li>本規約は、ユーザーと当社との間の本サービス利用に関わる一切の関係に適用されます。</li><li>当社は、本サービスに関し、本規約のほか、ご利用にあたってのルール等、各種の定め（以下「個別規定」）をすることがあります。これら個別規定は、その名称のいかんに関わらず、本規約の一部を構成するものとします。</li><li>本規約の規定が前条の個別規定の規定と矛盾する場合には、個別規定において特段の定めなき限り、個別規定の規定が優先されるものとします。</li>",
-                es: "<li>Los presentes Términos se aplican a toda relación entre el Usuario y OPEN AIR, Inc. derivada del uso del Servicio.</li><li>Podremos publicar reglas o condiciones particulares aplicables a determinadas funcionalidades (en adelante, las \"Condiciones Particulares\"), que se considerarán parte integrante de estos Términos.</li><li>En caso de contradicción entre los presentes Términos y las Condiciones Particulares, prevalecerán estas últimas, salvo que en ellas se disponga lo contrario.</li>" },
+                en: "<li>These Terms apply to every interaction between you and OPEN AIR, Inc. relating to the Service.</li><li>We may publish additional rules or supplemental policies for specific features (the \"Supplemental Terms\"), which form part of these Terms regardless of how they are named.</li><li>If these Terms conflict with any Supplemental Terms, the Supplemental Terms will prevail unless they expressly state otherwise.</li>",
+                es: "<li>Los presentes Términos se aplican a toda relación entre el Usuario y OPEN AIR, Inc. derivada del uso del Servicio.</li><li>Podremos publicar reglas o condiciones particulares aplicables a determinadas funcionalidades (en adelante, las \"Condiciones Particulares\"), que se considerarán parte integrante de estos Términos.</li><li>En caso de contradicción entre los presentes Términos y las Condiciones Particulares, prevalecerán estas últimas, salvo que en ellas se disponga lo contrario.</li>",
+                pt: "<li>Estes Termos aplicam-se a toda relação entre o Usuário e a OPEN AIR, Inc. decorrente do uso do Serviço.</li><li>Poderemos publicar regras ou condições específicas aplicáveis a determinadas funcionalidades (\"Condições Específicas\"), que integram estes Termos independentemente do nome adotado.</li><li>Em caso de conflito entre estes Termos e as Condições Específicas, prevalecerão estas últimas, salvo disposição expressa em contrário.</li>" },
 
   // Article 2
-  "a2_title": { ja: "第2条（利用登録）", es: "2. Registro de usuario" },
+  "a2_title": { ja: "第2条（利用登録）", en: "2. Account registration", es: "2. Registro de usuario", pt: "2. Cadastro de usuário" },
   "a2_body":  { ja: "<li>本サービスの一部機能は、利用登録を行うことで利用が可能となります。</li><li>利用登録の申請者が以下のいずれかに該当する場合、当社は登録申請を承認しないことがあります。<ul><li>虚偽の事項を届け出た場合</li><li>過去に本規約に違反したことがある者からの申請である場合</li><li>その他、当社が利用登録を相当でないと判断した場合</li></ul></li>",
-                es: "<li>Algunas funcionalidades del Servicio requieren registro previo. Para registrarte debes ser mayor de edad y tener capacidad legal para contratar.</li><li>Podremos denegar el registro o suspender la cuenta cuando concurra alguna de las siguientes circunstancias:<ul><li>Que los datos facilitados sean falsos o inexactos.</li><li>Que el solicitante haya incumplido previamente los presentes Términos.</li><li>Cualquier otro motivo razonable que a nuestro juicio justifique la denegación.</li></ul></li>" },
+                en: "<li>Certain features of the Service require an account. To register, you must be of legal age and capable of entering into a binding contract.</li><li>We may decline an application or suspend an account if any of the following apply:<ul><li>The information provided is false or inaccurate.</li><li>The applicant has previously breached these Terms.</li><li>Any other reason that, in our reasonable judgment, justifies refusal.</li></ul></li>",
+                es: "<li>Algunas funcionalidades del Servicio requieren registro previo. Para registrarte debes ser mayor de edad y tener capacidad legal para contratar.</li><li>Podremos denegar el registro o suspender la cuenta cuando concurra alguna de las siguientes circunstancias:<ul><li>Que los datos facilitados sean falsos o inexactos.</li><li>Que el solicitante haya incumplido previamente los presentes Términos.</li><li>Cualquier otro motivo razonable que a nuestro juicio justifique la denegación.</li></ul></li>",
+                pt: "<li>Algumas funcionalidades do Serviço exigem cadastro prévio. Para se cadastrar, o Usuário deve ser maior de idade e plenamente capaz, nos termos do Código Civil.</li><li>Poderemos recusar o cadastro ou suspender a conta nas seguintes hipóteses:<ul><li>Quando os dados informados forem falsos ou inexatos.</li><li>Quando o solicitante tenha descumprido anteriormente estes Termos.</li><li>Qualquer outro motivo razoável que, a nosso critério, justifique a recusa.</li></ul></li>" },
 
   // Article 3
-  "a3_title": { ja: "第3条（アカウント管理）", es: "3. Gestión de la cuenta" },
+  "a3_title": { ja: "第3条（アカウント管理）", en: "3. Account management", es: "3. Gestión de la cuenta", pt: "3. Gestão da conta" },
   "a3_body":  { ja: "<li>ユーザーは、自己の責任において、本サービスのユーザーIDおよびパスワードを適切に管理するものとします。</li><li>ユーザーは、いかなる場合にも、ユーザーIDおよびパスワードを第三者に譲渡または貸与することはできません。</li><li>ユーザーIDとパスワードの組み合わせが登録情報と一致してログインされた場合には、そのユーザーIDを登録しているユーザー自身による利用とみなします。</li>",
-                es: "<li>El Usuario es responsable de la custodia de su nombre de usuario y contraseña.</li><li>Queda prohibida la cesión, venta o préstamo de las credenciales de acceso a terceros.</li><li>Cualquier acceso al Servicio efectuado con credenciales válidas se presumirá realizado por el titular de la cuenta.</li>" },
+                en: "<li>You are responsible for safeguarding your username and password.</li><li>You may not transfer, sell, or share your credentials with any third party.</li><li>Any access to the Service made with valid credentials will be deemed to have been made by the account holder.</li>",
+                es: "<li>El Usuario es responsable de la custodia de su nombre de usuario y contraseña.</li><li>Queda prohibida la cesión, venta o préstamo de las credenciales de acceso a terceros.</li><li>Cualquier acceso al Servicio efectuado con credenciales válidas se presumirá realizado por el titular de la cuenta.</li>",
+                pt: "<li>O Usuário é responsável pela guarda do seu nome de usuário e senha.</li><li>É vedada a cessão, venda ou empréstimo das credenciais de acesso a terceiros.</li><li>Qualquer acesso ao Serviço efetuado com credenciais válidas será presumido como realizado pelo titular da conta.</li>" },
 
   // Article 4
-  "a4_title": { ja: "第4条（禁止事項）", es: "4. Conductas prohibidas" },
+  "a4_title": { ja: "第4条（禁止事項）", en: "4. Prohibited conduct", es: "4. Conductas prohibidas", pt: "4. Condutas proibidas" },
   "a4_intro": { ja: "ユーザーは、本サービスの利用にあたり、以下の行為をしてはなりません。",
-                es: "El Usuario se compromete a no realizar, en relación con el Servicio, ninguna de las siguientes conductas:" },
+                en: "When using the Service, you agree not to engage in any of the following:",
+                es: "El Usuario se compromete a no realizar, en relación con el Servicio, ninguna de las siguientes conductas:",
+                pt: "Ao utilizar o Serviço, o Usuário compromete-se a não praticar nenhuma das seguintes condutas:" },
   "a4_list":  { ja: "<li>法令または公序良俗に違反する行為</li><li>犯罪行為に関連する行為</li><li>当社、ほかのユーザー、または第三者の知的財産権、肖像権、プライバシー、名誉その他の権利または利益を侵害する行為</li><li>本サービスによって得られた情報を商業的に利用する行為</li><li>当社のサービスの運営を妨害するおそれのある行為</li><li>不正アクセスをし、またはこれを試みる行為</li><li>他のユーザーに関する個人情報等を収集または蓄積する行為</li><li>不正な目的を持って本サービスを利用する行為</li><li>反社会的勢力等への利益供与</li><li>その他、当社が不適切と判断する行為</li>",
-                es: "<li>Conductas contrarias a la ley o al orden público.</li><li>Actividades vinculadas a conductas delictivas.</li><li>Vulneración de derechos de propiedad intelectual, imagen, intimidad, honor u otros derechos de OPEN AIR, Inc., de otros Usuarios o de terceros.</li><li>Uso comercial no autorizado de la información obtenida a través del Servicio.</li><li>Actos que puedan interferir o perturbar el funcionamiento del Servicio.</li><li>Acceso no autorizado o intento de acceso no autorizado a sistemas o redes.</li><li>Recogida o almacenamiento de datos personales de otros Usuarios sin su consentimiento.</li><li>Uso del Servicio con fines fraudulentos.</li><li>Cualquier conducta que, a nuestro juicio razonable, sea inadecuada o contraria a los presentes Términos.</li>" },
+                en: "<li>Conduct that violates applicable law or public order.</li><li>Activity related to criminal conduct.</li><li>Infringement of intellectual property, publicity, privacy, reputation, or other rights of OPEN AIR, Inc., other Users, or third parties.</li><li>Unauthorized commercial use of information obtained through the Service.</li><li>Conduct that may interfere with or disrupt the Service.</li><li>Unauthorized access, or any attempt to gain unauthorized access, to any system or network.</li><li>Collecting or storing personal information about other Users without consent.</li><li>Use of the Service for fraudulent purposes.</li><li>Providing benefits to organized crime or other antisocial groups.</li><li>Any other conduct we reasonably determine to be inappropriate.</li>",
+                es: "<li>Conductas contrarias a la ley o al orden público.</li><li>Actividades vinculadas a conductas delictivas.</li><li>Vulneración de derechos de propiedad intelectual, imagen, intimidad, honor u otros derechos de OPEN AIR, Inc., de otros Usuarios o de terceros.</li><li>Uso comercial no autorizado de la información obtenida a través del Servicio.</li><li>Actos que puedan interferir o perturbar el funcionamiento del Servicio.</li><li>Acceso no autorizado o intento de acceso no autorizado a sistemas o redes.</li><li>Recogida o almacenamiento de datos personales de otros Usuarios sin su consentimiento.</li><li>Uso del Servicio con fines fraudulentos.</li><li>Cualquier conducta que, a nuestro juicio razonable, sea inadecuada o contraria a los presentes Términos.</li>",
+                pt: "<li>Condutas contrárias à lei ou aos bons costumes.</li><li>Atividades relacionadas a práticas criminosas.</li><li>Violação de direitos de propriedade intelectual, imagem, privacidade, honra ou outros direitos da OPEN AIR, Inc., de outros Usuários ou de terceiros.</li><li>Uso comercial não autorizado das informações obtidas por meio do Serviço.</li><li>Atos que possam interferir ou prejudicar o funcionamento do Serviço.</li><li>Acesso não autorizado, ou tentativa de acesso, a sistemas ou redes.</li><li>Coleta ou armazenamento de dados pessoais de outros Usuários sem consentimento.</li><li>Uso do Serviço para fins fraudulentos.</li><li>Concessão de vantagens a organizações criminosas ou grupos antissociais.</li><li>Qualquer outra conduta que, a nosso critério razoável, seja inadequada ou contrária a estes Termos.</li>" },
 
   // Article 5
-  "a5_title": { ja: "第5条（商品の販売）", es: "5. Venta de productos" },
+  "a5_title": { ja: "第5条（商品の販売）", en: "5. Sale of products", es: "5. Venta de productos", pt: "5. Venda de produtos" },
   "a5_body":  { ja: "<li>当社は、本サービスにおいて、当社が定める商品を販売します。</li><li>商品の売買契約は、ユーザーが当社に対して購入申し込みを行い、当社がこれを承諾し、その旨をユーザーに通知（注文確認メール送信）した時点で成立するものとします。</li><li>商品の代金、配送方法、配送料その他販売に関する条件は、本サービス上に表示するとおりとします。</li><li>当社は、在庫切れ等の事情により商品をお届けできない場合、ユーザーに通知の上、売買契約を解除することができるものとします。</li>",
-                es: "<li>OPEN AIR, Inc. comercializa a través del Servicio los productos descritos en su catálogo digital.</li><li>El contrato de compraventa se perfecciona cuando, tras realizar el Usuario el pedido, OPEN AIR, Inc. confirma su aceptación mediante correo electrónico de confirmación.</li><li>Las características, el precio, los gastos de envío y cualquier otra condición aplicable se muestran en la ficha de producto y en el resumen del pedido antes de su confirmación.</li><li>En caso de ruptura de stock u otra causa que impida el suministro, OPEN AIR, Inc. lo notificará al Usuario y reembolsará íntegramente, en el plazo más breve posible, las cantidades abonadas.</li>" },
+                en: "<li>OPEN AIR, Inc. sells the products listed in its online catalog through the Service.</li><li>A purchase contract is formed when, after you place an order, we accept it by sending an order confirmation email.</li><li>Product details, prices, shipping fees, and other applicable conditions are shown on each product page and in your order summary before checkout.</li><li>If we cannot fulfill an order due to lack of inventory or any other reason, we will notify you and refund any amounts already charged.</li>",
+                es: "<li>OPEN AIR, Inc. comercializa a través del Servicio los productos descritos en su catálogo digital.</li><li>El contrato de compraventa se perfecciona cuando, tras realizar el Usuario el pedido, OPEN AIR, Inc. confirma su aceptación mediante correo electrónico de confirmación.</li><li>Las características, el precio, los gastos de envío y cualquier otra condición aplicable se muestran en la ficha de producto y en el resumen del pedido antes de su confirmación.</li><li>En caso de ruptura de stock u otra causa que impida el suministro, OPEN AIR, Inc. lo notificará al Usuario y reembolsará íntegramente, en el plazo más breve posible, las cantidades abonadas.</li>",
+                pt: "<li>A OPEN AIR, Inc. comercializa, por meio do Serviço, os produtos descritos em seu catálogo digital.</li><li>O contrato de compra e venda é celebrado quando, após o Usuário realizar o pedido, a OPEN AIR, Inc. confirma sua aceitação por e-mail de confirmação.</li><li>Características, preço, frete e demais condições aplicáveis são exibidos na página do produto e no resumo do pedido antes da finalização da compra.</li><li>Em caso de indisponibilidade de estoque ou outra causa que impeça o fornecimento, comunicaremos o Usuário e reembolsaremos integralmente, no menor prazo possível, os valores eventualmente pagos, nos termos do Código de Defesa do Consumidor.</li>" },
 
   // EU-only: Prices
-  "es_price_title": { ja: "", es: "6. Precios e IVA" },
-  "es_price_body":  { ja: "", es: "<li>Todos los precios mostrados en el Servicio se expresan en euros (€) e incluyen el Impuesto sobre el Valor Añadido (IVA) y cualquier otro tributo aplicable, salvo indicación expresa en contrario.</li><li>Los gastos de envío se calculan y muestran de forma desglosada antes de la confirmación del pedido. Antes de pulsar el botón de pago verás siempre el precio total final.</li><li>OPEN AIR, Inc. se reserva el derecho a modificar los precios en cualquier momento; no obstante, los productos se facturarán al precio vigente en el momento de la confirmación del pedido.</li>" },
+  "es_price_title": { ja: "", en: "", es: "6. Precios e IVA", pt: "" },
+  "es_price_body":  { ja: "", en: "", es: "<li>Todos los precios mostrados en el Servicio se expresan en euros (€) e incluyen el Impuesto sobre el Valor Añadido (IVA) y cualquier otro tributo aplicable, salvo indicación expresa en contrario.</li><li>Los gastos de envío se calculan y muestran de forma desglosada antes de la confirmación del pedido. Antes de pulsar el botón de pago verás siempre el precio total final.</li><li>OPEN AIR, Inc. se reserva el derecho a modificar los precios en cualquier momento; no obstante, los productos se facturarán al precio vigente en el momento de la confirmación del pedido.</li>", pt: "" },
 
   // EU-only: Shipping
-  "es_shipping_title": { ja: "", es: "7. Envío, entrega y plazos" },
-  "es_shipping_body":  { ja: "", es: "<li><strong>Plazo de entrega:</strong> los pedidos se entregan habitualmente en un plazo de 3 a 7 días laborables dentro de la Unión Europea, salvo indicación expresa en la ficha del producto. En todo caso, conforme al art. 109 de la Ley General para la Defensa de los Consumidores y Usuarios, la entrega se efectuará en un plazo máximo de 30 días desde la celebración del contrato.</li><li><strong>Costes de envío:</strong> los gastos de envío y, en su caso, las tarifas adicionales por entrega urgente o a zonas remotas, se indican antes de la confirmación del pedido.</li><li><strong>Riesgo:</strong> el riesgo de pérdida o deterioro del producto se transmite al Usuario en el momento en que tú o un tercero por ti designado (distinto del transportista) tome posesión material del bien.</li><li><strong>Falta de entrega:</strong> si no recibes el pedido en el plazo acordado, podrás emplazarnos a entregarlo en un plazo adicional adecuado. Transcurrido este sin entrega, tendrás derecho a resolver el contrato y recuperar el importe pagado.</li>" },
+  "es_shipping_title": { ja: "", en: "", es: "7. Envío, entrega y plazos", pt: "" },
+  "es_shipping_body":  { ja: "", en: "", es: "<li><strong>Plazo de entrega:</strong> los pedidos se entregan habitualmente en un plazo de 3 a 7 días laborables dentro de la Unión Europea, salvo indicación expresa en la ficha del producto. En todo caso, conforme al art. 109 de la Ley General para la Defensa de los Consumidores y Usuarios, la entrega se efectuará en un plazo máximo de 30 días desde la celebración del contrato.</li><li><strong>Costes de envío:</strong> los gastos de envío y, en su caso, las tarifas adicionales por entrega urgente o a zonas remotas, se indican antes de la confirmación del pedido.</li><li><strong>Riesgo:</strong> el riesgo de pérdida o deterioro del producto se transmite al Usuario en el momento en que tú o un tercero por ti designado (distinto del transportista) tome posesión material del bien.</li><li><strong>Falta de entrega:</strong> si no recibes el pedido en el plazo acordado, podrás emplazarnos a entregarlo en un plazo adicional adecuado. Transcurrido este sin entrega, tendrás derecho a resolver el contrato y recuperar el importe pagado.</li>", pt: "" },
 
   // EU-only: Withdrawal
-  "es_withdraw_title": { ja: "", es: "8. Derecho de desistimiento (14 días)" },
-  "es_withdraw_p1":    { ja: "", es: "Como consumidor con residencia en la Unión Europea, dispones de un plazo de <strong>catorce (14) días naturales</strong> para desistir del contrato sin necesidad de justificación, conforme a los artículos 102 y siguientes del Real Decreto Legislativo 1/2007 (LGDCU)." },
-  "es_withdraw_p2":    { ja: "", es: "El plazo se computa desde el día en que tú o un tercero por ti indicado (distinto del transportista) reciba el bien. Para ejercer el desistimiento basta con que nos notifiques tu decisión por correo electrónico a <a href=\"mailto:support@openair.example\">support@openair.example</a>, mediante una declaración inequívoca, antes de que finalice dicho plazo. Puedes utilizar el modelo de formulario de desistimiento incluido en el Anexo I de la LGDCU." },
-  "es_withdraw_p3":    { ja: "", es: "<strong>Consecuencias del desistimiento:</strong> te reembolsaremos todos los pagos recibidos, incluidos los gastos de envío estándar, sin demora indebida y, en cualquier caso, en un plazo máximo de 14 días naturales desde la fecha en que tengamos constancia de tu decisión. El reembolso se realizará por el mismo medio de pago utilizado en la compra, salvo acuerdo expreso en contrario; no incurrirás en gasto alguno por dicho reembolso. Podremos retener el reembolso hasta haber recibido los bienes o hasta que presentes una prueba de su devolución." },
-  "es_withdraw_p4":    { ja: "", es: "<strong>Devolución del producto:</strong> deberás devolvernos los bienes sin demora indebida y, en cualquier caso, antes de 14 días naturales desde que comuniques tu desistimiento. Los costes directos de la devolución correrán por tu cuenta, salvo que el producto sea defectuoso o no conforme al contrato." },
-  "es_withdraw_p5":    { ja: "", es: "<strong>Excepciones:</strong> por motivos de protección de la salud y la higiene, el derecho de desistimiento no se aplica a los productos precintados que hayan sido desprecintados tras la entrega (art. 103.e LGDCU). Por tanto, las tiras nasales que hayan sido abiertas no podrán devolverse salvo que sean defectuosas." },
+  "es_withdraw_title": { ja: "", en: "", es: "8. Derecho de desistimiento (14 días)", pt: "" },
+  "es_withdraw_p1":    { ja: "", en: "", es: "Como consumidor con residencia en la Unión Europea, dispones de un plazo de <strong>catorce (14) días naturales</strong> para desistir del contrato sin necesidad de justificación, conforme a los artículos 102 y siguientes del Real Decreto Legislativo 1/2007 (LGDCU).", pt: "" },
+  "es_withdraw_p2":    { ja: "", en: "", es: "El plazo se computa desde el día en que tú o un tercero por ti indicado (distinto del transportista) reciba el bien. Para ejercer el desistimiento basta con que nos notifiques tu decisión por correo electrónico a <a href=\"mailto:support@openair.example\">support@openair.example</a>, mediante una declaración inequívoca, antes de que finalice dicho plazo. Puedes utilizar el modelo de formulario de desistimiento incluido en el Anexo I de la LGDCU.", pt: "" },
+  "es_withdraw_p3":    { ja: "", en: "", es: "<strong>Consecuencias del desistimiento:</strong> te reembolsaremos todos los pagos recibidos, incluidos los gastos de envío estándar, sin demora indebida y, en cualquier caso, en un plazo máximo de 14 días naturales desde la fecha en que tengamos constancia de tu decisión. El reembolso se realizará por el mismo medio de pago utilizado en la compra, salvo acuerdo expreso en contrario; no incurrirás en gasto alguno por dicho reembolso. Podremos retener el reembolso hasta haber recibido los bienes o hasta que presentes una prueba de su devolución.", pt: "" },
+  "es_withdraw_p4":    { ja: "", en: "", es: "<strong>Devolución del producto:</strong> deberás devolvernos los bienes sin demora indebida y, en cualquier caso, antes de 14 días naturales desde que comuniques tu desistimiento. Los costes directos de la devolución correrán por tu cuenta, salvo que el producto sea defectuoso o no conforme al contrato.", pt: "" },
+  "es_withdraw_p5":    { ja: "", en: "", es: "<strong>Excepciones:</strong> por motivos de protección de la salud y la higiene, el derecho de desistimiento no se aplica a los productos precintados que hayan sido desprecintados tras la entrega (art. 103.e LGDCU). Por tanto, las tiras nasales que hayan sido abiertas no podrán devolverse salvo que sean defectuosas.", pt: "" },
 
   // Article 6
-  "a6_title": { ja: "第6条（返品・交換）", es: "9. Devoluciones y cambios" },
+  "a6_title": { ja: "第6条（返品・交換）", en: "6. Returns and exchanges", es: "9. Devoluciones y cambios", pt: "6. Trocas e devoluções" },
   "a6_body":  { ja: "<li>商品到着後 30 日以内に限り、未開封の商品については返品をお受けします。返品にかかる送料は、当社が負担します。</li><li>商品に欠陥がある場合、または当社の手違いにより異なる商品が届いた場合は、当社の負担で交換または返金いたします。</li><li>ユーザー都合による返品の場合、開封済みの商品の返品はお受けできません。</li><li>返品をご希望の場合は、サポート窓口までご連絡ください。</li>",
-                es: "<li>Adicionalmente al derecho legal de desistimiento, aceptamos devoluciones de productos sin abrir dentro de los 30 días naturales siguientes a la recepción. En tal caso, los costes de envío de la devolución correrán a nuestro cargo.</li><li>Si el producto presenta defectos o se ha entregado un artículo distinto al solicitado por error nuestro, asumiremos los costes de la sustitución o el reembolso.</li><li>Por razones de higiene, no se aceptan devoluciones de productos abiertos salvo defecto manifiesto.</li><li>Para iniciar una devolución, contacta con <a href=\"mailto:support@openair.example\">support@openair.example</a>.</li>" },
+                en: "<li>We accept returns of unopened products within 30 days of delivery, in line with standard U.S. consumer practice. Return shipping is on us.</li><li>If a product is defective or the wrong item is shipped due to our error, we will replace it or issue a full refund at no cost to you.</li><li>For returns based on a change of mind, opened products cannot be accepted for hygiene reasons.</li><li>To start a return, contact <a href=\"mailto:support@openair.example\">support@openair.example</a>. Nothing in this section limits any non-waivable consumer rights under applicable U.S. state law.</li>",
+                es: "<li>Adicionalmente al derecho legal de desistimiento, aceptamos devoluciones de productos sin abrir dentro de los 30 días naturales siguientes a la recepción. En tal caso, los costes de envío de la devolución correrán a nuestro cargo.</li><li>Si el producto presenta defectos o se ha entregado un artículo distinto al solicitado por error nuestro, asumiremos los costes de la sustitución o el reembolso.</li><li>Por razones de higiene, no se aceptan devoluciones de productos abiertos salvo defecto manifiesto.</li><li>Para iniciar una devolución, contacta con <a href=\"mailto:support@openair.example\">support@openair.example</a>.</li>",
+                pt: "<li>Nos termos do art. 49 do Código de Defesa do Consumidor (Lei 8.078/1990), o Usuário pode desistir da compra em até <strong>7 (sete) dias corridos</strong> contados do recebimento do produto, sem necessidade de justificativa, quando a contratação ocorrer fora do estabelecimento comercial. Nesse caso, o frete de devolução fica por nossa conta.</li><li>Se o produto apresentar vício ou tiver sido enviado por engano, faremos a troca ou o reembolso integral, sem custos para o Usuário, conforme arts. 18 e seguintes do CDC.</li><li>Por questões de higiene, não aceitamos devoluções de produtos abertos por arrependimento, salvo se apresentarem vício manifesto.</li><li>Para iniciar uma devolução, entre em contato pelo <a href=\"mailto:support@openair.example\">support@openair.example</a>.</li>" },
 
   // EU-only: Warranty
-  "es_warranty_title": { ja: "", es: "10. Garantía legal de conformidad" },
-  "es_warranty_p1":    { ja: "", es: "Conforme a los artículos 115 y siguientes del Real Decreto Legislativo 1/2007 (LGDCU), modificado por el Real Decreto-ley 7/2021 que transpone la Directiva (UE) 2019/771, los productos vendidos a través del Servicio están cubiertos por una <strong>garantía legal de conformidad de tres (3) años</strong> desde la entrega del bien." },
-  "es_warranty_p2":    { ja: "", es: "Durante este plazo, si el producto no es conforme al contrato podrás exigir, sin coste alguno, su reparación o sustitución, así como, en su caso, la rebaja proporcional del precio o la resolución del contrato. Se presume, salvo prueba en contrario, que las faltas de conformidad manifestadas en los dos años posteriores a la entrega ya existían en el momento de la entrega." },
-  "es_warranty_p3":    { ja: "", es: "Para hacer valer la garantía, contacta con nosotros en <a href=\"mailto:support@openair.example\">support@openair.example</a> indicando el número de pedido y describiendo el defecto. Conserva la factura como justificante de la compra." },
+  "es_warranty_title": { ja: "", en: "", es: "10. Garantía legal de conformidad", pt: "" },
+  "es_warranty_p1":    { ja: "", en: "", es: "Conforme a los artículos 115 y siguientes del Real Decreto Legislativo 1/2007 (LGDCU), modificado por el Real Decreto-ley 7/2021 que transpone la Directiva (UE) 2019/771, los productos vendidos a través del Servicio están cubiertos por una <strong>garantía legal de conformidad de tres (3) años</strong> desde la entrega del bien.", pt: "" },
+  "es_warranty_p2":    { ja: "", en: "", es: "Durante este plazo, si el producto no es conforme al contrato podrás exigir, sin coste alguno, su reparación o sustitución, así como, en su caso, la rebaja proporcional del precio o la resolución del contrato. Se presume, salvo prueba en contrario, que las faltas de conformidad manifestadas en los dos años posteriores a la entrega ya existían en el momento de la entrega.", pt: "" },
+  "es_warranty_p3":    { ja: "", en: "", es: "Para hacer valer la garantía, contacta con nosotros en <a href=\"mailto:support@openair.example\">support@openair.example</a> indicando el número de pedido y describiendo el defecto. Conserva la factura como justificante de la compra.", pt: "" },
 
   // Article 7
-  "a7_title": { ja: "第7条（知的財産権）", es: "11. Propiedad intelectual e industrial" },
+  "a7_title": { ja: "第7条（知的財産権）", en: "7. Intellectual property", es: "11. Propiedad intelectual e industrial", pt: "7. Propriedade intelectual" },
   "a7_body":  { ja: "本サービスに含まれるコンテンツ（テキスト、画像、ロゴ、商品デザイン等）に関する著作権その他の知的財産権は、当社または当社にライセンスを許諾している者に帰属します。ユーザーは、当社の事前の書面による承諾なく、本サービスのコンテンツを複製、転載、改変、配布等することはできません。",
-                es: "Todos los contenidos del Servicio (textos, imágenes, marcas, logotipos, diseños de producto, etc.) son titularidad de OPEN AIR, Inc. o de los terceros que han autorizado su uso. Queda prohibida la reproducción, distribución, comunicación pública, transformación o cualquier otra forma de explotación sin nuestra autorización previa por escrito." },
+                en: "All content available through the Service — including text, images, trademarks, logos, and product designs — is owned by OPEN AIR, Inc. or by third parties who have licensed it to us. You may not reproduce, distribute, publicly display, modify, or otherwise exploit any content without our prior written consent.",
+                es: "Todos los contenidos del Servicio (textos, imágenes, marcas, logotipos, diseños de producto, etc.) son titularidad de OPEN AIR, Inc. o de los terceros que han autorizado su uso. Queda prohibida la reproducción, distribución, comunicación pública, transformación o cualquier otra forma de explotación sin nuestra autorización previa por escrito.",
+                pt: "Todo o conteúdo disponível no Serviço — textos, imagens, marcas, logotipos, desenhos de produto e demais elementos — pertence à OPEN AIR, Inc. ou a terceiros que autorizaram seu uso. É vedada a reprodução, distribuição, comunicação pública, modificação ou qualquer outra forma de exploração sem a nossa autorização prévia por escrito." },
 
   // Article 8
-  "a8_title": { ja: "第8条（免責事項）", es: "12. Limitación de responsabilidad" },
+  "a8_title": { ja: "第8条（免責事項）", en: "8. Limitation of liability", es: "12. Limitación de responsabilidad", pt: "8. Limitação de responsabilidade" },
   "a8_body":  { ja: "<li>当社は、本サービスに関して、その完全性、正確性、確実性、有用性等について、いかなる保証も行うものではありません。</li><li>本サービスは医療目的の製品ではなく、当社の商品は治療・診断・予防を目的とするものではありません。</li><li>当社は、本サービスに起因してユーザーに生じたあらゆる損害について、当社の故意または重過失による場合を除き、一切の責任を負いません。</li><li>当社は、ユーザー間のトラブルについて、一切責任を負いません。</li>",
-                es: "<li>OPEN AIR, Inc. presta el Servicio con la diligencia profesional exigible, sin que pueda garantizar la ausencia total de interrupciones técnicas o errores.</li><li>Los productos comercializados no constituyen un producto sanitario ni tienen finalidad de diagnóstico, prevención o tratamiento de enfermedades.</li><li>La responsabilidad de OPEN AIR, Inc. queda limitada a los daños directamente imputables a su actuación dolosa o gravemente negligente, sin perjuicio de los derechos imperativos reconocidos al consumidor por la legislación aplicable.</li><li>OPEN AIR, Inc. no responde por las controversias que puedan surgir entre Usuarios.</li>" },
+                en: "<li>We provide the Service with reasonable care but do not warrant that it will be uninterrupted, error-free, or free of inaccuracies.</li><li>Our products are not medical devices and are not intended to diagnose, treat, cure, or prevent any disease.</li><li>To the maximum extent permitted by law, OPEN AIR, Inc. is not liable for any damages arising out of your use of the Service, except where caused by our willful misconduct or gross negligence. Nothing in these Terms limits any rights you may have under applicable U.S. state consumer protection law that cannot be waived.</li><li>We are not responsible for disputes between Users.</li>",
+                es: "<li>OPEN AIR, Inc. presta el Servicio con la diligencia profesional exigible, sin que pueda garantizar la ausencia total de interrupciones técnicas o errores.</li><li>Los productos comercializados no constituyen un producto sanitario ni tienen finalidad de diagnóstico, prevención o tratamiento de enfermedades.</li><li>La responsabilidad de OPEN AIR, Inc. queda limitada a los daños directamente imputables a su actuación dolosa o gravemente negligente, sin perjuicio de los derechos imperativos reconocidos al consumidor por la legislación aplicable.</li><li>OPEN AIR, Inc. no responde por las controversias que puedan surgir entre Usuarios.</li>",
+                pt: "<li>A OPEN AIR, Inc. presta o Serviço com a diligência razoavelmente exigível, sem garantir ausência total de interrupções técnicas ou erros.</li><li>Os produtos comercializados não constituem produto de saúde e não se destinam a diagnóstico, prevenção ou tratamento de doenças.</li><li>A responsabilidade da OPEN AIR, Inc. limita-se aos danos diretos decorrentes de dolo ou culpa grave, sem prejuízo dos direitos do consumidor previstos no Código de Defesa do Consumidor (Lei 8.078/1990).</li><li>Não nos responsabilizamos por controvérsias entre Usuários.</li>" },
 
   // EU-only: ODR
-  "es_odr_title": { ja: "", es: "13. Reclamaciones y resolución alternativa de litigios" },
-  "es_odr_p1":    { ja: "", es: "En caso de controversia, puedes presentar una reclamación a través de nuestro servicio de atención al cliente en <a href=\"mailto:support@openair.example\">support@openair.example</a>. Nos comprometemos a responder en un plazo máximo de un mes." },
-  "es_odr_p2":    { ja: "", es: "Conforme al Reglamento (UE) 524/2013, te informamos de que la Comisión Europea pone a tu disposición la <strong>Plataforma de Resolución de Litigios en Línea (ODR)</strong>, accesible en: <a href=\"https://ec.europa.eu/consumers/odr\" target=\"_blank\" rel=\"noopener\">ec.europa.eu/consumers/odr</a>." },
-  "es_odr_p3":    { ja: "", es: "A efectos de dicha plataforma, nuestro correo electrónico de contacto es <a href=\"mailto:support@openair.example\">support@openair.example</a>." },
+  "es_odr_title": { ja: "", en: "", es: "13. Reclamaciones y resolución alternativa de litigios", pt: "" },
+  "es_odr_p1":    { ja: "", en: "", es: "En caso de controversia, puedes presentar una reclamación a través de nuestro servicio de atención al cliente en <a href=\"mailto:support@openair.example\">support@openair.example</a>. Nos comprometemos a responder en un plazo máximo de un mes.", pt: "" },
+  "es_odr_p2":    { ja: "", en: "", es: "Conforme al Reglamento (UE) 524/2013, te informamos de que la Comisión Europea pone a tu disposición la <strong>Plataforma de Resolución de Litigios en Línea (ODR)</strong>, accesible en: <a href=\"https://ec.europa.eu/consumers/odr\" target=\"_blank\" rel=\"noopener\">ec.europa.eu/consumers/odr</a>.", pt: "" },
+  "es_odr_p3":    { ja: "", en: "", es: "A efectos de dicha plataforma, nuestro correo electrónico de contacto es <a href=\"mailto:support@openair.example\">support@openair.example</a>.", pt: "" },
 
   // Article 9
-  "a9_title": { ja: "第9条（規約変更）", es: "14. Modificación de los Términos" },
+  "a9_title": { ja: "第9条（規約変更）", en: "9. Changes to these Terms", es: "14. Modificación de los Términos", pt: "9. Alterações dos Termos" },
   "a9_body":  { ja: "<li>当社は、必要と判断した場合には、ユーザーに通知することなくいつでも本規約を変更することができるものとします。</li><li>変更後の利用規約は、当社が別途定める場合を除いて、本サービス上に表示した時点より効力を生じるものとします。</li><li>本規約の変更後、本サービスの利用を継続したユーザーは、変更後の規約に同意したものとみなします。</li>",
-                es: "<li>Podremos modificar los presentes Términos cuando sea necesario por motivos legales, técnicos o comerciales. Los cambios sustanciales se comunicarán al Usuario con una antelación razonable a través del Servicio o por correo electrónico.</li><li>Las modificaciones surtirán efecto a partir de la fecha indicada en la notificación.</li><li>El uso continuado del Servicio tras la entrada en vigor de las modificaciones implicará la aceptación de las mismas; en caso contrario, el Usuario podrá cancelar su cuenta sin penalización.</li>" },
+                en: "<li>We may update these Terms when reasonably necessary for legal, technical, or commercial reasons. Material changes will be communicated through the Service or by email with reasonable advance notice.</li><li>Updates take effect on the date stated in our notice.</li><li>Continued use of the Service after the effective date constitutes acceptance of the updated Terms; otherwise, you may close your account at no cost.</li>",
+                es: "<li>Podremos modificar los presentes Términos cuando sea necesario por motivos legales, técnicos o comerciales. Los cambios sustanciales se comunicarán al Usuario con una antelación razonable a través del Servicio o por correo electrónico.</li><li>Las modificaciones surtirán efecto a partir de la fecha indicada en la notificación.</li><li>El uso continuado del Servicio tras la entrada en vigor de las modificaciones implicará la aceptación de las mismas; en caso contrario, el Usuario podrá cancelar su cuenta sin penalización.</li>",
+                pt: "<li>Poderemos modificar estes Termos quando necessário por motivos legais, técnicos ou comerciais. Alterações relevantes serão comunicadas ao Usuário com antecedência razoável, por meio do Serviço ou por e-mail.</li><li>As modificações entram em vigor na data indicada na comunicação.</li><li>O uso continuado do Serviço após a entrada em vigor das alterações implica sua aceitação; caso contrário, o Usuário poderá encerrar sua conta sem custo.</li>" },
 
   // Article 10
-  "a10_title": { ja: "第10条（準拠法・裁判管轄）", es: "15. Ley aplicable y jurisdicción" },
+  "a10_title": { ja: "第10条（準拠法・裁判管轄）", en: "10. Governing law and jurisdiction", es: "15. Ley aplicable y jurisdicción", pt: "10. Lei aplicável e foro" },
   "a10_body":  { ja: "<li>本規約の解釈にあたっては、日本法を準拠法とします。</li><li>本サービスに関して紛争が生じた場合には、東京地方裁判所を第一審の専属的合意管轄裁判所とします。</li>",
-                 es: "<li>Los presentes Términos se rigen por la legislación española. No obstante, si el Usuario actúa como consumidor, le serán de aplicación las disposiciones imperativas de protección al consumidor de su país de residencia habitual dentro de la Unión Europea, conforme al Reglamento (CE) 593/2008 (Roma I).</li><li>Para la resolución de cualquier controversia, las partes se someten a los Juzgados y Tribunales del domicilio del consumidor, sin perjuicio de los demás fueros que en derecho le correspondan.</li>" },
+                 en: "<li>These Terms are governed by the laws of the State of Delaware, without regard to its conflict of laws principles. This choice of law does not deprive you of the protection of any non-waivable provisions of the consumer protection law of your state of residence.</li><li>Any dispute arising out of or relating to the Service will be brought in the state or federal courts located in Delaware, except where applicable law allows the consumer to bring suit in the courts of their place of residence.</li>",
+                 es: "<li>Los presentes Términos se rigen por la legislación española. No obstante, si el Usuario actúa como consumidor, le serán de aplicación las disposiciones imperativas de protección al consumidor de su país de residencia habitual dentro de la Unión Europea, conforme al Reglamento (CE) 593/2008 (Roma I).</li><li>Para la resolución de cualquier controversia, las partes se someten a los Juzgados y Tribunales del domicilio del consumidor, sin perjuicio de los demás fueros que en derecho le correspondan.</li>",
+                 pt: "<li>Estes Termos são regidos pelas leis da República Federativa do Brasil, em especial pelo Código de Defesa do Consumidor (Lei 8.078/1990), quando aplicável.</li><li>Fica eleito o foro do domicílio do consumidor para dirimir quaisquer controvérsias decorrentes destes Termos, ressalvados outros foros que a lei lhe assegure.</li>" },
 
   "footer_dates": { ja: "制定日：2026年1月1日<br/>最終改定日：2026年5月1日<br/>OPEN AIR, Inc.",
-                    es: "Fecha de entrada en vigor: 1 de enero de 2026<br/>Última actualización: 1 de mayo de 2026<br/>OPEN AIR, Inc." },
+                    en: "Effective date: January 1, 2026<br/>Last updated: May 1, 2026<br/>OPEN AIR, Inc.",
+                    es: "Fecha de entrada en vigor: 1 de enero de 2026<br/>Última actualización: 1 de mayo de 2026<br/>OPEN AIR, Inc.",
+                    pt: "Data de vigência: 1 de janeiro de 2026<br/>Última atualização: 1 de maio de 2026<br/>OPEN AIR, Inc." },
 
   // Footer
-  "footer_privacy": { ja: "プライバシー", es: "Privacidad" },
-  "footer_terms":   { ja: "利用規約",     es: "Términos" },
-  "footer_support": { ja: "サポート",     es: "Soporte" }
+  "footer_privacy": { ja: "プライバシー", en: "Privacy", es: "Privacidad", pt: "Privacidade" },
+  "footer_terms":   { ja: "利用規約",     en: "Terms",   es: "Términos",   pt: "Termos" },
+  "footer_support": { ja: "サポート",     en: "Support", es: "Soporte",    pt: "Suporte" }
 };
 
 const I18N_KEY = 'openair_lang';
+const SUPPORTED_LANGS = ['ja','en','es','pt'];
+const LANG_LABEL = { ja: '日本語', en: 'English', es: 'Español', pt: 'Português' };
 function getLang(){
-  // 1) URL ?lang=xx override (e.g. share a forced-language link)
   try {
     const u = new URLSearchParams(location.search).get('lang');
-    if (u === 'ja' || u === 'es') { localStorage.setItem(I18N_KEY, u); return u; }
+    if (SUPPORTED_LANGS.includes(u)) { localStorage.setItem(I18N_KEY, u); return u; }
   } catch(e){}
-  // 2) Saved manual preference
   const saved = localStorage.getItem(I18N_KEY);
-  if (saved === 'ja' || saved === 'es') return saved;
-  // 3) Browser language detection — check the full navigator.languages array
+  if (SUPPORTED_LANGS.includes(saved)) return saved;
   const langs = (navigator.languages && navigator.languages.length)
     ? navigator.languages
     : [navigator.language || navigator.userLanguage || ''];
   for (const l of langs){
     const lc = (l || '').toLowerCase();
-    if (lc.startsWith('es')) return 'es';
     if (lc.startsWith('ja')) return 'ja';
+    if (lc.startsWith('pt')) return 'pt';
+    if (lc.startsWith('es')) return 'es';
+    if (lc.startsWith('en')) return 'en';
   }
   return 'ja';
 }
 function applyLang(lang){
+  if (!SUPPORTED_LANGS.includes(lang)) lang = 'ja';
   document.documentElement.lang = lang;
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
     const t = translations[key];
     if (!t) return;
-    const text = (lang === 'es' && t.es) ? t.es : t.ja;
+    const text = (t[lang] != null && t[lang] !== '') ? t[lang] : t.ja;
     if (text) el.innerHTML = text;
   });
-  document.querySelectorAll('[data-jp-only]').forEach(el => { el.style.display = lang === 'es' ? 'none' : ''; });
+  document.querySelectorAll('[data-jp-only]').forEach(el => { el.style.display = lang === 'ja' ? '' : 'none'; });
   document.querySelectorAll('[data-es-only]').forEach(el => { el.style.display = lang === 'es' ? '' : 'none'; });
   const titleEntry = translations['page_title'];
-  if (titleEntry) document.title = (lang === 'es' && titleEntry.es) ? titleEntry.es : titleEntry.ja;
+  if (titleEntry) document.title = (titleEntry[lang] && titleEntry[lang] !== '') ? titleEntry[lang] : titleEntry.ja;
   const langLabel = document.getElementById('lang-current');
-  if (langLabel) langLabel.textContent = lang === 'es' ? 'Español' : '日本語';
+  if (langLabel) langLabel.textContent = LANG_LABEL[lang] || '日本語';
 }
-function setLang(lang){ localStorage.setItem(I18N_KEY, lang); applyLang(lang); }
+function setLang(lang){
+  if (!SUPPORTED_LANGS.includes(lang)) lang = 'ja';
+  localStorage.setItem(I18N_KEY, lang);
+  applyLang(lang);
+}
 applyLang(getLang());
-document.getElementById('lang-switcher')?.addEventListener('click', (e) => {
-  e.preventDefault();
-  setLang(getLang() === 'ja' ? 'es' : 'ja');
-});
 
-// Region modal logic
+// Region / language modal logic (4 languages, flat)
 (function(){
   const modal = document.getElementById('region-modal');
   const switcher = document.getElementById('lang-switcher');
@@ -527,28 +555,24 @@ document.getElementById('lang-switcher')?.addEventListener('click', (e) => {
   const newSwitcher = switcher.cloneNode(true);
   switcher.parentNode.replaceChild(newSwitcher, switcher);
 
+  const MODAL_TEXT = {
+    ja: { title: '配送地域を選択',         sub: 'ご利用の地域に合わせて、言語と通貨が切り替わります。', close: '閉じる' },
+    en: { title: 'Choose your region',     sub: 'Language and currency adapt to your region.',           close: 'Close' },
+    es: { title: 'Selecciona tu región',   sub: 'El idioma y la moneda se ajustan a tu región.',         close: 'Cerrar' },
+    pt: { title: 'Escolha sua região',     sub: 'O idioma e a moeda se ajustam à sua região.',           close: 'Fechar' }
+  };
+
   function openModal(){
     modal.classList.remove('hidden');
     updateChecks();
     const lang = getLang();
+    const t = MODAL_TEXT[lang] || MODAL_TEXT.ja;
     const title = modal.querySelector('#region-modal-title');
     const sub = modal.querySelector('#region-modal-sub');
     const close = modal.querySelector('#region-close');
-    const brSub = modal.querySelector('#region-br-sub');
-    const usSub = modal.querySelector('#region-us-sub');
-    if (lang === 'es') {
-      if (title) title.textContent = 'Selecciona tu región';
-      if (sub) sub.textContent = 'El idioma y la moneda se ajustan a tu región.';
-      if (close) close.textContent = 'Cerrar';
-      if (brSub) brSub.textContent = 'Estamos trabajando para que pronto puedas comprarlo aquí.';
-      if (usSub) usSub.textContent = 'Estamos trabajando para que pronto puedas comprarlo aquí.';
-    } else {
-      if (title) title.textContent = '配送地域を選択';
-      if (sub) sub.textContent = 'ご利用の地域に合わせて、言語と通貨が切り替わります。';
-      if (close) close.textContent = '閉じる';
-      if (brSub) brSub.textContent = 'ご購入できるよう、準備を進めています。';
-      if (usSub) usSub.textContent = 'ご購入できるよう、準備を進めています。';
-    }
+    if (title) title.textContent = t.title;
+    if (sub) sub.textContent = t.sub;
+    if (close) close.textContent = t.close;
   }
   function closeModal(){ modal.classList.add('hidden'); }
   function updateChecks(){
@@ -556,48 +580,8 @@ document.getElementById('lang-switcher')?.addEventListener('click', (e) => {
     modal.querySelectorAll('.region-option').forEach(btn => {
       const check = btn.querySelector('.region-check');
       if (!check) return;
-      const region = btn.dataset.region;
-      if ((region === 'ja' && lang === 'ja') || (region === 'es' && lang === 'es')) {
-        check.classList.remove('hidden');
-      } else {
-        check.classList.add('hidden');
-      }
+      check.classList.toggle('hidden', btn.dataset.region !== lang);
     });
-  }
-  function showSoonToast(region){
-    const lang = getLang();
-    const msg = lang === 'es'
-      ? 'Estamos trabajando para que pronto puedas comprarlo aquí.'
-      : 'ご購入できるよう、準備を進めています。';
-    let toast = document.getElementById('region-toast');
-    if (!toast){
-      toast = document.createElement('div');
-      toast.id = 'region-toast';
-      toast.setAttribute('role','status');
-      toast.setAttribute('aria-live','polite');
-      document.body.appendChild(toast);
-    }
-    toast.style.cssText = `
-      position:fixed; bottom:24px; left:50%;
-      transform:translateX(-50%) translateY(20px);
-      background:rgba(10,10,10,.92); color:#fff;
-      padding:14px 22px; border-radius:999px;
-      font-size:14px; max-width:90vw;
-      z-index:200; opacity:0;
-      transition:opacity .25s, transform .25s;
-      box-shadow:0 10px 40px rgba(0,0,0,.25);
-      backdrop-filter:blur(10px);
-    `;
-    toast.textContent = msg;
-    requestAnimationFrame(()=>{
-      toast.style.opacity = '1';
-      toast.style.transform = 'translateX(-50%) translateY(0)';
-    });
-    clearTimeout(window.__regionToastT);
-    window.__regionToastT = setTimeout(()=>{
-      toast.style.opacity = '0';
-      toast.style.transform = 'translateX(-50%) translateY(20px)';
-    }, 3200);
   }
 
   newSwitcher.addEventListener('click', (e) => { e.preventDefault(); openModal(); });
@@ -608,10 +592,9 @@ document.getElementById('lang-switcher')?.addEventListener('click', (e) => {
   modal.querySelectorAll('.region-option').forEach(btn => {
     btn.addEventListener('click', () => {
       const region = btn.dataset.region;
-      if (region === 'ja') { setLang('ja'); closeModal(); }
-      else if (region === 'es') { setLang('es'); closeModal(); }
-      else if (region === 'br' || region === 'us') {
-        showSoonToast(region);
+      if (SUPPORTED_LANGS.includes(region)) {
+        setLang(region);
+        closeModal();
       }
     });
   });

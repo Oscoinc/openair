@@ -1608,7 +1608,7 @@
     </div>
   </footer>
 
-  <!-- Region selection modal -->
+  <!-- Region / Language modal (4 languages, flat) -->
   <div id="region-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/40 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="region-modal-title">
     <div class="bg-white rounded-3xl p-7 max-w-sm w-full shadow-2xl" onclick="event.stopPropagation()">
       <div class="text-[11px] tracking-[0.3em] uppercase text-zinc-500 mb-1">Region</div>
@@ -1626,6 +1626,16 @@
           </button>
         </li>
         <li>
+          <button data-region="en" class="region-option w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
+            <span class="text-2xl">🇺🇸</span>
+            <div class="flex-1">
+              <div class="text-[14px] font-medium text-zinc-900">United States</div>
+              <div class="text-[11px] text-zinc-500">English · USA shipping · $</div>
+            </div>
+            <span class="region-check text-zinc-900 hidden text-[18px]">✓</span>
+          </button>
+        </li>
+        <li>
           <button data-region="es" class="region-option w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
             <span class="text-2xl">🇪🇸</span>
             <div class="flex-1">
@@ -1636,23 +1646,13 @@
           </button>
         </li>
         <li>
-          <button data-region="br" class="region-option region-soon w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
-            <span class="text-2xl opacity-70">🇧🇷</span>
+          <button data-region="pt" class="region-option w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
+            <span class="text-2xl">🇧🇷</span>
             <div class="flex-1">
               <div class="text-[14px] font-medium text-zinc-900">Brasil</div>
-              <div class="text-[11px] text-zinc-500" id="region-br-sub">ご購入できるよう、準備を進めています</div>
+              <div class="text-[11px] text-zinc-500">Português · Envio Brasil · R$</div>
             </div>
-            <span class="text-[10px] tracking-[0.18em] uppercase text-zinc-500 px-2.5 py-1 rounded-full border border-zinc-200" id="region-br-badge">Soon</span>
-          </button>
-        </li>
-        <li>
-          <button data-region="us" class="region-option region-soon w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
-            <span class="text-2xl opacity-70">🇺🇸</span>
-            <div class="flex-1">
-              <div class="text-[14px] font-medium text-zinc-900">United States</div>
-              <div class="text-[11px] text-zinc-500" id="region-us-sub">ご購入できるよう、準備を進めています</div>
-            </div>
-            <span class="text-[10px] tracking-[0.18em] uppercase text-zinc-500 px-2.5 py-1 rounded-full border border-zinc-200" id="region-us-badge">Soon</span>
+            <span class="region-check text-zinc-900 hidden text-[18px]">✓</span>
           </button>
         </li>
       </ul>
@@ -2134,10 +2134,19 @@
       display:flex; align-items:center; gap:10px;
       max-width:92vw; line-height:1.4;
     `;
+    const _toastLang = (typeof getLang === 'function') ? getLang() : 'ja';
+    const ADDED = { ja: 'を追加しました', en: 'added to bag', es: 'agregado al carrito', pt: 'adicionado à sacola' };
+    const VIEW  = { ja: 'カート',          en: 'View bag',     es: 'Ver carrito',         pt: 'Ver sacola' };
+    const _addedText = ADDED[_toastLang] || ADDED.ja;
+    const _viewText  = VIEW[_toastLang] || VIEW.ja;
+    // For JA, the verb "を追加しました" follows the noun directly (no space).
+    // For EN/ES/PT, put the verb after the product name with a leading space.
+    const _itemLabel = (_toastLang === 'ja') ? (labels[id] || id) + _addedText
+                                              : (labels[id] || id) + ' ' + _addedText;
     toast.innerHTML = `
       <span style="display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#fff;color:#0a0a0a;font-size:12px;font-weight:700;flex-shrink:0">✓</span>
-      <span style="flex:1;min-width:0">${labels[id]||id} ${(typeof getLang==='function'&&getLang()==='es')?'agregado al carrito':'を追加しました'}</span>
-      <a href="./cart.html" style="color:#fff;text-decoration:underline;font-size:13px;opacity:.9;flex-shrink:0">${(typeof getLang==='function'&&getLang()==='es')?'Ver carrito':'カート'}</a>
+      <span style="flex:1;min-width:0">${_itemLabel}</span>
+      <a href="./cart.html" style="color:#fff;text-decoration:underline;font-size:13px;opacity:.9;flex-shrink:0">${_viewText}</a>
     `;
     requestAnimationFrame(()=>{
       toast.style.opacity = '1';
@@ -2317,212 +2326,217 @@ document.querySelectorAll('.scene-card').forEach(card => {
 // ============== i18n: 日本語 / Español 切替 ==============
 const translations = {
   // Navigation
-  "nav_concept":  { ja: "コンセプト", es: "Concepto" },
-  "nav_why":      { ja: "課題", es: "Por qué" },
-  "nav_benefits": { ja: "効果", es: "Beneficios" },
-  "nav_scenes":   { ja: "シーン", es: "Momentos" },
-  "nav_design":   { ja: "デザイン", es: "Diseño" },
-  "nav_features": { ja: "特徴", es: "Características" },
-  "nav_howto":    { ja: "使い方", es: "Cómo usar" },
-  "nav_users":    { ja: "声", es: "Voces" },
-  "nav_buy":      { ja: "購入", es: "Comprar" },
-  "nav_cart":     { ja: "カート", es: "Carrito" },
+  "nav_concept":  { ja: "コンセプト", en: "Concept",  es: "Concepto",        pt: "Conceito" },
+  "nav_why":      { ja: "課題",       en: "Why",      es: "Por qué",         pt: "Por quê" },
+  "nav_benefits": { ja: "効果",       en: "Benefits", es: "Beneficios",      pt: "Benefícios" },
+  "nav_scenes":   { ja: "シーン",     en: "Moments",  es: "Momentos",        pt: "Momentos" },
+  "nav_design":   { ja: "デザイン",   en: "Design",   es: "Diseño",          pt: "Design" },
+  "nav_features": { ja: "特徴",       en: "Features", es: "Características", pt: "Recursos" },
+  "nav_howto":    { ja: "使い方",     en: "How to use", es: "Cómo usar",     pt: "Como usar" },
+  "nav_users":    { ja: "声",         en: "Voices",   es: "Voces",           pt: "Vozes" },
+  "nav_buy":      { ja: "購入",       en: "Buy",      es: "Comprar",         pt: "Comprar" },
+  "nav_cart":     { ja: "カート",     en: "Bag",      es: "Carrito",         pt: "Sacola" },
 
   // Cinematic captions
-  "cap_2_text": { ja: "ひっそりと、待っている。", es: "Esperando, en silencio." },
-  "cap_3_text": { ja: "鼻のラインに、寄り添う。", es: "Se adapta a tu nariz." },
-  "cap_4_text": { ja: "見えない部分に、工夫を。", es: "El detalle está por dentro." },
-  "cap_5_text": { ja: "意識しなくても、整っている。", es: "Funciona sin que lo pienses." },
-  "cap_6_text": { ja: "装着、たった2ステップ。", es: "Solo dos pasos para ponerlo." },
+  "cap_2_text": { ja: "ひっそりと、待っている。",      en: "Quietly waiting.",                 es: "Esperando, en silencio.",      pt: "Em silêncio, esperando." },
+  "cap_3_text": { ja: "鼻のラインに、寄り添う。",      en: "Following the line of your nose.", es: "Se adapta a tu nariz.",        pt: "Acompanhando a curva do nariz." },
+  "cap_4_text": { ja: "見えない部分に、工夫を。",      en: "Engineered, where you can't see.",  es: "El detalle está por dentro.",  pt: "O detalhe está por dentro." },
+  "cap_5_text": { ja: "意識しなくても、整っている。",  en: "It works without you thinking about it.", es: "Funciona sin que lo pienses.", pt: "Funciona sem você pensar." },
+  "cap_6_text": { ja: "装着、たった2ステップ。",       en: "Two steps to wear it.",             es: "Solo dos pasos para ponerlo.", pt: "Só dois passos para colocar." },
 
   // Hero
-  "hero_headline": { ja: "呼吸を、整える。", es: "Respira mejor." },
-  "hero_subtext":  { ja: "意識しなくても、整う。<br/>ただ、それだけ。", es: "Sin pensarlo. Sin esfuerzo." },
-  "hero_btn_buy":  { ja: "今すぐ購入", es: "Comprar ahora" },
-  "hero_btn_scroll": { ja: "スクロールで見る", es: "Desliza para descubrir" },
+  "hero_headline": { ja: "呼吸を、整える。", en: "Breathe, refined.",                          es: "Respira mejor.",          pt: "Respire melhor." },
+  "hero_subtext":  { ja: "意識しなくても、整う。<br/>ただ、それだけ。", en: "Effortless.<br/>Without thinking.", es: "Sin pensarlo. Sin esfuerzo.", pt: "Sem esforço. Sem pensar." },
+  "hero_btn_buy":  { ja: "今すぐ購入", en: "Buy now",                                          es: "Comprar ahora",           pt: "Comprar agora" },
+  "hero_btn_scroll": { ja: "スクロールで見る", en: "Scroll to explore",                        es: "Desliza para descubrir",  pt: "Role para descobrir" },
 
   // CONCEPT
-  "concept_h2": { ja: "無意識の時間を、<br/>アップグレードする。", es: "Una mejora<br/>para tus momentos inconscientes." },
-  "concept_p1": { ja: "人生の約3分の1は、睡眠。<br/>デスクワークは、1日の大半。<br/>トレーニングも、積み重ねの時間。", es: "Pasamos un tercio de la vida durmiendo.<br/>Casi todo el día frente al escritorio.<br/>Y horas entrenando, una y otra vez." },
-  "concept_p2": { ja: "その多くの呼吸は、<br/>感情やストレスによって乱れている。", es: "Y, en gran parte de ese tiempo,<br/>nuestra respiración se altera por las emociones y el estrés." },
-  "concept_p3": { ja: "気づけば、口で呼吸している。<br/>分かっていても、変えられない。", es: "Sin darte cuenta, respiras por la boca.<br/>Lo sabes, pero cambiarlo cuesta." },
-  "concept_p4": { ja: "だから私たちは、<br/>意識しなくても、鼻呼吸へ導く仕組みをつくった。", es: "Por eso creamos algo que te lleva a respirar por la nariz,<br/>sin que tengas que pensarlo." },
+  "concept_h2": { ja: "無意識の時間を、<br/>アップグレードする。", en: "Upgrade<br/>your unconscious hours.", es: "Una mejora<br/>para tus momentos inconscientes.", pt: "Eleve as horas<br/>em que você não percebe." },
+  "concept_p1": { ja: "人生の約3分の1は、睡眠。<br/>デスクワークは、1日の大半。<br/>トレーニングも、積み重ねの時間。", en: "We sleep about a third of our lives.<br/>We spend most of the day at a desk.<br/>And hours, again and again, we train.", es: "Pasamos un tercio de la vida durmiendo.<br/>Casi todo el día frente al escritorio.<br/>Y horas entrenando, una y otra vez.", pt: "Dormimos cerca de um terço da vida.<br/>Passamos quase o dia todo na frente da tela.<br/>E horas, repetidas vezes, treinando." },
+  "concept_p2": { ja: "その多くの呼吸は、<br/>感情やストレスによって乱れている。", en: "Through most of those hours,<br/>your breath is unsettled by emotion and stress.", es: "Y, en gran parte de ese tiempo,<br/>nuestra respiración se altera por las emociones y el estrés.", pt: "Em grande parte desse tempo,<br/>nossa respiração se altera com emoções e estresse." },
+  "concept_p3": { ja: "気づけば、口で呼吸している。<br/>分かっていても、変えられない。", en: "Without noticing, you breathe through your mouth.<br/>You know. But change is hard.", es: "Sin darte cuenta, respiras por la boca.<br/>Lo sabes, pero cambiarlo cuesta.", pt: "Sem perceber, você respira pela boca.<br/>Você sabe. Mas mudar é difícil." },
+  "concept_p4": { ja: "だから私たちは、<br/>意識しなくても、鼻呼吸へ導く仕組みをつくった。", en: "So we built something<br/>that guides you to nasal breathing—without thinking.", es: "Por eso creamos algo que te lleva a respirar por la nariz,<br/>sin que tengas que pensarlo.", pt: "Por isso criamos algo que conduz você à respiração nasal,<br/>sem precisar pensar." },
 
   // WHY IT MATTERS
-  "why_h2":  { ja: "口呼吸は、<br/>“無意識のダメージ”です。", es: "Respirar por la boca<br/>es un daño que no notas." },
-  "why_sub": { ja: "日常の中で少しずつ、コンディションに影響を与えていきます。<br/>すぐに変わるものではないからこそ、 “気づかないまま積み重なる”。", es: "Día tras día, va afectando tu bienestar.<br/>Lento, casi imperceptible. Pero se acumula." },
+  "why_h2":  { ja: "口呼吸は、<br/>“無意識のダメージ”です。", en: "Mouth breathing<br/>is damage you don't notice.", es: "Respirar por la boca<br/>es un daño que no notas.", pt: "Respirar pela boca<br/>é um dano que você não nota." },
+  "why_sub": { ja: "日常の中で少しずつ、コンディションに影響を与えていきます。<br/>すぐに変わるものではないからこそ、 “気づかないまま積み重なる”。", en: "Day after day, it touches your wellbeing.<br/>Slow. Almost invisible. But it adds up.", es: "Día tras día, va afectando tu bienestar.<br/>Lento, casi imperceptible. Pero se acumula.", pt: "Dia após dia, afeta seu bem-estar.<br/>Lento. Quase imperceptível. Mas se acumula." },
 
-  "why_card1_front": { ja: "口の乾きや<br/>違和感", es: "Boca seca<br/>o molesta" },
-  "why_card1_back_eyebrow": { ja: "影響", es: "Impacto" },
-  "why_card1_back":  { ja: "睡眠の質の<br/>低下", es: "Sueño<br/>menos profundo" },
+  "why_card1_front": { ja: "口の乾きや<br/>違和感", en: "Dry or<br/>uncomfortable mouth", es: "Boca seca<br/>o molesta",     pt: "Boca seca<br/>ou incômoda" },
+  "why_card1_back_eyebrow": { ja: "影響", en: "Impact", es: "Impacto", pt: "Impacto" },
+  "why_card1_back":  { ja: "睡眠の質の<br/>低下", en: "Lower<br/>sleep quality",        es: "Sueño<br/>menos profundo", pt: "Sono<br/>menos profundo" },
 
-  "why_card2_front": { ja: "呼吸の<br/>浅さ", es: "Respiración<br/>superficial" },
-  "why_card2_back_eyebrow": { ja: "影響", es: "Impacto" },
-  "why_card2_back":  { ja: "酸素供給の<br/>不足", es: "Menos oxígeno<br/>para el cuerpo" },
+  "why_card2_front": { ja: "呼吸の<br/>浅さ", en: "Shallow<br/>breathing",      es: "Respiración<br/>superficial", pt: "Respiração<br/>superficial" },
+  "why_card2_back_eyebrow": { ja: "影響", en: "Impact", es: "Impacto", pt: "Impacto" },
+  "why_card2_back":  { ja: "酸素供給の<br/>不足", en: "Less oxygen<br/>for the body", es: "Menos oxígeno<br/>para el cuerpo", pt: "Menos oxigênio<br/>para o corpo" },
 
-  "why_card3_front": { ja: "集中<br/>しにくさ", es: "Cuesta<br/>concentrarse" },
-  "why_card3_back_eyebrow": { ja: "影響", es: "Impacto" },
-  "why_card3_back":  { ja: "パフォーマンス<br/>の低下", es: "Menor<br/>rendimiento" },
+  "why_card3_front": { ja: "集中<br/>しにくさ", en: "Hard to<br/>focus",        es: "Cuesta<br/>concentrarse", pt: "Difícil<br/>concentrar" },
+  "why_card3_back_eyebrow": { ja: "影響", en: "Impact", es: "Impacto", pt: "Impacto" },
+  "why_card3_back":  { ja: "パフォーマンス<br/>の低下", en: "Performance<br/>declines", es: "Menor<br/>rendimiento", pt: "Menor<br/>desempenho" },
 
-  "why_card4_front": { ja: "フェイスラインの<br/>崩れ", es: "Pierdes<br/>tus facciones" },
-  "why_card4_back_eyebrow": { ja: "影響", es: "Impacto" },
-  "why_card4_back":  { ja: "顔のバランス<br/>低下", es: "Rostro<br/>menos armónico" },
+  "why_card4_front": { ja: "フェイスラインの<br/>崩れ", en: "Facial<br/>balance fades",        es: "Pierdes<br/>tus facciones",  pt: "Traços<br/>se desalinham" },
+  "why_card4_back_eyebrow": { ja: "影響", en: "Impact", es: "Impacto", pt: "Impacto" },
+  "why_card4_back":  { ja: "顔のバランス<br/>低下", en: "Less defined<br/>features",         es: "Rostro<br/>menos armónico", pt: "Rosto<br/>menos harmônico" },
 
   // APPROACH
-  "approach_h2": { ja: "変化は、<br/>意志に頼らない。", es: "El cambio<br/>no depende de la voluntad." },
-  "approach_p1": { ja: "必要なのは、<span class=\"text-zinc-900 font-medium\">自然に続く仕組み。</span>", es: "Lo que necesitas: <span class=\"text-zinc-900 font-medium\">un sistema que fluya solo.</span>" },
-  "approach_p2": { ja: "自然に、<span class=\"text-zinc-900 font-medium\">鼻呼吸へ。</span>", es: "Naturalmente, <span class=\"text-zinc-900 font-medium\">hacia la respiración nasal.</span>" },
+  "approach_h2": { ja: "変化は、<br/>意志に頼らない。", en: "Change<br/>shouldn't depend on willpower.", es: "El cambio<br/>no depende de la voluntad.", pt: "A mudança<br/>não depende da força de vontade." },
+  "approach_p1": { ja: "必要なのは、<span class=\"text-zinc-900 font-medium\">自然に続く仕組み。</span>", en: "What you need: <span class=\"text-zinc-900 font-medium\">a system that simply continues.</span>", es: "Lo que necesitas: <span class=\"text-zinc-900 font-medium\">un sistema que fluya solo.</span>", pt: "O que você precisa: <span class=\"text-zinc-900 font-medium\">um sistema que continua sozinho.</span>" },
+  "approach_p2": { ja: "自然に、<span class=\"text-zinc-900 font-medium\">鼻呼吸へ。</span>", en: "Naturally, <span class=\"text-zinc-900 font-medium\">to nasal breathing.</span>", es: "Naturalmente, <span class=\"text-zinc-900 font-medium\">hacia la respiración nasal.</span>", pt: "Naturalmente, <span class=\"text-zinc-900 font-medium\">à respiração nasal.</span>" },
 
   // BENEFITS
-  "benefits_h2": { ja: "気づかないうちに、<br/>変わっていく。", es: "Cambias<br/>sin darte cuenta." },
-  "benefits_pair1_before": { ja: "口の乾き", es: "Boca seca" },
-  "benefits_pair1_after":  { ja: "口呼吸から解放", es: "Libre de la boca" },
-  "benefits_pair2_before": { ja: "呼吸が浅い", es: "Respiración corta" },
-  "benefits_pair2_after":  { ja: "呼吸が深くなる", es: "Respiración profunda" },
-  "benefits_pair3_before": { ja: "集中できない", es: "Sin concentración" },
-  "benefits_pair3_after":  { ja: "無意識に続く", es: "Concentración natural" },
-  "benefits_pair4_before": { ja: "フェイスラインの崩れ", es: "Facciones desdibujadas" },
-  "benefits_pair4_after":  { ja: "フェイスラインを保つ", es: "Facciones definidas" },
+  "benefits_h2": { ja: "気づかないうちに、<br/>変わっていく。", en: "Change happens,<br/>without you noticing.", es: "Cambias<br/>sin darte cuenta.", pt: "Você muda,<br/>sem perceber." },
+  "benefits_pair1_before": { ja: "口の乾き",         en: "Dry mouth",          es: "Boca seca",            pt: "Boca seca" },
+  "benefits_pair1_after":  { ja: "口呼吸から解放",   en: "Free from mouth breathing", es: "Libre de la boca", pt: "Livre da respiração bucal" },
+  "benefits_pair2_before": { ja: "呼吸が浅い",       en: "Shallow breath",     es: "Respiración corta",    pt: "Respiração curta" },
+  "benefits_pair2_after":  { ja: "呼吸が深くなる",   en: "Deeper breath",      es: "Respiración profunda", pt: "Respiração profunda" },
+  "benefits_pair3_before": { ja: "集中できない",     en: "Can't focus",        es: "Sin concentración",    pt: "Sem foco" },
+  "benefits_pair3_after":  { ja: "無意識に続く",     en: "Focus, naturally",   es: "Concentración natural", pt: "Foco natural" },
+  "benefits_pair4_before": { ja: "フェイスラインの崩れ", en: "Facial line fading", es: "Facciones desdibujadas", pt: "Traços desalinhados" },
+  "benefits_pair4_after":  { ja: "フェイスラインを保つ", en: "Holds your facial line", es: "Facciones definidas", pt: "Traços mantidos" },
 
   // SCENES
-  "scenes_h2":  { ja: "「寝るためだけ」の<br/>ものではない。", es: "No solo para dormir." },
-  "scenes_sub": { ja: "あなたの 1 日を通して、使えます。", es: "Acompaña todo tu día." },
+  "scenes_h2":  { ja: "「寝るためだけ」の<br/>ものではない。", en: "Not just<br/>for sleep.", es: "No solo para dormir.", pt: "Não só<br/>para dormir." },
+  "scenes_sub": { ja: "あなたの 1 日を通して、使えます。", en: "Through every part of your day.", es: "Acompaña todo tu día.", pt: "Acompanha você o dia todo." },
 
-  "scene1_title": { ja: "寝る前", es: "Antes de dormir" },
-  "scene1_desc":  { ja: "呼吸を整えて、<br/>リラックスした状態へ。<br/>深く、静かな夜を。", es: "Respira con calma<br/>y suéltate del día.<br/>Una noche profunda y silenciosa." },
+  "scene1_title": { ja: "寝る前", en: "Before sleep",         es: "Antes de dormir", pt: "Antes de dormir" },
+  "scene1_desc":  { ja: "呼吸を整えて、<br/>リラックスした状態へ。<br/>深く、静かな夜を。", en: "Settle your breath,<br/>let the day go.<br/>A deeper, quieter night.", es: "Respira con calma<br/>y suéltate del día.<br/>Una noche profunda y silenciosa.", pt: "Acalme a respiração,<br/>solte o dia.<br/>Uma noite mais profunda e silenciosa." },
 
-  "scene2_title": { ja: "トレーニング", es: "Entrenamiento" },
-  "scene2_desc":  { ja: "呼吸に集中することで、<br/>パフォーマンスの安定を<br/>サポート。", es: "Concéntrate en respirar<br/>y rinde con<br/>más constancia." },
+  "scene2_title": { ja: "トレーニング", en: "Training",        es: "Entrenamiento", pt: "Treino" },
+  "scene2_desc":  { ja: "呼吸に集中することで、<br/>パフォーマンスの安定を<br/>サポート。", en: "Lock into your breath<br/>for performance<br/>that holds steady.", es: "Concéntrate en respirar<br/>y rinde con<br/>más constancia.", pt: "Foque na respiração<br/>para um desempenho<br/>mais constante." },
 
-  "scene3_title": { ja: "デスクワーク", es: "En el escritorio" },
-  "scene3_desc":  { ja: "気づかないうちの口呼吸を<br/>防ぎ、安定したコンディション<br/>をサポート。", es: "Evita la respiración<br/>por la boca, casi sin notarlo.<br/>Y mantén el ritmo." },
+  "scene3_title": { ja: "デスクワーク", en: "At the desk",     es: "En el escritorio", pt: "No escritório" },
+  "scene3_desc":  { ja: "気づかないうちの口呼吸を<br/>防ぎ、安定したコンディション<br/>をサポート。", en: "Stop unconscious<br/>mouth breathing.<br/>Stay in your flow.", es: "Evita la respiración<br/>por la boca, casi sin notarlo.<br/>Y mantén el ritmo.", pt: "Evite a respiração<br/>bucal sem perceber.<br/>Mantenha o ritmo." },
 
   // DESIGN
-  "design_h2": { ja: "目立たないことも、<br/>機能のひとつ。", es: "Discreto<br/>por diseño." },
-  "design_p1": { ja: "3つの層が、呼吸を支える。", es: "Tres capas que sostienen tu respiración." },
-  "design_p2": { ja: "見えない構造が、<br/>自然な鼻呼吸をつくる。", es: "Una estructura invisible<br/>que te lleva a respirar por la nariz." },
+  "design_h2": { ja: "目立たないことも、<br/>機能のひとつ。", en: "Discreet,<br/>by design.", es: "Discreto<br/>por diseño.", pt: "Discreto,<br/>por design." },
+  "design_p1": { ja: "3つの層が、呼吸を支える。", en: "Three layers, supporting your breath.", es: "Tres capas que sostienen tu respiración.", pt: "Três camadas que sustentam sua respiração." },
+  "design_p2": { ja: "見えない構造が、<br/>自然な鼻呼吸をつくる。", en: "An unseen structure<br/>that draws you to your nose.", es: "Una estructura invisible<br/>que te lleva a respirar por la nariz.", pt: "Uma estrutura invisível<br/>que conduz à respiração nasal." },
 
-  "design_feat1_desc": { ja: "目立たない設計。<br/>透明素材で自然に馴染む。", es: "Diseño que no se nota.<br/>Material transparente que se funde con tu piel." },
-  "design_feat2_desc": { ja: "空間をつくる3本構造。<br/>元に戻ろうとする力で、<br/>鼻腔をやさしく広げる。", es: "Tres núcleos que abren espacio.<br/>Su fuerza recuperadora<br/>expande las fosas con suavidad." },
-  "design_feat3_desc": { ja: "医療用テープを採用。<br/>肌にやさしく、しっかり固定。<br/>長時間でも、快適なつけ心地。", es: "Adhesivo de grado médico.<br/>Suave con la piel, firme en su lugar.<br/>Cómodo durante horas." },
+  "design_feat1_desc": { ja: "目立たない設計。<br/>透明素材で自然に馴染む。", en: "A design that disappears.<br/>Clear material that blends in naturally.", es: "Diseño que no se nota.<br/>Material transparente que se funde con tu piel.", pt: "Um design que some.<br/>Material transparente que se funde à pele." },
+  "design_feat2_desc": { ja: "空間をつくる3本構造。<br/>元に戻ろうとする力で、<br/>鼻腔をやさしく広げる。", en: "Three cores that make space.<br/>Their springback gently<br/>opens the nasal passages.", es: "Tres núcleos que abren espacio.<br/>Su fuerza recuperadora<br/>expande las fosas con suavidad.", pt: "Três núcleos que abrem espaço.<br/>Sua força de retorno<br/>expande as narinas com suavidade." },
+  "design_feat3_desc": { ja: "医療用テープを採用。<br/>肌にやさしく、しっかり固定。<br/>長時間でも、快適なつけ心地。", en: "Medical-grade adhesive.<br/>Kind to skin. Stays put.<br/>Comfortable for hours.", es: "Adhesivo de grado médico.<br/>Suave con la piel, firme en su lugar.<br/>Cómodo durante horas.", pt: "Adesivo de grau médico.<br/>Suave com a pele. Fixa firme.<br/>Confortável por horas." },
 
   // FUNCTION
-  "function_h2":  { ja: "見えない部分に、工夫を。", es: "El detalle está por dentro." },
-  "function_sub": { ja: "強すぎない。弱すぎない。<br/>ちょうどいいバランス。", es: "Ni demasiado firme. Ni demasiado suave.<br/>El equilibrio justo." },
+  "function_h2":  { ja: "見えない部分に、工夫を。", en: "The detail is on the inside.", es: "El detalle está por dentro.", pt: "O detalhe está por dentro." },
+  "function_sub": { ja: "強すぎない。弱すぎない。<br/>ちょうどいいバランス。", en: "Not too firm. Not too soft.<br/>Exactly right.", es: "Ni demasiado firme. Ni demasiado suave.<br/>El equilibrio justo.", pt: "Nem firme demais. Nem suave demais.<br/>O equilíbrio certo." },
 
-  "function_card1_title": { ja: "自然に、空気が通る。", es: "El aire fluye, natural." },
-  "function_card1_desc":  { ja: "内部構造を最適化し、<br/>スムーズな空気の流れを<br/>サポート。", es: "Una estructura interna<br/>pensada para que el aire<br/>circule sin esfuerzo." },
+  "function_card1_title": { ja: "自然に、空気が通る。", en: "Air flows, naturally.",         es: "El aire fluye, natural.",   pt: "O ar flui, natural." },
+  "function_card1_desc":  { ja: "内部構造を最適化し、<br/>スムーズな空気の流れを<br/>サポート。", en: "An optimized internal structure<br/>supports a smooth<br/>airflow.", es: "Una estructura interna<br/>pensada para que el aire<br/>circule sin esfuerzo.", pt: "Uma estrutura interna<br/>otimizada para que o ar<br/>circule sem esforço." },
 
-  "function_card2_title": { ja: "つけている感覚がない。", es: "Casi no lo sientes." },
-  "function_card2_desc":  { ja: "過度な圧迫はなく、<br/>肌に寄り添うように<br/>フィット。", es: "Sin presión de más.<br/>Se adapta a tu piel<br/>como si fuera parte de ella." },
+  "function_card2_title": { ja: "つけている感覚がない。", en: "You barely feel it.",          es: "Casi no lo sientes.",       pt: "Você quase não sente." },
+  "function_card2_desc":  { ja: "過度な圧迫はなく、<br/>肌に寄り添うように<br/>フィット。", en: "No excess pressure.<br/>Contours to your skin<br/>like it's part of you.", es: "Sin presión de más.<br/>Se adapta a tu piel<br/>como si fuera parte de ella.", pt: "Sem pressão extra.<br/>Acompanha sua pele<br/>como se fizesse parte dela." },
 
-  "function_card3_title": { ja: "長時間でも、ズレない。", es: "No se mueve, ni después de horas." },
-  "function_card3_desc":  { ja: "ドイツ製 HENKEL 社の<br/>粘着素材を採用。<br/>やさしさと確かな固定力。", es: "Adhesivo HENKEL,<br/>fabricado en Alemania.<br/>Suave, pero firme." },
+  "function_card3_title": { ja: "長時間でも、ズレない。", en: "Holds, hour after hour.",      es: "No se mueve, ni después de horas.", pt: "Não sai, mesmo após horas." },
+  "function_card3_desc":  { ja: "ドイツ製 HENKEL 社の<br/>粘着素材を採用。<br/>やさしさと確かな固定力。", en: "We use HENKEL adhesive,<br/>made in Germany.<br/>Gentle. And reliable.", es: "Adhesivo HENKEL,<br/>fabricado en Alemania.<br/>Suave, pero firme.", pt: "Adesivo HENKEL,<br/>fabricado na Alemanha.<br/>Suave. E confiável." },
 
-  "function_card4_title": { ja: "強すぎず、弱すぎない。", es: "Ni mucho, ni poco." },
-  "function_card4_desc":  { ja: "やさしさと固定力を両立。<br/>長時間でも違和感が少ない、<br/>最適なバランス設計。", es: "Suavidad y sujeción, juntas.<br/>Cómodo durante horas,<br/>en su punto exacto." },
+  "function_card4_title": { ja: "強すぎず、弱すぎない。", en: "Not too much. Not too little.",   es: "Ni mucho, ni poco.",        pt: "Nem muito. Nem pouco." },
+  "function_card4_desc":  { ja: "やさしさと固定力を両立。<br/>長時間でも違和感が少ない、<br/>最適なバランス設計。", en: "Softness and grip, together.<br/>Comfortable for hours,<br/>balanced just right.", es: "Suavidad y sujeción, juntas.<br/>Cómodo durante horas,<br/>en su punto exacto.", pt: "Suavidade e fixação, juntas.<br/>Confortável por horas,<br/>no equilíbrio certo." },
 
-  "function_bottom1_title": { ja: "目立たない透明デザイン", es: "Diseño transparente, casi invisible" },
-  "function_bottom1_desc":  { ja: "つけていることを忘れる自然さ。", es: "Tan natural que olvidas que lo llevas." },
-  "function_bottom2_title": { ja: "3層構造の独自設計", es: "Diseño exclusivo de tres capas" },
-  "function_bottom2_desc":  { ja: "機能と快適さを両立。", es: "Función y comodidad, en una sola pieza." },
-  "function_bottom3_title": { ja: "医療用テープ採用", es: "Adhesivo de grado médico" },
-  "function_bottom3_desc":  { ja: "肌にやさしく、安心の品質。", es: "Suave con tu piel. Calidad confiable." },
-  "function_bottom4_title": { ja: "長時間しっかりサポート", es: "Sujeción que dura todo el día" },
-  "function_bottom4_desc":  { ja: "朝から夜まで、変わらないサポート力。", es: "De la mañana a la noche, sin variaciones." },
+  "function_bottom1_title": { ja: "目立たない透明デザイン",  en: "Clear, almost invisible design",   es: "Diseño transparente, casi invisible", pt: "Design transparente, quase invisível" },
+  "function_bottom1_desc":  { ja: "つけていることを忘れる自然さ。", en: "So natural, you forget it's there.", es: "Tan natural que olvidas que lo llevas.", pt: "Tão natural que você esquece que está usando." },
+  "function_bottom2_title": { ja: "3層構造の独自設計",       en: "Three-layer construction",         es: "Diseño exclusivo de tres capas",      pt: "Construção exclusiva em três camadas" },
+  "function_bottom2_desc":  { ja: "機能と快適さを両立。",    en: "Function and comfort, in one piece.", es: "Función y comodidad, en una sola pieza.", pt: "Função e conforto, em uma só peça." },
+  "function_bottom3_title": { ja: "医療用テープ採用",        en: "Medical-grade adhesive",            es: "Adhesivo de grado médico",            pt: "Adesivo de grau médico" },
+  "function_bottom3_desc":  { ja: "肌にやさしく、安心の品質。", en: "Gentle on skin. Quality you can trust.", es: "Suave con tu piel. Calidad confiable.", pt: "Suave com a pele. Qualidade confiável." },
+  "function_bottom4_title": { ja: "長時間しっかりサポート",  en: "Long-lasting support",              es: "Sujeción que dura todo el día",       pt: "Sustentação que dura" },
+  "function_bottom4_desc":  { ja: "朝から夜まで、変わらないサポート力。", en: "Morning to night. Without changing.", es: "De la mañana a la noche, sin variaciones.", pt: "Da manhã à noite, sem mudanças." },
 
   // HOW TO USE
-  "howto_h2": { ja: "使い方は、シンプルに。", es: "Simple de usar." },
-  "howto_step1_title": { ja: "鼻周りの油分を、<br/>軽く拭き取る。", es: "Limpia la zona de la nariz,<br/>solo un poco." },
-  "howto_step1_desc":  { ja: "油分が残っていると、剥がれやすくなる場合があります。", es: "Si queda grasa, puede despegarse antes de tiempo." },
-  "howto_step2_title": { ja: "乾いた状態で、<br/>装着する。", es: "Colócalo<br/>sobre la piel seca." },
-  "howto_step2_desc":  { ja: "それだけ。肌へのやさしさを優先した設計です。", es: "Eso es todo. Pensado para cuidar tu piel." },
+  "howto_h2": { ja: "使い方は、シンプルに。", en: "Simple to use.", es: "Simple de usar.", pt: "Simples de usar." },
+  "howto_step1_title": { ja: "鼻周りの油分を、<br/>軽く拭き取る。", en: "Wipe the area<br/>around your nose.",     es: "Limpia la zona de la nariz,<br/>solo un poco.",   pt: "Limpe a região<br/>do nariz." },
+  "howto_step1_desc":  { ja: "油分が残っていると、剥がれやすくなる場合があります。", en: "If oil remains, it can come off sooner.", es: "Si queda grasa, puede despegarse antes de tiempo.", pt: "Se sobrar oleosidade, pode soltar antes." },
+  "howto_step2_title": { ja: "乾いた状態で、<br/>装着する。",       en: "Apply on<br/>dry skin.",                    es: "Colócalo<br/>sobre la piel seca.",                pt: "Aplique<br/>na pele seca." },
+  "howto_step2_desc":  { ja: "それだけ。肌へのやさしさを優先した設計です。", en: "That's it. Designed to be kind to your skin.", es: "Eso es todo. Pensado para cuidar tu piel.", pt: "Só isso. Pensado para cuidar da sua pele." },
 
-  "howto_variation_header": { ja: "より快適に使うためのポイント（3パターン）", es: "Tres formas de usarlo, a tu medida" },
-  "howto_pos1_title": { ja: "しっかり固定したいとき", es: "Para mayor sujeción" },
-  "howto_pos1_desc":  { ja: "鼻の中央にしっかりと装着。<br/>安定感を重視した使い方。", es: "Colócalo justo en el centro de la nariz.<br/>Para sentirlo más firme." },
-  "howto_pos2_title": { ja: "バランスよく使いたいとき", es: "Para un uso equilibrado" },
-  "howto_pos2_desc":  { ja: "やや上部に装着することで、<br/>自然なフィット感に。", es: "Un poco más arriba<br/>para un ajuste natural." },
-  "howto_pos3_title": { ja: "軽いつけ心地がいいとき", es: "Para algo más ligero" },
-  "howto_pos3_desc":  { ja: "鼻の上部にやさしく装着。<br/>軽さを重視した使い方。", es: "Colócalo suave en la parte alta de la nariz.<br/>Apenas se siente." },
-  "howto_footer_note": { ja: "※ 肌の状態やお好みに合わせて、最適な位置をお選びください。", es: "* Elige la posición que mejor se adapte a tu piel y a tu gusto." },
+  "howto_variation_header": { ja: "より快適に使うためのポイント（3パターン）", en: "Three ways to wear it, your way", es: "Tres formas de usarlo, a tu medida", pt: "Três jeitos de usar, do seu jeito" },
+  "howto_pos1_title": { ja: "しっかり固定したいとき", en: "For maximum hold",     es: "Para mayor sujeción",      pt: "Para fixação máxima" },
+  "howto_pos1_desc":  { ja: "鼻の中央にしっかりと装着。<br/>安定感を重視した使い方。", en: "Place at the center of the nose.<br/>For a more secure feel.", es: "Colócalo justo en el centro de la nariz.<br/>Para sentirlo más firme.", pt: "Coloque no centro do nariz.<br/>Para uma sensação mais firme." },
+  "howto_pos2_title": { ja: "バランスよく使いたいとき", en: "For balanced wear",   es: "Para un uso equilibrado",  pt: "Para um uso equilibrado" },
+  "howto_pos2_desc":  { ja: "やや上部に装着することで、<br/>自然なフィット感に。", en: "A little higher up<br/>for a natural fit.", es: "Un poco más arriba<br/>para un ajuste natural.", pt: "Um pouco mais acima<br/>para um ajuste natural." },
+  "howto_pos3_title": { ja: "軽いつけ心地がいいとき",   en: "For a lighter feel", es: "Para algo más ligero",     pt: "Para um uso mais leve" },
+  "howto_pos3_desc":  { ja: "鼻の上部にやさしく装着。<br/>軽さを重視した使い方。", en: "Place gently on the upper bridge.<br/>For the lightest touch.", es: "Colócalo suave en la parte alta de la nariz.<br/>Apenas se siente.", pt: "Coloque com suavidade na parte alta do nariz.<br/>Mal se sente." },
+  "howto_footer_note": { ja: "※ 肌の状態やお好みに合わせて、最適な位置をお選びください。", en: "* Choose the position that suits your skin and your preference.", es: "* Elige la posición que mejor se adapte a tu piel y a tu gusto.", pt: "* Escolha a posição que combina com sua pele e preferência." },
 
   // AMBASSADORS
-  "ambassadors_h2":  { ja: "使っている人たち。", es: "Quienes ya lo usan." },
-  "ambassadors_sub": { ja: "それぞれの 1 日を支える、それぞれの呼吸。", es: "Una respiración distinta para cada día, para cada persona." },
-  "ambassadors_footnote": { ja: "※ 個人差があります。", es: "* Los resultados pueden variar según la persona." },
-  "amb1_role":  { ja: "ボクサー", es: "Boxeador" },
-  "amb1_quote": { ja: "毎日のトレーニングで、限界まで追い込む。だからこそ、回復の質にはこだわっています。<br/><br/>OPEN AIRは、呼吸を整えるために使っています。呼吸が安定することで、集中力とパフォーマンスがブレなくなる。<br/><br/>わずかな違いですが、その積み重ねが大きい。今では、欠かせない習慣の一つです。", es: "Cada día llevo mi entrenamiento al límite. Por eso me importa tanto la calidad de la recuperación.<br/><br/>Uso OPEN AIR para ordenar mi respiración. Cuando respiro estable, mi concentración y rendimiento no se desvían.<br/><br/>Es una diferencia pequeña, pero se acumula. Hoy es uno de mis hábitos imprescindibles." },
-  "amb2_role":  { ja: "デスクワーカー", es: "Profesional digital" },
-  "amb2_quote": { ja: "パソコンに向かう時間が長く、気づくと呼吸が浅くなっていることが多いです。<br/><br/>OPEN AIRを使い始めてから、呼吸がスムーズになり、集中しやすくなりました。<br/><br/>大きな変化ではないけど、その“少し”が、1日のパフォーマンスを変えてくれます。", es: "Paso muchas horas frente a la pantalla y, sin darme cuenta, mi respiración se vuelve corta.<br/><br/>Desde que uso OPEN AIR, respiro con más fluidez y me concentro mejor.<br/><br/>No es un gran cambio, pero ese “pequeño algo” transforma mi día." },
-  "amb3_role":  { ja: "ケータリングシェフ", es: "Chef de catering" },
-  "amb3_quote": { ja: "現場では常に人の目があるから、使うものにも気を遣います。<br/><br/>OPEN AIRは透明で目立たないので、違和感なく自然に使える。<br/><br/>呼吸を整えながらも、自分のスタイルを崩さずにいられるのがいい。", es: "En mi trabajo siempre hay miradas, así que cuido lo que uso.<br/><br/>OPEN AIR es transparente, casi invisible. Se siente natural.<br/><br/>Puedo respirar mejor sin perder mi estilo." },
-  "amb_cta_visit": { ja: "リールを見る →", es: "Ver el Reel →" },
+  "ambassadors_h2":  { ja: "使っている人たち。", en: "The people using it.",   es: "Quienes ya lo usan.",                pt: "Quem já usa." },
+  "ambassadors_sub": { ja: "それぞれの 1 日を支える、それぞれの呼吸。", en: "A different breath, for every day, for every person.", es: "Una respiración distinta para cada día, para cada persona.", pt: "Uma respiração diferente, para cada dia, para cada pessoa." },
+  "ambassadors_footnote": { ja: "※ 個人差があります。", en: "* Results may vary by individual.", es: "* Los resultados pueden variar según la persona.", pt: "* Os resultados podem variar conforme a pessoa." },
+  "amb1_role":  { ja: "ボクサー", en: "Boxer", es: "Boxeador", pt: "Boxeador" },
+  "amb1_quote": { ja: "毎日のトレーニングで、限界まで追い込む。だからこそ、回復の質にはこだわっています。<br/><br/>OPEN AIRは、呼吸を整えるために使っています。呼吸が安定することで、集中力とパフォーマンスがブレなくなる。<br/><br/>わずかな違いですが、その積み重ねが大きい。今では、欠かせない習慣の一つです。", en: "Every day I push my training to the limit. That's why recovery quality matters so much to me.<br/><br/>I use OPEN AIR to settle my breathing. When my breath stays steady, my focus and performance hold their line.<br/><br/>It's a small difference. But it adds up. Today, it's part of my routine.", es: "Cada día llevo mi entrenamiento al límite. Por eso me importa tanto la calidad de la recuperación.<br/><br/>Uso OPEN AIR para ordenar mi respiración. Cuando respiro estable, mi concentración y rendimiento no se desvían.<br/><br/>Es una diferencia pequeña, pero se acumula. Hoy es uno de mis hábitos imprescindibles.", pt: "Todos os dias levo o treino ao limite. Por isso a qualidade da recuperação é tão importante.<br/><br/>Uso o OPEN AIR para equilibrar a respiração. Quando respiro estável, meu foco e desempenho não oscilam.<br/><br/>É uma diferença pequena, mas se acumula. Hoje faz parte da minha rotina." },
+  "amb2_role":  { ja: "デスクワーカー", en: "Desk professional", es: "Profesional digital", pt: "Profissional digital" },
+  "amb2_quote": { ja: "パソコンに向かう時間が長く、気づくと呼吸が浅くなっていることが多いです。<br/><br/>OPEN AIRを使い始めてから、呼吸がスムーズになり、集中しやすくなりました。<br/><br/>大きな変化ではないけど、その“少し”が、1日のパフォーマンスを変えてくれます。", en: "I spend long hours at the screen. Without noticing, my breath gets shallow.<br/><br/>Since I started using OPEN AIR, I breathe more freely and focus more easily.<br/><br/>Not a huge change. But that little something shifts my entire day.", es: "Paso muchas horas frente a la pantalla y, sin darme cuenta, mi respiración se vuelve corta.<br/><br/>Desde que uso OPEN AIR, respiro con más fluidez y me concentro mejor.<br/><br/>No es un gran cambio, pero ese “pequeño algo” transforma mi día.", pt: "Passo muitas horas em frente à tela e, sem perceber, minha respiração fica curta.<br/><br/>Desde que comecei a usar o OPEN AIR, respiro com mais fluidez e me concentro melhor.<br/><br/>Não é uma mudança enorme. Mas esse “pouquinho” transforma o meu dia." },
+  "amb3_role":  { ja: "ケータリングシェフ", en: "Catering chef", es: "Chef de catering", pt: "Chef de catering" },
+  "amb3_quote": { ja: "現場では常に人の目があるから、使うものにも気を遣います。<br/><br/>OPEN AIRは透明で目立たないので、違和感なく自然に使える。<br/><br/>呼吸を整えながらも、自分のスタイルを崩さずにいられるのがいい。", en: "On set, there are always eyes on you. So I'm careful about what I use.<br/><br/>OPEN AIR is clear, almost invisible. It feels natural.<br/><br/>I can breathe better without losing my style.", es: "En mi trabajo siempre hay miradas, así que cuido lo que uso.<br/><br/>OPEN AIR es transparente, casi invisible. Se siente natural.<br/><br/>Puedo respirar mejor sin perder mi estilo.", pt: "No trabalho, sempre tem olhares. Por isso cuido do que uso.<br/><br/>OPEN AIR é transparente, quase invisível. Parece natural.<br/><br/>Respiro melhor sem perder o meu estilo." },
+  "amb_cta_visit": { ja: "リールを見る →", en: "Watch the Reel →", es: "Ver el Reel →", pt: "Ver o Reel →" },
 
   // HONEST NOTES
-  "honest_h2":  { ja: "正直に、お伝えします。", es: "Te lo decimos sin rodeos." },
-  "honest_sub": { ja: "いいことだけを伝えるより、知った上で選んでもらいたいから。", es: "Preferimos que elijas sabiéndolo todo, no solo lo bueno." },
-  "honest_li1": { ja: "肌の状態によっては、剥がれやすい場合があります。", es: "Según el tipo de piel, puede despegarse con más facilidad." },
-  "honest_li2": { ja: "汗をかく環境では、粘着力が弱まる場合があります。", es: "En ambientes con mucho sudor, la adherencia puede disminuir." },
-  "honest_li3": { ja: "慣れるまで、違和感を覚える場合があります。", es: "Al principio, puede sentirse algo extraño." },
-  "honest_li4": { ja: "すべての方に同じフィット感を保証するものではありません。", es: "El ajuste no es igual para todas las personas." },
-  "honest_li5": { ja: "医療目的の製品ではありません。", es: "No es un producto médico." },
+  "honest_h2":  { ja: "正直に、お伝えします。", en: "Honestly told.",   es: "Te lo decimos sin rodeos.",          pt: "Sem rodeios." },
+  "honest_sub": { ja: "いいことだけを伝えるより、知った上で選んでもらいたいから。", en: "We'd rather you choose knowing everything—not just the good parts.", es: "Preferimos que elijas sabiéndolo todo, no solo lo bueno.", pt: "Preferimos que você escolha sabendo de tudo, não só do bom." },
+  "honest_li1": { ja: "肌の状態によっては、剥がれやすい場合があります。", en: "Depending on your skin, it may come off more easily.", es: "Según el tipo de piel, puede despegarse con más facilidad.", pt: "Dependendo da pele, pode soltar com mais facilidade." },
+  "honest_li2": { ja: "汗をかく環境では、粘着力が弱まる場合があります。", en: "In sweaty conditions, the adhesion can weaken.", es: "En ambientes con mucho sudor, la adherencia puede disminuir.", pt: "Em ambientes com muito suor, a adesão pode diminuir." },
+  "honest_li3": { ja: "慣れるまで、違和感を覚える場合があります。", en: "It can feel unusual at first.", es: "Al principio, puede sentirse algo extraño.", pt: "No início, pode parecer estranho." },
+  "honest_li4": { ja: "すべての方に同じフィット感を保証するものではありません。", en: "We can't promise the same fit for everyone.", es: "El ajuste no es igual para todas las personas.", pt: "O ajuste não é igual para todas as pessoas." },
+  "honest_li5": { ja: "医療目的の製品ではありません。", en: "It is not a medical product.", es: "No es un producto médico.", pt: "Não é um produto médico." },
 
   // PRICING
-  "buy_h2":  { ja: "あなたのペースで、<br/>続けられる。", es: "A tu ritmo,<br/>todo el tiempo que quieras." },
-  "buy_sub": { ja: "送料無料 · 30 日返品保証", es: "Envío gratis · 30 días para devolverlo" },
-  "buy_plan1_desc": { ja: "30 枚 · 1ヶ月分", es: "30 unidades · 1 mes" },
-  "buy_plan2_desc": { ja: "90 枚 · 3ヶ月分", es: "90 unidades · 3 meses" },
-  "buy_plan3_desc": { ja: "180 枚 · 6ヶ月分", es: "180 unidades · 6 meses" },
-  "buy_plan1_price": { ja: "¥1,980", es: "€15" },
-  "buy_plan2_price": { ja: "¥4,980", es: "€39" },
-  "buy_plan3_price": { ja: "¥8,980", es: "€69" },
-  "buy_plan2_discount": { ja: "¥1,000 OFF", es: "€6 OFF" },
-  "buy_plan3_discount": { ja: "¥2,900 OFF", es: "€21 OFF" },
-  "buy_btn_add":    { ja: "カートに追加", es: "Agregar al carrito" },
-  "buy_feat_ship":  { ja: "✓ 送料無料", es: "✓ Envío gratis" },
-  "buy_feat_pack":  { ja: "✓ 個包装で清潔", es: "✓ Empaque individual e higiénico" },
-  "buy_feat_return":{ ja: "✓ 30日返品保証", es: "✓ 30 días para devolverlo" },
+  "buy_h2":  { ja: "あなたのペースで、<br/>続けられる。", en: "At your pace,<br/>for as long as you like.", es: "A tu ritmo,<br/>todo el tiempo que quieras.", pt: "No seu ritmo,<br/>pelo tempo que quiser." },
+  "buy_sub": { ja: "送料無料 · 30 日返品保証", en: "Free shipping · 30-day returns", es: "Envío gratis · 30 días para devolverlo", pt: "Frete grátis · 30 dias para devolução" },
+  "buy_plan1_desc": { ja: "30 枚 · 1ヶ月分",   en: "30 strips · 1 month",   es: "30 unidades · 1 mes",    pt: "30 unidades · 1 mês" },
+  "buy_plan2_desc": { ja: "90 枚 · 3ヶ月分",   en: "90 strips · 3 months",  es: "90 unidades · 3 meses",  pt: "90 unidades · 3 meses" },
+  "buy_plan3_desc": { ja: "180 枚 · 6ヶ月分",  en: "180 strips · 6 months", es: "180 unidades · 6 meses", pt: "180 unidades · 6 meses" },
+  "buy_plan1_price": { ja: "¥1,980", en: "$13", es: "€15", pt: "R$ 65" },
+  "buy_plan2_price": { ja: "¥4,980", en: "$33", es: "€39", pt: "R$ 165" },
+  "buy_plan3_price": { ja: "¥8,980", en: "$59", es: "€69", pt: "R$ 295" },
+  "buy_plan2_discount": { ja: "¥1,000 OFF", en: "$6 OFF",  es: "€6 OFF",  pt: "R$ 30 OFF" },
+  "buy_plan3_discount": { ja: "¥2,900 OFF", en: "$19 OFF", es: "€21 OFF", pt: "R$ 95 OFF" },
+  "buy_btn_add":    { ja: "カートに追加", en: "Add to bag",       es: "Agregar al carrito",                pt: "Adicionar à sacola" },
+  "buy_feat_ship":  { ja: "✓ 送料無料",    en: "✓ Free shipping",  es: "✓ Envío gratis",                    pt: "✓ Frete grátis" },
+  "buy_feat_pack":  { ja: "✓ 個包装で清潔", en: "✓ Individually wrapped", es: "✓ Empaque individual e higiénico", pt: "✓ Embalagem individual e higiênica" },
+  "buy_feat_return":{ ja: "✓ 30日返品保証", en: "✓ 30-day returns", es: "✓ 30 días para devolverlo",         pt: "✓ 30 dias para devolução" },
 
   // CLOSING
-  "closing_p1": { ja: "人は、1日に約2万回、呼吸する。", es: "Respiramos cerca de 20 000 veces al día." },
-  "closing_p2": { ja: "そのほとんどは、無意識のまま。", es: "Casi siempre, sin darnos cuenta." },
-  "closing_p3": { ja: "だからこそ、", es: "Por eso," },
+  "closing_p1": { ja: "人は、1日に約2万回、呼吸する。", en: "We breathe about 20,000 times a day.", es: "Respiramos cerca de 20 000 veces al día.", pt: "Respiramos cerca de 20 000 vezes por dia." },
+  "closing_p2": { ja: "そのほとんどは、無意識のまま。", en: "Most of it, without thinking.", es: "Casi siempre, sin darnos cuenta.", pt: "Quase tudo, sem pensar." },
+  "closing_p3": { ja: "だからこそ、",                   en: "Which is why,",                   es: "Por eso,",                          pt: "Por isso," },
 
   // FINAL CTA
-  "finalcta_h2":  { ja: "呼吸を、整える。", es: "Respira mejor." },
-  "finalcta_sub": { ja: "ただ、それだけでいい。", es: "Nada más. Nada menos." },
-  "finalcta_btn_buy":   { ja: "今すぐ購入", es: "Comprar ahora" },
-  "finalcta_btn_again": { ja: "もう一度見る", es: "Verlo otra vez" },
+  "finalcta_h2":  { ja: "呼吸を、整える。", en: "Breathe, refined.",   es: "Respira mejor.",          pt: "Respire melhor." },
+  "finalcta_sub": { ja: "ただ、それだけでいい。", en: "Nothing more. Nothing less.", es: "Nada más. Nada menos.", pt: "Nada mais. Nada menos." },
+  "finalcta_btn_buy":   { ja: "今すぐ購入", en: "Buy now",      es: "Comprar ahora",  pt: "Comprar agora" },
+  "finalcta_btn_again": { ja: "もう一度見る", en: "Watch again", es: "Verlo otra vez", pt: "Ver de novo" },
 
   // Footer
-  "footer_privacy": { ja: "プライバシー", es: "Privacidad" },
-  "footer_terms":   { ja: "利用規約", es: "Términos" },
-  "footer_support": { ja: "サポート", es: "Soporte" }
+  "footer_privacy": { ja: "プライバシー", en: "Privacy", es: "Privacidad", pt: "Privacidade" },
+  "footer_terms":   { ja: "利用規約",     en: "Terms",   es: "Términos",   pt: "Termos" },
+  "footer_support": { ja: "サポート",     en: "Support", es: "Soporte",    pt: "Suporte" }
 };
 
 const I18N_KEY = 'openair_lang';
+const SUPPORTED_LANGS = ['ja','en','es','pt'];
+const LANG_LABEL = { ja: '日本語', en: 'English', es: 'Español', pt: 'Português' };
 function getLang(){
   // 1) URL ?lang=xx override (e.g. share a forced-language link)
   try {
     const u = new URLSearchParams(location.search).get('lang');
-    if (u === 'ja' || u === 'es') { localStorage.setItem(I18N_KEY, u); return u; }
+    if (SUPPORTED_LANGS.includes(u)) { localStorage.setItem(I18N_KEY, u); return u; }
   } catch(e){}
   // 2) Saved manual preference
   const saved = localStorage.getItem(I18N_KEY);
-  if (saved === 'ja' || saved === 'es') return saved;
+  if (SUPPORTED_LANGS.includes(saved)) return saved;
   // 3) Browser language detection — check the full navigator.languages array
   const langs = (navigator.languages && navigator.languages.length)
     ? navigator.languages
     : [navigator.language || navigator.userLanguage || ''];
   for (const l of langs){
     const lc = (l || '').toLowerCase();
-    if (lc.startsWith('es')) return 'es';
     if (lc.startsWith('ja')) return 'ja';
+    if (lc.startsWith('pt')) return 'pt'; // pt-BR, pt-PT both → pt
+    if (lc.startsWith('es')) return 'es';
+    if (lc.startsWith('en')) return 'en';
   }
   return 'ja';
 }
 function applyLang(lang){
+  if (!SUPPORTED_LANGS.includes(lang)) lang = 'ja';
   document.documentElement.lang = lang;
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
@@ -2538,24 +2552,19 @@ function applyLang(lang){
     if (!t) return;
     el.setAttribute('aria-label', t[lang] || t.ja);
   });
-  // Update language switcher label (single label that shows current language)
+  // Update language switcher label
   const langLabel = document.getElementById('lang-current');
-  if (langLabel) langLabel.textContent = lang === 'es' ? 'Español' : '日本語';
+  if (langLabel) langLabel.textContent = LANG_LABEL[lang] || '日本語';
 }
 function setLang(lang){
+  if (!SUPPORTED_LANGS.includes(lang)) lang = 'ja';
   localStorage.setItem(I18N_KEY, lang);
   applyLang(lang);
 }
 // Apply on load
 applyLang(getLang());
-// Wire up language switcher
-document.getElementById('lang-switcher')?.addEventListener('click', (e) => {
-  e.preventDefault();
-  const cur = getLang();
-  setLang(cur === 'ja' ? 'es' : 'ja');
-});
 
-// Region modal logic
+// Region / language modal logic (4 languages, flat — all live, no "coming soon")
 (function(){
   const modal = document.getElementById('region-modal');
   const switcher = document.getElementById('lang-switcher');
@@ -2565,28 +2574,24 @@ document.getElementById('lang-switcher')?.addEventListener('click', (e) => {
   const newSwitcher = switcher.cloneNode(true);
   switcher.parentNode.replaceChild(newSwitcher, switcher);
 
+  const MODAL_TEXT = {
+    ja: { title: '配送地域を選択', sub: 'ご利用の地域に合わせて、言語と通貨が切り替わります。', close: '閉じる' },
+    en: { title: 'Choose your region',     sub: 'Language and currency adapt to your region.',           close: 'Close' },
+    es: { title: 'Selecciona tu región',   sub: 'El idioma y la moneda se ajustan a tu región.',         close: 'Cerrar' },
+    pt: { title: 'Escolha sua região',     sub: 'O idioma e a moeda se ajustam à sua região.',           close: 'Fechar' }
+  };
+
   function openModal(){
     modal.classList.remove('hidden');
     updateChecks();
     const lang = getLang();
+    const t = MODAL_TEXT[lang] || MODAL_TEXT.ja;
     const title = modal.querySelector('#region-modal-title');
     const sub = modal.querySelector('#region-modal-sub');
     const close = modal.querySelector('#region-close');
-    const brSub = modal.querySelector('#region-br-sub');
-    const usSub = modal.querySelector('#region-us-sub');
-    if (lang === 'es') {
-      if (title) title.textContent = 'Selecciona tu región';
-      if (sub) sub.textContent = 'El idioma y la moneda se ajustan a tu región.';
-      if (close) close.textContent = 'Cerrar';
-      if (brSub) brSub.textContent = 'Estamos trabajando para que pronto puedas comprarlo aquí.';
-      if (usSub) usSub.textContent = 'Estamos trabajando para que pronto puedas comprarlo aquí.';
-    } else {
-      if (title) title.textContent = '配送地域を選択';
-      if (sub) sub.textContent = 'ご利用の地域に合わせて、言語と通貨が切り替わります。';
-      if (close) close.textContent = '閉じる';
-      if (brSub) brSub.textContent = 'ご購入できるよう、準備を進めています。';
-      if (usSub) usSub.textContent = 'ご購入できるよう、準備を進めています。';
-    }
+    if (title) title.textContent = t.title;
+    if (sub) sub.textContent = t.sub;
+    if (close) close.textContent = t.close;
   }
   function closeModal(){ modal.classList.add('hidden'); }
   function updateChecks(){
@@ -2594,48 +2599,8 @@ document.getElementById('lang-switcher')?.addEventListener('click', (e) => {
     modal.querySelectorAll('.region-option').forEach(btn => {
       const check = btn.querySelector('.region-check');
       if (!check) return;
-      const region = btn.dataset.region;
-      if ((region === 'ja' && lang === 'ja') || (region === 'es' && lang === 'es')) {
-        check.classList.remove('hidden');
-      } else {
-        check.classList.add('hidden');
-      }
+      check.classList.toggle('hidden', btn.dataset.region !== lang);
     });
-  }
-  function showSoonToast(region){
-    const lang = getLang();
-    const msg = lang === 'es'
-      ? 'Estamos trabajando para que pronto puedas comprarlo aquí.'
-      : 'ご購入できるよう、準備を進めています。';
-    let toast = document.getElementById('region-toast');
-    if (!toast){
-      toast = document.createElement('div');
-      toast.id = 'region-toast';
-      toast.setAttribute('role','status');
-      toast.setAttribute('aria-live','polite');
-      document.body.appendChild(toast);
-    }
-    toast.style.cssText = `
-      position:fixed; bottom:24px; left:50%;
-      transform:translateX(-50%) translateY(20px);
-      background:rgba(10,10,10,.92); color:#fff;
-      padding:14px 22px; border-radius:999px;
-      font-size:14px; max-width:90vw;
-      z-index:200; opacity:0;
-      transition:opacity .25s, transform .25s;
-      box-shadow:0 10px 40px rgba(0,0,0,.25);
-      backdrop-filter:blur(10px);
-    `;
-    toast.textContent = msg;
-    requestAnimationFrame(()=>{
-      toast.style.opacity = '1';
-      toast.style.transform = 'translateX(-50%) translateY(0)';
-    });
-    clearTimeout(window.__regionToastT);
-    window.__regionToastT = setTimeout(()=>{
-      toast.style.opacity = '0';
-      toast.style.transform = 'translateX(-50%) translateY(20px)';
-    }, 3200);
   }
 
   newSwitcher.addEventListener('click', (e) => { e.preventDefault(); openModal(); });
@@ -2646,10 +2611,9 @@ document.getElementById('lang-switcher')?.addEventListener('click', (e) => {
   modal.querySelectorAll('.region-option').forEach(btn => {
     btn.addEventListener('click', () => {
       const region = btn.dataset.region;
-      if (region === 'ja') { setLang('ja'); closeModal(); }
-      else if (region === 'es') { setLang('es'); closeModal(); }
-      else if (region === 'br' || region === 'us') {
-        showSoonToast(region);
+      if (SUPPORTED_LANGS.includes(region)) {
+        setLang(region);
+        closeModal();
       }
     });
   });

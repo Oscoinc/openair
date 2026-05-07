@@ -289,6 +289,16 @@
         </button>
       </li>
       <li>
+        <button data-region="en" class="region-option w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
+          <span class="text-2xl">🇺🇸</span>
+          <div class="flex-1">
+            <div class="text-[14px] font-medium text-zinc-900">United States</div>
+            <div class="text-[11px] text-zinc-500">English · USA shipping · $</div>
+          </div>
+          <span class="region-check text-zinc-900 hidden text-[18px]">✓</span>
+        </button>
+      </li>
+      <li>
         <button data-region="es" class="region-option w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
           <span class="text-2xl">🇪🇸</span>
           <div class="flex-1">
@@ -299,23 +309,13 @@
         </button>
       </li>
       <li>
-        <button data-region="br" class="region-option region-soon w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
-          <span class="text-2xl opacity-70">🇧🇷</span>
+        <button data-region="pt" class="region-option w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
+          <span class="text-2xl">🇧🇷</span>
           <div class="flex-1">
             <div class="text-[14px] font-medium text-zinc-900">Brasil</div>
-            <div class="text-[11px] text-zinc-500" id="region-br-sub">ご購入できるよう、準備を進めています</div>
+            <div class="text-[11px] text-zinc-500">Português · Envio Brasil · R$</div>
           </div>
-          <span class="text-[10px] tracking-[0.18em] uppercase text-zinc-500 px-2.5 py-1 rounded-full border border-zinc-200" id="region-br-badge">Soon</span>
-        </button>
-      </li>
-      <li>
-        <button data-region="us" class="region-option region-soon w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
-          <span class="text-2xl opacity-70">🇺🇸</span>
-          <div class="flex-1">
-            <div class="text-[14px] font-medium text-zinc-900">United States</div>
-            <div class="text-[11px] text-zinc-500" id="region-us-sub">ご購入できるよう、準備を進めています</div>
-          </div>
-          <span class="text-[10px] tracking-[0.18em] uppercase text-zinc-500 px-2.5 py-1 rounded-full border border-zinc-200" id="region-us-badge">Soon</span>
+          <span class="region-check text-zinc-900 hidden text-[18px]">✓</span>
         </button>
       </li>
     </ul>
@@ -343,192 +343,310 @@
 // ============== i18n ==============
 const translations = {
   // <head>
-  "page_title": { ja: "プライバシーポリシー — OPEN AIR", es: "Política de Privacidad — OPEN AIR" },
+  "page_title": { ja: "プライバシーポリシー — OPEN AIR", en: "Privacy Policy — OPEN AIR", es: "Política de Privacidad — OPEN AIR", pt: "Política de Privacidade — OPEN AIR" },
   // Nav
-  "nav_concept":  { ja: "コンセプト", es: "Concepto" },
-  "nav_features": { ja: "特徴",       es: "Características" },
-  "nav_scenes":   { ja: "シーン",     es: "Escenas" },
-  "nav_buy":      { ja: "購入",       es: "Comprar" },
-  "nav_cart":     { ja: "カート",     es: "Carrito" },
+  "nav_concept":  { ja: "コンセプト", en: "Concept",        es: "Concepto",        pt: "Conceito" },
+  "nav_features": { ja: "特徴",       en: "Features",       es: "Características", pt: "Recursos" },
+  "nav_scenes":   { ja: "シーン",     en: "Scenes",         es: "Escenas",         pt: "Cenas" },
+  "nav_buy":      { ja: "購入",       en: "Buy",            es: "Comprar",         pt: "Comprar" },
+  "nav_cart":     { ja: "カート",     en: "Cart",           es: "Carrito",         pt: "Carrinho" },
   // Hero
-  "hero_eyebrow": { ja: "Privacy", es: "Privacidad" },
-  "hero_title":   { ja: "プライバシーポリシー", es: "Política de Privacidad" },
-  "hero_updated": { ja: "最終更新日：2026年5月1日", es: "Última actualización: 1 de mayo de 2026" },
+  "hero_eyebrow": { ja: "Privacy", en: "Privacy", es: "Privacidad", pt: "Privacidade" },
+  "hero_title":   { ja: "プライバシーポリシー", en: "Privacy Policy", es: "Política de Privacidad", pt: "Política de Privacidade" },
+  "hero_updated": { ja: "最終更新日：2026年5月1日", en: "Last updated: May 1, 2026", es: "Última actualización: 1 de mayo de 2026", pt: "Última atualização: 1º de maio de 2026" },
   // TOC
-  "toc_label":       { ja: "Contents", es: "Contenido" },
-  "toc_scope":       { ja: "1. はじめに",       es: "1. Introducción" },
-  "toc_collect":     { ja: "2. 取得する情報",   es: "2. Datos que recogemos" },
-  "toc_legal_basis": { ja: "",                   es: "3. Base legal" },
-  "toc_purpose":     { ja: "3. 利用目的",       es: "4. Finalidades" },
-  "toc_retention":   { ja: "",                   es: "5. Conservación" },
-  "toc_share":       { ja: "4. 第三者提供",     es: "6. Cesión a terceros" },
-  "toc_transfer":    { ja: "",                   es: "7. Transferencia internacional" },
-  "toc_cookie":      { ja: "5. Cookie の使用",  es: "8. Cookies" },
-  "toc_security":    { ja: "6. セキュリティ",   es: "9. Seguridad" },
-  "toc_rights":      { ja: "7. 開示・訂正・削除", es: "10. Tus derechos" },
-  "toc_complaint":   { ja: "",                   es: "11. Reclamación AEPD" },
-  "toc_change":      { ja: "8. 改定について",   es: "12. Modificaciones" },
-  "toc_contact":     { ja: "9. お問い合わせ",   es: "13. Contacto" },
+  "toc_label":       { ja: "Contents", en: "Contents", es: "Contenido", pt: "Conteúdo" },
+  "toc_scope":       { ja: "1. はじめに",       en: "1. Introduction",      es: "1. Introducción",        pt: "1. Introdução" },
+  "toc_collect":     { ja: "2. 取得する情報",   en: "2. Information we collect", es: "2. Datos que recogemos", pt: "2. Informações coletadas" },
+  "toc_legal_basis": { ja: "",                   en: "",                       es: "3. Base legal",          pt: "3. Base legal" },
+  "toc_purpose":     { ja: "3. 利用目的",       en: "3. How we use information", es: "4. Finalidades",         pt: "4. Finalidades" },
+  "toc_retention":   { ja: "",                   en: "",                       es: "5. Conservación",        pt: "5. Período de retenção" },
+  "toc_share":       { ja: "4. 第三者提供",     en: "4. Sharing with third parties", es: "6. Cesión a terceros",   pt: "6. Compartilhamento" },
+  "toc_transfer":    { ja: "",                   en: "",                       es: "7. Transferencia internacional", pt: "7. Transferência internacional" },
+  "toc_cookie":      { ja: "5. Cookie の使用",  en: "5. Cookies",             es: "8. Cookies",             pt: "8. Cookies" },
+  "toc_security":    { ja: "6. セキュリティ",   en: "6. Security",            es: "9. Seguridad",           pt: "9. Segurança" },
+  "toc_rights":      { ja: "7. 開示・訂正・削除", en: "7. Your privacy rights", es: "10. Tus derechos",       pt: "10. Seus direitos" },
+  "toc_complaint":   { ja: "",                   en: "",                       es: "11. Reclamación AEPD",   pt: "11. Reclamação à ANPD" },
+  "toc_change":      { ja: "8. 改定について",   en: "8. Changes to this policy", es: "12. Modificaciones",     pt: "12. Alterações" },
+  "toc_contact":     { ja: "9. お問い合わせ",   en: "9. Contact",             es: "13. Contacto",           pt: "13. Contato" },
 
   // Sections
-  "sec_controller_title": { ja: "", es: "Responsable del tratamiento" },
-  "sec_controller_body":  { ja: "", es: 'OPEN AIR, Inc., con domicilio social en Tokio, Japón, actúa como responsable del tratamiento de los datos personales recogidos a través de este sitio web y servicios relacionados (en adelante, el "Servicio"). Para cualquier asunto relacionado con la protección de datos puedes contactar con nuestro Delegado de Protección de Datos (DPO) en <a href="mailto:dpo@openair.example">dpo@openair.example</a>.' },
+  "sec_controller_title": { ja: "", en: "", es: "Responsable del tratamiento", pt: "Controlador dos dados" },
+  "sec_controller_body":  { ja: "", en: "",
+                            es: 'OPEN AIR, Inc., con domicilio social en Tokio, Japón, actúa como responsable del tratamiento de los datos personales recogidos a través de este sitio web y servicios relacionados (en adelante, el "Servicio"). Para cualquier asunto relacionado con la protección de datos puedes contactar con nuestro Delegado de Protección de Datos (DPO) en <a href="mailto:dpo@openair.example">dpo@openair.example</a>.',
+                            pt: 'A OPEN AIR, Inc., com sede em Tóquio, Japão, atua como controladora dos dados pessoais coletados por meio deste site e dos serviços relacionados (doravante, o "Serviço"), nos termos da Lei Geral de Proteção de Dados (LGPD — Lei nº 13.709/2018). Para qualquer assunto relacionado à proteção de dados, você pode entrar em contato com nosso Encarregado de Proteção de Dados (DPO) em <a href="mailto:dpo@openair.example">dpo@openair.example</a>.' },
 
-  "sec_scope_title": { ja: "1. はじめに", es: "1. Introducción" },
+  "sec_scope_title": { ja: "1. はじめに", en: "1. Introduction", es: "1. Introducción", pt: "1. Introdução" },
   "sec_scope_p1":    { ja: "OPEN AIR, Inc.（以下「当社」）は、当社が運営するウェブサイトおよび関連サービス（以下「本サービス」）におけるユーザーの個人情報の取り扱いについて、本プライバシーポリシー（以下「本ポリシー」）を定めます。",
-                       es: "OPEN AIR, Inc. (en adelante, \"nosotros\") establece la presente Política de Privacidad (en adelante, la \"Política\") para regular el tratamiento de los datos personales de los usuarios del sitio web y los servicios relacionados que opera (en adelante, el \"Servicio\")." },
+                       en: "OPEN AIR, Inc. (\"we,\" \"us,\" or \"our\") provides this Privacy Policy (the \"Policy\") to explain how we collect, use, and protect personal information when you use our website and related services (the \"Service\").",
+                       es: "OPEN AIR, Inc. (en adelante, \"nosotros\") establece la presente Política de Privacidad (en adelante, la \"Política\") para regular el tratamiento de los datos personales de los usuarios del sitio web y los servicios relacionados que opera (en adelante, el \"Servicio\").",
+                       pt: "A OPEN AIR, Inc. (doravante, \"nós\") estabelece esta Política de Privacidade (doravante, a \"Política\") para regular o tratamento dos dados pessoais dos usuários do site e dos serviços relacionados que opera (doravante, o \"Serviço\")." },
   "sec_scope_p2":    { ja: "本サービスを利用される前に、本ポリシーを必ずご確認ください。本サービスをご利用いただいた場合、本ポリシーに同意いただいたものとみなします。",
-                       es: "Te recomendamos leer esta Política antes de usar el Servicio. La presente Política se aplica conforme al Reglamento (UE) 2016/679 (RGPD) y a la Ley Orgánica 3/2018 de Protección de Datos Personales y garantía de los derechos digitales (LOPDGDD)." },
+                       en: "Please read this Policy before using the Service. By using the Service, you agree to the practices described here, including those required by the California Consumer Privacy Act (CCPA) and other U.S. state privacy laws.",
+                       es: "Te recomendamos leer esta Política antes de usar el Servicio. La presente Política se aplica conforme al Reglamento (UE) 2016/679 (RGPD) y a la Ley Orgánica 3/2018 de Protección de Datos Personales y garantía de los derechos digitales (LOPDGDD).",
+                       pt: "Recomendamos a leitura desta Política antes de usar o Serviço. A presente Política aplica-se nos termos da Lei Geral de Proteção de Dados (LGPD — Lei nº 13.709/2018) e demais normas brasileiras aplicáveis." },
 
-  "sec_collect_title": { ja: "2. 取得する情報", es: "2. Datos que recogemos" },
+  "sec_collect_title": { ja: "2. 取得する情報", en: "2. Information we collect", es: "2. Datos que recogemos", pt: "2. Informações que coletamos" },
   "sec_collect_intro": { ja: "当社は、本サービスの提供にあたり、以下の情報を取得する場合があります。",
-                         es: "Para la prestación del Servicio podemos recoger las siguientes categorías de datos personales:" },
-  "sec_collect_h3_1":  { ja: "2.1 ユーザーから直接ご提供いただく情報", es: "2.1 Datos que tú nos proporcionas" },
-  "sec_collect_li_1_1": { ja: "氏名、住所、電話番号、メールアドレス", es: "Nombre, dirección postal, teléfono y correo electrónico" },
-  "sec_collect_li_1_2": { ja: "クレジットカード情報、その他のお支払い情報", es: "Datos de tarjeta de crédito y otros medios de pago" },
-  "sec_collect_li_1_3": { ja: "お問い合わせ・サポート対応の内容", es: "Contenido de las consultas y solicitudes de soporte" },
-  "sec_collect_li_1_4": { ja: "アンケートやレビューへのご回答", es: "Respuestas a encuestas y reseñas de productos" },
-  "sec_collect_h3_2":  { ja: "2.2 自動的に取得される情報", es: "2.2 Datos recogidos automáticamente" },
-  "sec_collect_li_2_1": { ja: "IP アドレス、ブラウザの種類、参照元 URL", es: "Dirección IP, tipo de navegador y URL de referencia" },
-  "sec_collect_li_2_2": { ja: "サイト内の閲覧履歴・操作履歴", es: "Historial de navegación e interacción dentro del sitio" },
-  "sec_collect_li_2_3": { ja: "デバイス情報（OS、画面解像度等）", es: "Información del dispositivo (sistema operativo, resolución de pantalla, etc.)" },
-  "sec_collect_li_2_4": { ja: "Cookie および類似技術によって取得される情報", es: "Datos recogidos mediante cookies y tecnologías similares" },
+                         en: "When you use the Service, we may collect the following categories of personal information:",
+                         es: "Para la prestación del Servicio podemos recoger las siguientes categorías de datos personales:",
+                         pt: "Para a prestação do Serviço, podemos coletar as seguintes categorias de dados pessoais:" },
+  "sec_collect_h3_1":  { ja: "2.1 ユーザーから直接ご提供いただく情報", en: "2.1 Information you provide", es: "2.1 Datos que tú nos proporcionas", pt: "2.1 Dados que você nos fornece" },
+  "sec_collect_li_1_1": { ja: "氏名、住所、電話番号、メールアドレス", en: "Name, mailing address, phone number, and email address", es: "Nombre, dirección postal, teléfono y correo electrónico", pt: "Nome, endereço, telefone e e-mail" },
+  "sec_collect_li_1_2": { ja: "クレジットカード情報、その他のお支払い情報", en: "Credit card and other payment details", es: "Datos de tarjeta de crédito y otros medios de pago", pt: "Dados de cartão de crédito e outras informações de pagamento" },
+  "sec_collect_li_1_3": { ja: "お問い合わせ・サポート対応の内容", en: "Content of inquiries and support requests", es: "Contenido de las consultas y solicitudes de soporte", pt: "Conteúdo de consultas e solicitações de suporte" },
+  "sec_collect_li_1_4": { ja: "アンケートやレビューへのご回答", en: "Responses to surveys and product reviews", es: "Respuestas a encuestas y reseñas de productos", pt: "Respostas a pesquisas e avaliações de produtos" },
+  "sec_collect_h3_2":  { ja: "2.2 自動的に取得される情報", en: "2.2 Information collected automatically", es: "2.2 Datos recogidos automáticamente", pt: "2.2 Dados coletados automaticamente" },
+  "sec_collect_li_2_1": { ja: "IP アドレス、ブラウザの種類、参照元 URL", en: "IP address, browser type, and referring URL", es: "Dirección IP, tipo de navegador y URL de referencia", pt: "Endereço IP, tipo de navegador e URL de referência" },
+  "sec_collect_li_2_2": { ja: "サイト内の閲覧履歴・操作履歴", en: "Browsing and interaction history within the site", es: "Historial de navegación e interacción dentro del sitio", pt: "Histórico de navegação e interação dentro do site" },
+  "sec_collect_li_2_3": { ja: "デバイス情報（OS、画面解像度等）", en: "Device information (operating system, screen resolution, and similar details)", es: "Información del dispositivo (sistema operativo, resolución de pantalla, etc.)", pt: "Informações do dispositivo (sistema operacional, resolução de tela etc.)" },
+  "sec_collect_li_2_4": { ja: "Cookie および類似技術によって取得される情報", en: "Information collected through cookies and similar technologies", es: "Datos recogidos mediante cookies y tecnologías similares", pt: "Dados coletados por meio de cookies e tecnologias semelhantes" },
 
-  "sec_legal_title":  { ja: "", es: "3. Base legal del tratamiento" },
-  "sec_legal_intro":  { ja: "", es: "De acuerdo con el Reglamento (UE) 2016/679 (RGPD), tratamos tus datos personales sobre las siguientes bases legales:" },
-  "sec_legal_li_1":   { ja: "", es: "<strong>Ejecución de un contrato</strong> (art. 6.1.b RGPD): para gestionar tu pedido, procesar el pago, enviar el producto y atender el servicio postventa." },
-  "sec_legal_li_2":   { ja: "", es: "<strong>Cumplimiento de obligaciones legales</strong> (art. 6.1.c RGPD): para cumplir con la normativa fiscal, contable y de protección al consumidor." },
-  "sec_legal_li_3":   { ja: "", es: "<strong>Consentimiento</strong> (art. 6.1.a RGPD): para el envío de comunicaciones comerciales, instalación de cookies no esenciales y suscripción al boletín. Puedes retirar tu consentimiento en cualquier momento." },
-  "sec_legal_li_4":   { ja: "", es: "<strong>Interés legítimo</strong> (art. 6.1.f RGPD): para la prevención del fraude, la mejora del Servicio y la seguridad de la red, siempre tras un análisis de ponderación." },
+  "sec_legal_title":  { ja: "", en: "", es: "3. Base legal del tratamiento", pt: "3. Base legal para o tratamento" },
+  "sec_legal_intro":  { ja: "", en: "",
+                        es: "De acuerdo con el Reglamento (UE) 2016/679 (RGPD), tratamos tus datos personales sobre las siguientes bases legales:",
+                        pt: "De acordo com a Lei Geral de Proteção de Dados (LGPD — Lei nº 13.709/2018), tratamos seus dados pessoais com base nas seguintes hipóteses legais:" },
+  "sec_legal_li_1":   { ja: "", en: "",
+                        es: "<strong>Ejecución de un contrato</strong> (art. 6.1.b RGPD): para gestionar tu pedido, procesar el pago, enviar el producto y atender el servicio postventa.",
+                        pt: "<strong>Execução de contrato</strong> (art. 7º, V, da LGPD): para gerenciar seu pedido, processar o pagamento, enviar o produto e prestar atendimento pós-venda." },
+  "sec_legal_li_2":   { ja: "", en: "",
+                        es: "<strong>Cumplimiento de obligaciones legales</strong> (art. 6.1.c RGPD): para cumplir con la normativa fiscal, contable y de protección al consumidor.",
+                        pt: "<strong>Cumprimento de obrigação legal ou regulatória</strong> (art. 7º, II, da LGPD): para atender à legislação fiscal, contábil e de defesa do consumidor." },
+  "sec_legal_li_3":   { ja: "", en: "",
+                        es: "<strong>Consentimiento</strong> (art. 6.1.a RGPD): para el envío de comunicaciones comerciales, instalación de cookies no esenciales y suscripción al boletín. Puedes retirar tu consentimiento en cualquier momento.",
+                        pt: "<strong>Consentimento</strong> (art. 7º, I, da LGPD): para o envio de comunicações comerciais, instalação de cookies não essenciais e inscrição em newsletters. Você pode revogar seu consentimento a qualquer momento." },
+  "sec_legal_li_4":   { ja: "", en: "",
+                        es: "<strong>Interés legítimo</strong> (art. 6.1.f RGPD): para la prevención del fraude, la mejora del Servicio y la seguridad de la red, siempre tras un análisis de ponderación.",
+                        pt: "<strong>Legítimo interesse</strong> (art. 7º, IX, da LGPD): para a prevenção a fraudes, a melhoria do Serviço e a segurança da rede, sempre após avaliação de necessidade e impacto." },
 
-  "sec_purpose_title": { ja: "3. 利用目的", es: "4. Finalidades del tratamiento" },
+  "sec_purpose_title": { ja: "3. 利用目的", en: "3. How we use information", es: "4. Finalidades del tratamiento", pt: "4. Finalidades do tratamento" },
   "sec_purpose_intro": { ja: "取得した個人情報は、以下の目的のために利用します。",
-                         es: "Tratamos los datos personales recogidos para las siguientes finalidades:" },
-  "sec_purpose_li_1":  { ja: "商品の発送、お支払い処理、注文確認等のサービス提供", es: "Gestión del pedido: envío del producto, procesamiento del pago y confirmación de la compra" },
-  "sec_purpose_li_2":  { ja: "お問い合わせ・サポート対応", es: "Atención de consultas y prestación del servicio de soporte" },
-  "sec_purpose_li_3":  { ja: "新商品・キャンペーン等のご案内（同意いただいた場合のみ）", es: "Envío de comunicaciones comerciales sobre nuevos productos y promociones (solo con tu consentimiento)" },
-  "sec_purpose_li_4":  { ja: "サービス改善・新機能の開発", es: "Mejora del Servicio y desarrollo de nuevas funcionalidades" },
-  "sec_purpose_li_5":  { ja: "不正利用の防止、法令遵守", es: "Prevención del fraude y cumplimiento de obligaciones legales" },
-  "sec_purpose_li_6":  { ja: "統計データの作成（個人を特定できない形に加工した上で）", es: "Elaboración de estadísticas (previa anonimización de los datos)" },
+                         en: "We use the personal information we collect for the following purposes:",
+                         es: "Tratamos los datos personales recogidos para las siguientes finalidades:",
+                         pt: "Tratamos os dados pessoais coletados para as seguintes finalidades:" },
+  "sec_purpose_li_1":  { ja: "商品の発送、お支払い処理、注文確認等のサービス提供",
+                         en: "Order fulfillment: shipping products, processing payments, and confirming purchases",
+                         es: "Gestión del pedido: envío del producto, procesamiento del pago y confirmación de la compra",
+                         pt: "Gestão do pedido: envio do produto, processamento do pagamento e confirmação da compra" },
+  "sec_purpose_li_2":  { ja: "お問い合わせ・サポート対応",
+                         en: "Responding to inquiries and providing customer support",
+                         es: "Atención de consultas y prestación del servicio de soporte",
+                         pt: "Atendimento a consultas e prestação de suporte" },
+  "sec_purpose_li_3":  { ja: "新商品・キャンペーン等のご案内（同意いただいた場合のみ）",
+                         en: "Sending marketing communications about new products and promotions (only with your consent)",
+                         es: "Envío de comunicaciones comerciales sobre nuevos productos y promociones (solo con tu consentimiento)",
+                         pt: "Envio de comunicações comerciais sobre novos produtos e promoções (somente mediante seu consentimento)" },
+  "sec_purpose_li_4":  { ja: "サービス改善・新機能の開発",
+                         en: "Improving the Service and developing new features",
+                         es: "Mejora del Servicio y desarrollo de nuevas funcionalidades",
+                         pt: "Aprimoramento do Serviço e desenvolvimento de novas funcionalidades" },
+  "sec_purpose_li_5":  { ja: "不正利用の防止、法令遵守",
+                         en: "Preventing fraud and complying with applicable laws",
+                         es: "Prevención del fraude y cumplimiento de obligaciones legales",
+                         pt: "Prevenção a fraudes e cumprimento de obrigações legais" },
+  "sec_purpose_li_6":  { ja: "統計データの作成（個人を特定できない形に加工した上で）",
+                         en: "Generating aggregate statistics (after data has been de-identified)",
+                         es: "Elaboración de estadísticas (previa anonimización de los datos)",
+                         pt: "Elaboração de estatísticas (após a anonimização dos dados)" },
 
-  "sec_retention_title": { ja: "", es: "5. Periodo de conservación" },
-  "sec_retention_intro": { ja: "", es: "Conservamos tus datos personales únicamente durante el tiempo necesario para cumplir con la finalidad para la que fueron recogidos:" },
-  "sec_retention_li_1":  { ja: "", es: "<strong>Datos de pedidos y facturación:</strong> 6 años desde la última operación, conforme a la normativa fiscal y mercantil." },
-  "sec_retention_li_2":  { ja: "", es: "<strong>Datos de cuenta de usuario:</strong> mientras la cuenta permanezca activa, más 2 años adicionales para resolver posibles reclamaciones." },
-  "sec_retention_li_3":  { ja: "", es: "<strong>Datos de contacto y soporte:</strong> 3 años desde la última interacción." },
-  "sec_retention_li_4":  { ja: "", es: "<strong>Comunicaciones comerciales:</strong> hasta que retires tu consentimiento." },
-  "sec_retention_li_5":  { ja: "", es: "<strong>Cookies:</strong> según los plazos detallados en nuestra Política de Cookies (máximo 24 meses)." },
+  "sec_retention_title": { ja: "", en: "", es: "5. Periodo de conservación", pt: "5. Período de retenção" },
+  "sec_retention_intro": { ja: "", en: "",
+                           es: "Conservamos tus datos personales únicamente durante el tiempo necesario para cumplir con la finalidad para la que fueron recogidos:",
+                           pt: "Conservamos seus dados pessoais apenas pelo tempo necessário para cumprir a finalidade para a qual foram coletados:" },
+  "sec_retention_li_1":  { ja: "", en: "",
+                           es: "<strong>Datos de pedidos y facturación:</strong> 6 años desde la última operación, conforme a la normativa fiscal y mercantil.",
+                           pt: "<strong>Dados de pedidos e faturamento:</strong> 5 anos a contar da última operação, conforme a legislação fiscal e o Código de Defesa do Consumidor." },
+  "sec_retention_li_2":  { ja: "", en: "",
+                           es: "<strong>Datos de cuenta de usuario:</strong> mientras la cuenta permanezca activa, más 2 años adicionales para resolver posibles reclamaciones.",
+                           pt: "<strong>Dados de conta de usuário:</strong> enquanto a conta permanecer ativa, mais 2 anos adicionais para tratar eventuais reclamações." },
+  "sec_retention_li_3":  { ja: "", en: "",
+                           es: "<strong>Datos de contacto y soporte:</strong> 3 años desde la última interacción.",
+                           pt: "<strong>Dados de contato e suporte:</strong> 3 anos a contar da última interação." },
+  "sec_retention_li_4":  { ja: "", en: "",
+                           es: "<strong>Comunicaciones comerciales:</strong> hasta que retires tu consentimiento.",
+                           pt: "<strong>Comunicações comerciais:</strong> até que você revogue seu consentimento." },
+  "sec_retention_li_5":  { ja: "", en: "",
+                           es: "<strong>Cookies:</strong> según los plazos detallados en nuestra Política de Cookies (máximo 24 meses).",
+                           pt: "<strong>Cookies:</strong> conforme os prazos descritos em nossa Política de Cookies (máximo de 24 meses)." },
 
-  "sec_share_title": { ja: "4. 第三者提供", es: "6. Cesión a terceros y encargados del tratamiento" },
+  "sec_share_title": { ja: "4. 第三者提供", en: "4. Sharing with third parties", es: "6. Cesión a terceros y encargados del tratamiento", pt: "6. Compartilhamento com terceiros e operadores" },
   "sec_share_intro": { ja: "当社は、ユーザーの同意なく個人情報を第三者に提供することはありません。ただし、以下の場合を除きます。",
-                       es: "No cedemos tus datos personales a terceros sin tu consentimiento, salvo en los siguientes casos:" },
-  "sec_share_li_1":  { ja: "法令に基づく場合", es: "Cuando exista una obligación legal de comunicar los datos a autoridades públicas." },
+                       en: "We do not sell or share your personal information with third parties without your consent, except in the following cases:",
+                       es: "No cedemos tus datos personales a terceros sin tu consentimiento, salvo en los siguientes casos:",
+                       pt: "Não compartilhamos seus dados pessoais com terceiros sem o seu consentimento, exceto nos seguintes casos:" },
+  "sec_share_li_1":  { ja: "法令に基づく場合",
+                       en: "When required to disclose information to comply with applicable laws or valid legal requests",
+                       es: "Cuando exista una obligación legal de comunicar los datos a autoridades públicas.",
+                       pt: "Quando houver obrigação legal de comunicar os dados a autoridades públicas." },
   "sec_share_li_2":  { ja: "人の生命、身体または財産の保護のために必要であり、ユーザーの同意を得ることが困難な場合",
-                       es: "Cuando sea necesario para proteger intereses vitales del interesado o de otra persona física." },
+                       en: "When necessary to protect the vital interests, safety, or property of individuals, and consent cannot reasonably be obtained",
+                       es: "Cuando sea necesario para proteger intereses vitales del interesado o de otra persona física.",
+                       pt: "Quando necessário para proteger a vida ou a integridade física do titular ou de terceiros." },
   "sec_share_li_3":  { ja: "商品配送、決済代行など、業務委託先に必要な範囲で提供する場合（委託先には適切な管理を求めます）",
-                       es: "Encargados del tratamiento que actúan por nuestra cuenta (logística, pasarela de pago, hosting, herramientas de email), con quienes hemos suscrito el contrato exigido por el art. 28 RGPD." },
+                       en: "With service providers acting on our behalf (such as shipping carriers, payment processors, hosting providers, and email platforms), under contracts that require them to safeguard your information",
+                       es: "Encargados del tratamiento que actúan por nuestra cuenta (logística, pasarela de pago, hosting, herramientas de email), con quienes hemos suscrito el contrato exigido por el art. 28 RGPD.",
+                       pt: "Operadores que atuam em nosso nome (logística, gateway de pagamento, hospedagem, ferramentas de e-mail), com os quais celebramos contrato nos termos do art. 39 da LGPD." },
   "sec_share_li_4":  { ja: "合併、事業譲渡その他の事由により事業の承継が行われる場合",
-                       es: "En supuestos de fusión, escisión o cesión de negocio, garantizando siempre la continuidad de las medidas de protección." },
+                       en: "In connection with a merger, acquisition, or sale of assets, in which case the same protections will continue to apply",
+                       es: "En supuestos de fusión, escisión o cesión de negocio, garantizando siempre la continuidad de las medidas de protección.",
+                       pt: "Em casos de fusão, cisão ou cessão de negócios, sempre garantindo a continuidade das medidas de proteção." },
 
-  "sec_transfer_title": { ja: "", es: "7. Transferencia internacional de datos" },
-  "sec_transfer_p1":    { ja: "", es: "Algunos de nuestros encargados del tratamiento (proveedores de hosting, pasarela de pago, plataforma de email) pueden estar ubicados fuera del Espacio Económico Europeo (EEE), incluyendo Japón, Estados Unidos y Reino Unido." },
-  "sec_transfer_p2":    { ja: "", es: 'En todos los casos, las transferencias internacionales se realizan con las garantías exigidas por el RGPD: decisiones de adecuación de la Comisión Europea (Japón cuenta con decisión de adecuación) o cláusulas contractuales tipo (SCC) aprobadas por la Comisión. Puedes solicitar una copia de las garantías aplicables escribiendo a <a href="mailto:dpo@openair.example">dpo@openair.example</a>.' },
+  "sec_transfer_title": { ja: "", en: "", es: "7. Transferencia internacional de datos", pt: "7. Transferência internacional de dados" },
+  "sec_transfer_p1":    { ja: "", en: "",
+                          es: "Algunos de nuestros encargados del tratamiento (proveedores de hosting, pasarela de pago, plataforma de email) pueden estar ubicados fuera del Espacio Económico Europeo (EEE), incluyendo Japón, Estados Unidos y Reino Unido.",
+                          pt: "Alguns de nossos operadores (provedores de hospedagem, gateways de pagamento, plataformas de e-mail) podem estar localizados fora do Brasil, incluindo Japão, Estados Unidos e União Europeia." },
+  "sec_transfer_p2":    { ja: "", en: "",
+                          es: 'En todos los casos, las transferencias internacionales se realizan con las garantías exigidas por el RGPD: decisiones de adecuación de la Comisión Europea (Japón cuenta con decisión de adecuación) o cláusulas contractuales tipo (SCC) aprobadas por la Comisión. Puedes solicitar una copia de las garantías aplicables escribiendo a <a href="mailto:dpo@openair.example">dpo@openair.example</a>.',
+                          pt: 'Em todos os casos, as transferências internacionais são realizadas com as garantias exigidas pelos arts. 33 a 36 da LGPD, incluindo cláusulas contratuais específicas e padrões de proteção compatíveis com a legislação brasileira. Você pode solicitar uma cópia das garantias aplicáveis escrevendo para <a href="mailto:dpo@openair.example">dpo@openair.example</a>.' },
 
-  "sec_cookie_title": { ja: "5. Cookie の使用", es: "8. Cookies y tecnologías similares" },
+  "sec_cookie_title": { ja: "5. Cookie の使用", en: "5. Cookies and similar technologies", es: "8. Cookies y tecnologías similares", pt: "8. Cookies e tecnologias semelhantes" },
   "sec_cookie_intro": { ja: "当社は、ユーザー体験の向上およびサービスの分析のために Cookie および類似技術を使用します。Cookie の利用目的は以下のとおりです。",
-                        es: "Utilizamos cookies y tecnologías similares para mejorar tu experiencia y analizar el uso del Servicio. Las cookies se clasifican en:" },
-  "sec_cookie_li_1":  { ja: "カート情報の保持、ログイン状態の維持", es: "<strong>Técnicas (necesarias):</strong> mantienen el contenido del carrito y la sesión iniciada. No requieren consentimiento." },
-  "sec_cookie_li_2":  { ja: "ユーザーの好みに合わせたコンテンツ表示", es: "<strong>De preferencias:</strong> recuerdan el idioma y otras preferencias de visualización." },
-  "sec_cookie_li_3":  { ja: "サイトの利用状況分析（Google Analytics 等）", es: "<strong>Analíticas y de marketing:</strong> miden el uso del sitio (Google Analytics, etc.) y permiten mostrar publicidad personalizada. Solo se instalan con tu consentimiento previo." },
+                        en: "We use cookies and similar technologies to improve your experience and analyze how the Service is used. We group them into the following categories:",
+                        es: "Utilizamos cookies y tecnologías similares para mejorar tu experiencia y analizar el uso del Servicio. Las cookies se clasifican en:",
+                        pt: "Utilizamos cookies e tecnologias semelhantes para aprimorar sua experiência e analisar o uso do Serviço. Os cookies são classificados em:" },
+  "sec_cookie_li_1":  { ja: "カート情報の保持、ログイン状態の維持",
+                        en: "<strong>Strictly necessary:</strong> keep your cart contents and signed-in state. These cookies are required for the Service to function.",
+                        es: "<strong>Técnicas (necesarias):</strong> mantienen el contenido del carrito y la sesión iniciada. No requieren consentimiento.",
+                        pt: "<strong>Estritamente necessários:</strong> mantêm o conteúdo do carrinho e a sessão iniciada. Não exigem consentimento." },
+  "sec_cookie_li_2":  { ja: "ユーザーの好みに合わせたコンテンツ表示",
+                        en: "<strong>Preferences:</strong> remember your language and other display settings.",
+                        es: "<strong>De preferencias:</strong> recuerdan el idioma y otras preferencias de visualización.",
+                        pt: "<strong>De preferências:</strong> lembram o idioma e outras preferências de exibição." },
+  "sec_cookie_li_3":  { ja: "サイトの利用状況分析（Google Analytics 等）",
+                        en: "<strong>Analytics and marketing:</strong> measure how the site is used (Google Analytics and similar) and may support personalized advertising. These are set only with your consent.",
+                        es: "<strong>Analíticas y de marketing:</strong> miden el uso del sitio (Google Analytics, etc.) y permiten mostrar publicidad personalizada. Solo se instalan con tu consentimiento previo.",
+                        pt: "<strong>Analíticos e de marketing:</strong> medem o uso do site (Google Analytics e similares) e podem suportar publicidade personalizada. São instalados apenas com seu consentimento prévio." },
   "sec_cookie_outro": { ja: "ブラウザの設定により Cookie を無効化することができますが、その場合、本サービスの一部機能が利用できなくなる可能性があります。",
-                        es: "Puedes gestionar o retirar tu consentimiento en cualquier momento desde el panel de configuración de cookies o desde los ajustes de tu navegador. Si deshabilitas las cookies técnicas, algunas funciones del Servicio podrían no estar disponibles." },
+                        en: "You can manage or withdraw your consent at any time through the cookie settings panel or your browser preferences. Disabling strictly necessary cookies may prevent some features of the Service from working.",
+                        es: "Puedes gestionar o retirar tu consentimiento en cualquier momento desde el panel de configuración de cookies o desde los ajustes de tu navegador. Si deshabilitas las cookies técnicas, algunas funciones del Servicio podrían no estar disponibles.",
+                        pt: "Você pode gerenciar ou revogar seu consentimento a qualquer momento no painel de configurações de cookies ou nas preferências do navegador. Caso desative os cookies estritamente necessários, algumas funções do Serviço poderão ficar indisponíveis." },
 
-  "sec_security_title": { ja: "6. セキュリティ", es: "9. Medidas de seguridad" },
+  "sec_security_title": { ja: "6. セキュリティ", en: "6. Security", es: "9. Medidas de seguridad", pt: "9. Medidas de segurança" },
   "sec_security_body":  { ja: "当社は、取得した個人情報の漏洩、滅失または毀損の防止その他の安全管理のために、必要かつ適切な措置を講じます。お支払い情報については、SSL/TLS による暗号化通信を行い、PCI DSS 準拠の決済代行業者を通じて処理します。",
-                          es: "Aplicamos las medidas técnicas y organizativas apropiadas exigidas por el art. 32 RGPD para garantizar la confidencialidad, integridad y disponibilidad de tus datos personales. Las comunicaciones se cifran mediante SSL/TLS y los datos de pago son procesados por proveedores certificados PCI DSS." },
+                          en: "We use reasonable administrative, technical, and physical safeguards to protect personal information from unauthorized access, loss, or misuse. Communications are encrypted with SSL/TLS, and payment data is handled by PCI DSS-compliant providers.",
+                          es: "Aplicamos las medidas técnicas y organizativas apropiadas exigidas por el art. 32 RGPD para garantizar la confidencialidad, integridad y disponibilidad de tus datos personales. Las comunicaciones se cifran mediante SSL/TLS y los datos de pago son procesados por proveedores certificados PCI DSS.",
+                          pt: "Adotamos as medidas técnicas e administrativas apropriadas exigidas pelo art. 46 da LGPD para garantir a confidencialidade, a integridade e a disponibilidade dos seus dados pessoais. As comunicações são criptografadas com SSL/TLS e os dados de pagamento são processados por provedores certificados PCI DSS." },
 
-  "sec_rights_title": { ja: "7. 開示・訂正・削除", es: "10. Tus derechos" },
+  "sec_rights_title": { ja: "7. 開示・訂正・削除", en: "7. Your privacy rights", es: "10. Tus derechos", pt: "10. Seus direitos" },
   "sec_rights_intro": { ja: "ユーザーは、当社が保有する自身の個人情報について、以下の対応を求めることができます。",
-                        es: "Como persona interesada, te asisten los siguientes derechos sobre tus datos personales:" },
-  "sec_rights_li_1":  { ja: "開示の請求", es: "<strong>Derecho de acceso:</strong> a saber qué datos tuyos tratamos." },
-  "sec_rights_li_2":  { ja: "内容の訂正、追加または削除", es: "<strong>Derecho de rectificación:</strong> a corregir datos inexactos o incompletos." },
-  "sec_rights_li_3":  { ja: "利用の停止または消去", es: "<strong>Derecho de supresión (\"derecho al olvido\"):</strong> a solicitar la eliminación de tus datos cuando ya no sean necesarios." },
-  "sec_rights_li_4":  { ja: "第三者への提供の停止", es: "<strong>Derechos de oposición, limitación y portabilidad:</strong> a oponerte al tratamiento, limitar su uso y recibir tus datos en un formato estructurado y de uso común." },
+                        en: "Subject to applicable law, including the California Consumer Privacy Act (CCPA) and other U.S. state privacy laws, you have the following rights regarding your personal information:",
+                        es: "Como persona interesada, te asisten los siguientes derechos sobre tus datos personales:",
+                        pt: "Como titular dos dados, você tem os seguintes direitos sobre seus dados pessoais, nos termos do art. 18 da LGPD:" },
+  "sec_rights_li_1":  { ja: "開示の請求",
+                        en: "<strong>Right to know:</strong> request the categories and specific pieces of personal information we have collected about you.",
+                        es: "<strong>Derecho de acceso:</strong> a saber qué datos tuyos tratamos.",
+                        pt: "<strong>Direito de confirmação e acesso:</strong> saber se tratamos seus dados e acessar as informações que mantemos." },
+  "sec_rights_li_2":  { ja: "内容の訂正、追加または削除",
+                        en: "<strong>Right to correct:</strong> ask us to update inaccurate or incomplete information.",
+                        es: "<strong>Derecho de rectificación:</strong> a corregir datos inexactos o incompletos.",
+                        pt: "<strong>Direito de correção:</strong> solicitar a correção de dados incompletos, inexatos ou desatualizados." },
+  "sec_rights_li_3":  { ja: "利用の停止または消去",
+                        en: "<strong>Right to delete:</strong> request that we delete personal information we have collected, subject to certain legal exceptions.",
+                        es: "<strong>Derecho de supresión (\"derecho al olvido\"):</strong> a solicitar la eliminación de tus datos cuando ya no sean necesarios.",
+                        pt: "<strong>Direito de eliminação:</strong> solicitar a eliminação dos dados pessoais tratados com base em consentimento, ressalvadas as hipóteses legais de retenção." },
+  "sec_rights_li_4":  { ja: "第三者への提供の停止",
+                        en: "<strong>Right to opt out, limit, and port:</strong> opt out of the sale or sharing of your information, limit how sensitive information is used, and receive a copy of your data in a portable format.",
+                        es: "<strong>Derechos de oposición, limitación y portabilidad:</strong> a oponerte al tratamiento, limitar su uso y recibir tus datos en un formato estructurado y de uso común.",
+                        pt: "<strong>Direitos de oposição, anonimização, bloqueio e portabilidade:</strong> opor-se ao tratamento, solicitar a anonimização ou o bloqueio dos dados, e receber uma cópia em formato estruturado e de uso comum." },
   "sec_rights_outro": { ja: "これらの請求は、本ポリシー末尾の「お問い合わせ窓口」までご連絡ください。本人確認のうえ、合理的な期間内に対応いたします。",
-                        es: 'Para ejercer cualquiera de estos derechos, puedes escribirnos a <a href="mailto:dpo@openair.example">dpo@openair.example</a> indicando el derecho que deseas ejercer y adjuntando una copia de un documento que acredite tu identidad. Responderemos en el plazo máximo de un mes, prorrogable a dos meses adicionales si la solicitud es compleja. También tienes derecho a retirar el consentimiento prestado en cualquier momento.' },
+                        en: 'To exercise any of these rights, write to <a href="mailto:dpo@openair.example">dpo@openair.example</a> with the right you wish to exercise and a copy of a document that verifies your identity. We will respond within the timeframe required by applicable law. We will not discriminate against you for exercising any of these rights.',
+                        es: 'Para ejercer cualquiera de estos derechos, puedes escribirnos a <a href="mailto:dpo@openair.example">dpo@openair.example</a> indicando el derecho que deseas ejercer y adjuntando una copia de un documento que acredite tu identidad. Responderemos en el plazo máximo de un mes, prorrogable a dos meses adicionales si la solicitud es compleja. También tienes derecho a retirar el consentimiento prestado en cualquier momento.',
+                        pt: 'Para exercer qualquer um desses direitos, escreva para <a href="mailto:dpo@openair.example">dpo@openair.example</a> indicando o direito que deseja exercer e anexando uma cópia de um documento que comprove sua identidade. Responderemos no prazo previsto pela LGPD. Você também pode revogar o consentimento concedido a qualquer momento.' },
 
-  "sec_complaint_title": { ja: "", es: "11. Derecho a presentar reclamación ante la autoridad de control" },
-  "sec_complaint_p1":    { ja: "", es: "Si consideras que el tratamiento de tus datos no se ajusta a la normativa, tienes derecho a presentar una reclamación ante la autoridad de control competente. En España, la autoridad competente es la <strong>Agencia Española de Protección de Datos (AEPD)</strong>:" },
-  "sec_complaint_p2":    { ja: "", es: 'C/ Jorge Juan, 6 — 28001 Madrid<br/>Sede electrónica: <a href="https://sedeagpd.gob.es" target="_blank" rel="noopener">sedeagpd.gob.es</a><br/>Teléfono: 901 100 099 / 912 663 517' },
-  "sec_complaint_p3":    { ja: "", es: "En otros países de la Unión Europea, puedes dirigirte a la autoridad de control de tu lugar de residencia habitual, lugar de trabajo o lugar donde se haya cometido la presunta infracción." },
+  "sec_complaint_title": { ja: "", en: "", es: "11. Derecho a presentar reclamación ante la autoridad de control", pt: "11. Direito de reclamação à autoridade nacional" },
+  "sec_complaint_p1":    { ja: "", en: "",
+                           es: "Si consideras que el tratamiento de tus datos no se ajusta a la normativa, tienes derecho a presentar una reclamación ante la autoridad de control competente. En España, la autoridad competente es la <strong>Agencia Española de Protección de Datos (AEPD)</strong>:",
+                           pt: "Se você entender que o tratamento dos seus dados não está em conformidade com a legislação, tem o direito de apresentar reclamação à autoridade competente. No Brasil, a autoridade competente é a <strong>Autoridade Nacional de Proteção de Dados (ANPD)</strong>:" },
+  "sec_complaint_p2":    { ja: "", en: "",
+                           es: 'C/ Jorge Juan, 6 — 28001 Madrid<br/>Sede electrónica: <a href="https://sedeagpd.gob.es" target="_blank" rel="noopener">sedeagpd.gob.es</a><br/>Teléfono: 901 100 099 / 912 663 517',
+                           pt: 'Esplanada dos Ministérios, Bloco C — Brasília/DF<br/>Site oficial: <a href="https://www.gov.br/anpd" target="_blank" rel="noopener">gov.br/anpd</a><br/>Canal de atendimento: pelo formulário disponível no site da ANPD' },
+  "sec_complaint_p3":    { ja: "", en: "",
+                           es: "En otros países de la Unión Europea, puedes dirigirte a la autoridad de control de tu lugar de residencia habitual, lugar de trabajo o lugar donde se haya cometido la presunta infracción.",
+                           pt: "Você também pode procurar os órgãos de defesa do consumidor (Procon) ou recorrer ao Poder Judiciário caso entenda que houve violação aos seus direitos." },
 
-  "sec_change_title": { ja: "8. 改定について", es: "12. Modificaciones de la Política" },
+  "sec_change_title": { ja: "8. 改定について", en: "8. Changes to this policy", es: "12. Modificaciones de la Política", pt: "12. Alterações desta Política" },
   "sec_change_body":  { ja: "当社は、必要に応じて本ポリシーを変更することがあります。重要な変更がある場合は、本サービス上で告知いたします。本ポリシーの変更後、本サービスをご利用いただいた場合、変更後の内容に同意いただいたものとみなします。",
-                        es: "Podemos actualizar esta Política cuando sea necesario para reflejar cambios normativos o en el Servicio. Las modificaciones sustanciales se anunciarán en el sitio web con suficiente antelación. La fecha de la última actualización siempre figura al inicio del documento." },
+                        en: "We may update this Policy from time to time to reflect changes in our practices or applicable law. Material changes will be announced on the Service in advance. The date of the most recent update is shown at the top of this page.",
+                        es: "Podemos actualizar esta Política cuando sea necesario para reflejar cambios normativos o en el Servicio. Las modificaciones sustanciales se anunciarán en el sitio web con suficiente antelación. La fecha de la última actualización siempre figura al inicio del documento.",
+                        pt: "Podemos atualizar esta Política sempre que necessário para refletir alterações normativas ou no Serviço. As modificações substanciais serão anunciadas no site com antecedência suficiente. A data da última atualização sempre consta no início deste documento." },
 
-  "sec_contact_title": { ja: "9. お問い合わせ窓口", es: "13. Contacto" },
+  "sec_contact_title": { ja: "9. お問い合わせ窓口", en: "9. Contact us", es: "13. Contacto", pt: "13. Contato" },
   "sec_contact_intro": { ja: "個人情報の取り扱いに関するお問い合わせは、以下までご連絡ください。",
-                         es: "Para cualquier consulta relacionada con esta Política o con el tratamiento de tus datos personales puedes contactarnos en:" },
+                         en: "For any questions about this Policy or how your personal information is handled, please contact us:",
+                         es: "Para cualquier consulta relacionada con esta Política o con el tratamiento de tus datos personales puedes contactarnos en:",
+                         pt: "Para qualquer dúvida sobre esta Política ou sobre o tratamento dos seus dados pessoais, entre em contato conosco:" },
   "sec_contact_block": { ja: "OPEN AIR, Inc. プライバシー担当<br/>Email: <a href=\"mailto:privacy@openair.example\">privacy@openair.example</a><br/>受付時間：平日 10:00〜18:00（土日祝・年末年始を除く）",
-                         es: "OPEN AIR, Inc. — Departamento de Privacidad<br/>Email general: <a href=\"mailto:privacy@openair.example\">privacy@openair.example</a><br/>Delegado de Protección de Datos (DPO): <a href=\"mailto:dpo@openair.example\">dpo@openair.example</a><br/>Horario: lunes a viernes, 9:00–18:00 (CET)" },
+                         en: "OPEN AIR, Inc. — Privacy Team<br/>Email: <a href=\"mailto:privacy@openair.example\">privacy@openair.example</a><br/>Hours: Monday to Friday, 9:00 AM – 6:00 PM (PT)",
+                         es: "OPEN AIR, Inc. — Departamento de Privacidad<br/>Email general: <a href=\"mailto:privacy@openair.example\">privacy@openair.example</a><br/>Delegado de Protección de Datos (DPO): <a href=\"mailto:dpo@openair.example\">dpo@openair.example</a><br/>Horario: lunes a viernes, 9:00–18:00 (CET)",
+                         pt: "OPEN AIR, Inc. — Departamento de Privacidade<br/>E-mail geral: <a href=\"mailto:privacy@openair.example\">privacy@openair.example</a><br/>Encarregado de Proteção de Dados (DPO): <a href=\"mailto:dpo@openair.example\">dpo@openair.example</a><br/>Horário: segunda a sexta, das 9h às 18h (BRT)" },
 
   "footer_dates": { ja: "制定日：2026年1月1日<br/>最終改定日：2026年5月1日",
-                    es: "Fecha de entrada en vigor: 1 de enero de 2026<br/>Última actualización: 1 de mayo de 2026" },
+                    en: "Effective date: January 1, 2026<br/>Last updated: May 1, 2026",
+                    es: "Fecha de entrada en vigor: 1 de enero de 2026<br/>Última actualización: 1 de mayo de 2026",
+                    pt: "Data de entrada em vigor: 1º de janeiro de 2026<br/>Última atualização: 1º de maio de 2026" },
 
   // Footer
-  "footer_privacy": { ja: "プライバシー", es: "Privacidad" },
-  "footer_terms":   { ja: "利用規約",     es: "Términos" },
-  "footer_support": { ja: "サポート",     es: "Soporte" }
+  "footer_privacy": { ja: "プライバシー", en: "Privacy",  es: "Privacidad", pt: "Privacidade" },
+  "footer_terms":   { ja: "利用規約",     en: "Terms",    es: "Términos",   pt: "Termos" },
+  "footer_support": { ja: "サポート",     en: "Support",  es: "Soporte",    pt: "Suporte" }
 };
 
 const I18N_KEY = 'openair_lang';
+const SUPPORTED_LANGS = ['ja','en','es','pt'];
+const LANG_LABEL = { ja: '日本語', en: 'English', es: 'Español', pt: 'Português' };
 function getLang(){
-  // 1) URL ?lang=xx override (e.g. share a forced-language link)
   try {
     const u = new URLSearchParams(location.search).get('lang');
-    if (u === 'ja' || u === 'es') { localStorage.setItem(I18N_KEY, u); return u; }
+    if (SUPPORTED_LANGS.includes(u)) { localStorage.setItem(I18N_KEY, u); return u; }
   } catch(e){}
-  // 2) Saved manual preference
   const saved = localStorage.getItem(I18N_KEY);
-  if (saved === 'ja' || saved === 'es') return saved;
-  // 3) Browser language detection — check the full navigator.languages array
+  if (SUPPORTED_LANGS.includes(saved)) return saved;
   const langs = (navigator.languages && navigator.languages.length)
     ? navigator.languages
     : [navigator.language || navigator.userLanguage || ''];
   for (const l of langs){
     const lc = (l || '').toLowerCase();
-    if (lc.startsWith('es')) return 'es';
     if (lc.startsWith('ja')) return 'ja';
+    if (lc.startsWith('pt')) return 'pt';
+    if (lc.startsWith('es')) return 'es';
+    if (lc.startsWith('en')) return 'en';
   }
   return 'ja';
 }
 function applyLang(lang){
+  if (!SUPPORTED_LANGS.includes(lang)) lang = 'ja';
   document.documentElement.lang = lang;
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
     const t = translations[key];
     if (!t) return;
-    const text = (lang === 'es' && t.es) ? t.es : t.ja;
+    const text = (t[lang] !== undefined && t[lang] !== '') ? t[lang] : t.ja;
     if (text) el.innerHTML = text;
   });
   // Show/hide locale-specific blocks
-  document.querySelectorAll('[data-jp-only]').forEach(el => { el.style.display = lang === 'es' ? 'none' : ''; });
-  document.querySelectorAll('[data-es-only]').forEach(el => { el.style.display = lang === 'es' ? '' : 'none'; });
+  // data-jp-only: visible only when JA
+  document.querySelectorAll('[data-jp-only]').forEach(el => { el.style.display = (lang === 'ja') ? '' : 'none'; });
+  // data-es-only: legacy attribute, now means "GDPR/LGPD-style legal sections".
+  // Visible for ES (GDPR/LOPDGDD) and PT (LGPD). Hidden for JA and EN.
+  document.querySelectorAll('[data-es-only]').forEach(el => {
+    const show = (lang === 'es' || lang === 'pt');
+    el.style.display = show ? '' : 'none';
+  });
   // Update <title>
   const titleEntry = translations['page_title'];
-  if (titleEntry) document.title = (lang === 'es' && titleEntry.es) ? titleEntry.es : titleEntry.ja;
+  if (titleEntry) document.title = (titleEntry[lang] !== undefined && titleEntry[lang] !== '') ? titleEntry[lang] : titleEntry.ja;
   // Switcher label
   const langLabel = document.getElementById('lang-current');
-  if (langLabel) langLabel.textContent = lang === 'es' ? 'Español' : '日本語';
+  if (langLabel) langLabel.textContent = LANG_LABEL[lang] || '日本語';
 }
-function setLang(lang){ localStorage.setItem(I18N_KEY, lang); applyLang(lang); }
+function setLang(lang){
+  if (!SUPPORTED_LANGS.includes(lang)) lang = 'ja';
+  localStorage.setItem(I18N_KEY, lang);
+  applyLang(lang);
+}
 applyLang(getLang());
-document.getElementById('lang-switcher')?.addEventListener('click', (e) => {
-  e.preventDefault();
-  setLang(getLang() === 'ja' ? 'es' : 'ja');
-});
 
-// Region modal logic
+// Region / language modal logic (4 languages, flat)
 (function(){
   const modal = document.getElementById('region-modal');
   const switcher = document.getElementById('lang-switcher');
@@ -537,28 +655,24 @@ document.getElementById('lang-switcher')?.addEventListener('click', (e) => {
   const newSwitcher = switcher.cloneNode(true);
   switcher.parentNode.replaceChild(newSwitcher, switcher);
 
+  const MODAL_TEXT = {
+    ja: { title: '配送地域を選択',         sub: 'ご利用の地域に合わせて、言語と通貨が切り替わります。', close: '閉じる' },
+    en: { title: 'Choose your region',     sub: 'Language and currency adapt to your region.',           close: 'Close' },
+    es: { title: 'Selecciona tu región',   sub: 'El idioma y la moneda se ajustan a tu región.',         close: 'Cerrar' },
+    pt: { title: 'Escolha sua região',     sub: 'O idioma e a moeda se ajustam à sua região.',           close: 'Fechar' }
+  };
+
   function openModal(){
     modal.classList.remove('hidden');
     updateChecks();
     const lang = getLang();
+    const t = MODAL_TEXT[lang] || MODAL_TEXT.ja;
     const title = modal.querySelector('#region-modal-title');
     const sub = modal.querySelector('#region-modal-sub');
     const close = modal.querySelector('#region-close');
-    const brSub = modal.querySelector('#region-br-sub');
-    const usSub = modal.querySelector('#region-us-sub');
-    if (lang === 'es') {
-      if (title) title.textContent = 'Selecciona tu región';
-      if (sub) sub.textContent = 'El idioma y la moneda se ajustan a tu región.';
-      if (close) close.textContent = 'Cerrar';
-      if (brSub) brSub.textContent = 'Estamos trabajando para que pronto puedas comprarlo aquí.';
-      if (usSub) usSub.textContent = 'Estamos trabajando para que pronto puedas comprarlo aquí.';
-    } else {
-      if (title) title.textContent = '配送地域を選択';
-      if (sub) sub.textContent = 'ご利用の地域に合わせて、言語と通貨が切り替わります。';
-      if (close) close.textContent = '閉じる';
-      if (brSub) brSub.textContent = 'ご購入できるよう、準備を進めています。';
-      if (usSub) usSub.textContent = 'ご購入できるよう、準備を進めています。';
-    }
+    if (title) title.textContent = t.title;
+    if (sub) sub.textContent = t.sub;
+    if (close) close.textContent = t.close;
   }
   function closeModal(){ modal.classList.add('hidden'); }
   function updateChecks(){
@@ -566,48 +680,8 @@ document.getElementById('lang-switcher')?.addEventListener('click', (e) => {
     modal.querySelectorAll('.region-option').forEach(btn => {
       const check = btn.querySelector('.region-check');
       if (!check) return;
-      const region = btn.dataset.region;
-      if ((region === 'ja' && lang === 'ja') || (region === 'es' && lang === 'es')) {
-        check.classList.remove('hidden');
-      } else {
-        check.classList.add('hidden');
-      }
+      check.classList.toggle('hidden', btn.dataset.region !== lang);
     });
-  }
-  function showSoonToast(region){
-    const lang = getLang();
-    const msg = lang === 'es'
-      ? 'Estamos trabajando para que pronto puedas comprarlo aquí.'
-      : 'ご購入できるよう、準備を進めています。';
-    let toast = document.getElementById('region-toast');
-    if (!toast){
-      toast = document.createElement('div');
-      toast.id = 'region-toast';
-      toast.setAttribute('role','status');
-      toast.setAttribute('aria-live','polite');
-      document.body.appendChild(toast);
-    }
-    toast.style.cssText = `
-      position:fixed; bottom:24px; left:50%;
-      transform:translateX(-50%) translateY(20px);
-      background:rgba(10,10,10,.92); color:#fff;
-      padding:14px 22px; border-radius:999px;
-      font-size:14px; max-width:90vw;
-      z-index:200; opacity:0;
-      transition:opacity .25s, transform .25s;
-      box-shadow:0 10px 40px rgba(0,0,0,.25);
-      backdrop-filter:blur(10px);
-    `;
-    toast.textContent = msg;
-    requestAnimationFrame(()=>{
-      toast.style.opacity = '1';
-      toast.style.transform = 'translateX(-50%) translateY(0)';
-    });
-    clearTimeout(window.__regionToastT);
-    window.__regionToastT = setTimeout(()=>{
-      toast.style.opacity = '0';
-      toast.style.transform = 'translateX(-50%) translateY(20px)';
-    }, 3200);
   }
 
   newSwitcher.addEventListener('click', (e) => { e.preventDefault(); openModal(); });
@@ -618,10 +692,9 @@ document.getElementById('lang-switcher')?.addEventListener('click', (e) => {
   modal.querySelectorAll('.region-option').forEach(btn => {
     btn.addEventListener('click', () => {
       const region = btn.dataset.region;
-      if (region === 'ja') { setLang('ja'); closeModal(); }
-      else if (region === 'es') { setLang('es'); closeModal(); }
-      else if (region === 'br' || region === 'us') {
-        showSoonToast(region);
+      if (SUPPORTED_LANGS.includes(region)) {
+        setLang(region);
+        closeModal();
       }
     });
   });

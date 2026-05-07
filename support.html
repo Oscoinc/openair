@@ -353,6 +353,16 @@
         </button>
       </li>
       <li>
+        <button data-region="en" class="region-option w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
+          <span class="text-2xl">🇺🇸</span>
+          <div class="flex-1">
+            <div class="text-[14px] font-medium text-zinc-900">United States</div>
+            <div class="text-[11px] text-zinc-500">English · USA shipping · $</div>
+          </div>
+          <span class="region-check text-zinc-900 hidden text-[18px]">✓</span>
+        </button>
+      </li>
+      <li>
         <button data-region="es" class="region-option w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
           <span class="text-2xl">🇪🇸</span>
           <div class="flex-1">
@@ -363,23 +373,13 @@
         </button>
       </li>
       <li>
-        <button data-region="br" class="region-option region-soon w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
-          <span class="text-2xl opacity-70">🇧🇷</span>
+        <button data-region="pt" class="region-option w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
+          <span class="text-2xl">🇧🇷</span>
           <div class="flex-1">
             <div class="text-[14px] font-medium text-zinc-900">Brasil</div>
-            <div class="text-[11px] text-zinc-500" id="region-br-sub">ご購入できるよう、準備を進めています</div>
+            <div class="text-[11px] text-zinc-500">Português · Envio Brasil · R$</div>
           </div>
-          <span class="text-[10px] tracking-[0.18em] uppercase text-zinc-500 px-2.5 py-1 rounded-full border border-zinc-200" id="region-br-badge">Soon</span>
-        </button>
-      </li>
-      <li>
-        <button data-region="us" class="region-option region-soon w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
-          <span class="text-2xl opacity-70">🇺🇸</span>
-          <div class="flex-1">
-            <div class="text-[14px] font-medium text-zinc-900">United States</div>
-            <div class="text-[11px] text-zinc-500" id="region-us-sub">ご購入できるよう、準備を進めています</div>
-          </div>
-          <span class="text-[10px] tracking-[0.18em] uppercase text-zinc-500 px-2.5 py-1 rounded-full border border-zinc-200" id="region-us-badge">Soon</span>
+          <span class="region-check text-zinc-900 hidden text-[18px]">✓</span>
         </button>
       </li>
     </ul>
@@ -406,183 +406,237 @@
 
 // ============== i18n ==============
 const translations = {
-  "page_title": { ja: "サポート — OPEN AIR", es: "Soporte — OPEN AIR" },
+  "page_title": { ja: "サポート — OPEN AIR", en: "Support — OPEN AIR", es: "Soporte — OPEN AIR", pt: "Suporte — OPEN AIR" },
   // Nav
-  "nav_concept":  { ja: "コンセプト", es: "Concepto" },
-  "nav_features": { ja: "特徴",       es: "Características" },
-  "nav_scenes":   { ja: "シーン",     es: "Escenas" },
-  "nav_buy":      { ja: "購入",       es: "Comprar" },
-  "nav_cart":     { ja: "カート",     es: "Carrito" },
+  "nav_concept":  { ja: "コンセプト", en: "Concept",  es: "Concepto",         pt: "Conceito" },
+  "nav_features": { ja: "特徴",       en: "Features", es: "Características",  pt: "Recursos" },
+  "nav_scenes":   { ja: "シーン",     en: "Scenes",   es: "Escenas",          pt: "Cenas" },
+  "nav_buy":      { ja: "購入",       en: "Buy",      es: "Comprar",          pt: "Comprar" },
+  "nav_cart":     { ja: "カート",     en: "Cart",     es: "Carrito",          pt: "Carrinho" },
   // Hero
-  "hero_eyebrow": { ja: "Support", es: "Soporte" },
-  "hero_title":   { ja: "サポート", es: "Soporte" },
+  "hero_eyebrow": { ja: "Support", en: "Support", es: "Soporte", pt: "Suporte" },
+  "hero_title":   { ja: "サポート", en: "Support", es: "Soporte", pt: "Suporte" },
   "hero_lede":    { ja: "お困りのことがあれば、以下からお探しください。<br/>解決しない場合は、フォームからお気軽にご連絡ください。",
-                    es: "¿Tienes alguna duda? Encuentra la respuesta a continuación.<br/>Si no resolvemos tu consulta, escríbenos a través del formulario." },
+                    en: "Find answers below.<br/>If you still need help, send us a message and we'll get back to you.",
+                    es: "¿Tienes alguna duda? Encuentra la respuesta a continuación.<br/>Si no resolvemos tu consulta, escríbenos a través del formulario.",
+                    pt: "Encontre respostas abaixo.<br/>Se ainda precisar de ajuda, fale com a gente pelo formulário." },
   // Channels
-  "ch_faq_title":   { ja: "よくある質問", es: "Preguntas frecuentes" },
-  "ch_faq_sub":     { ja: "製品・配送・返品について", es: "Producto, envío y devoluciones" },
-  "ch_email_title": { ja: "メール", es: "Email" },
-  "ch_form_title":  { ja: "お問い合わせフォーム", es: "Formulario de contacto" },
-  "ch_form_sub":    { ja: "通常 1〜2 営業日で返信", es: "Respondemos en 1–2 días hábiles" },
+  "ch_faq_title":   { ja: "よくある質問", en: "Frequently asked questions", es: "Preguntas frecuentes",       pt: "Perguntas frequentes" },
+  "ch_faq_sub":     { ja: "製品・配送・返品について", en: "Product, shipping and returns", es: "Producto, envío y devoluciones", pt: "Produto, envio e devoluções" },
+  "ch_email_title": { ja: "メール",       en: "Email",                       es: "Email",                       pt: "E-mail" },
+  "ch_form_title":  { ja: "お問い合わせフォーム", en: "Contact form",        es: "Formulario de contacto",       pt: "Formulário de contato" },
+  "ch_form_sub":    { ja: "通常 1〜2 営業日で返信", en: "Reply within 1–2 business days", es: "Respondemos en 1–2 días hábiles", pt: "Resposta em 1 a 2 dias úteis" },
 
   // FAQ
-  "faq_eyebrow": { ja: "FAQ", es: "FAQ" },
-  "faq_title":   { ja: "よくある質問", es: "Preguntas frecuentes" },
+  "faq_eyebrow": { ja: "FAQ", en: "FAQ", es: "FAQ", pt: "FAQ" },
+  "faq_title":   { ja: "よくある質問", en: "Frequently asked questions", es: "Preguntas frecuentes", pt: "Perguntas frequentes" },
 
-  "faq_h3_product": { ja: "製品について", es: "Sobre el producto" },
-  "faq_p1_q": { ja: "OPEN AIR はどんな製品ですか？", es: "¿Qué es OPEN AIR?" },
+  "faq_h3_product": { ja: "製品について", en: "About the product", es: "Sobre el producto", pt: "Sobre o produto" },
+  "faq_p1_q": { ja: "OPEN AIR はどんな製品ですか？", en: "What is OPEN AIR?", es: "¿Qué es OPEN AIR?", pt: "O que é o OPEN AIR?" },
   "faq_p1_a": { ja: "鼻の通りを整えるための鼻テープです。透明素材で目立たず、自然なフィット感で、寝るとき・トレーニング・デスクワークなど一日を通してお使いいただけます。医療目的の製品ではありません。",
-                es: "Es una tira nasal diseñada para favorecer el paso del aire por la nariz. Su material transparente pasa desapercibido y se adapta de forma natural; puedes usarla al dormir, entrenar o trabajar. No es un producto sanitario." },
-  "faq_p2_q": { ja: "何回まで使い回せますか？", es: "¿Se puede reutilizar?" },
+                en: "OPEN AIR is a nasal strip designed to help open the airflow through your nose. The clear material is virtually invisible and conforms naturally to your skin, so you can wear it while sleeping, working out, or at your desk. It is not a medical device.",
+                es: "Es una tira nasal diseñada para favorecer el paso del aire por la nariz. Su material transparente pasa desapercibido y se adapta de forma natural; puedes usarla al dormir, entrenar o trabajar. No es un producto sanitario.",
+                pt: "É uma fita nasal desenvolvida para ajudar a abrir a passagem do ar pelo nariz. O material transparente passa quase despercebido e se adapta naturalmente à pele, podendo ser usada ao dormir, treinar ou trabalhar. Não é um produto de saúde." },
+  "faq_p2_q": { ja: "何回まで使い回せますか？", en: "Can I reuse a strip?", es: "¿Se puede reutilizar?", pt: "Posso reutilizar a fita?" },
   "faq_p2_a": { ja: "1 枚あたり 1 回のご使用を推奨しています。再利用すると粘着力が低下し、肌トラブルの原因となる場合があります。",
-                es: "Recomendamos un solo uso por tira. Reutilizarla reduce la adherencia y puede irritar la piel." },
-  "faq_p3_q": { ja: "敏感肌でも使えますか？", es: "¿Es apta para piel sensible?" },
+                en: "We recommend a single use per strip. Reusing reduces adhesion and may irritate the skin.",
+                es: "Recomendamos un solo uso por tira. Reutilizarla reduce la adherencia y puede irritar la piel.",
+                pt: "Recomendamos um único uso por fita. Reutilizar reduz a adesão e pode irritar a pele." },
+  "faq_p3_q": { ja: "敏感肌でも使えますか？", en: "Is it safe for sensitive skin?", es: "¿Es apta para piel sensible?", pt: "É seguro para pele sensível?" },
   "faq_p3_a": { ja: "医療レベルの粘着素材（ドイツ製 HENKEL 社）を採用しており、肌へのやさしさを優先した設計です。ただし、すべての方に同じフィット感を保証するものではありません。違和感を感じた場合はご使用を中止してください。",
-                es: "Utilizamos un adhesivo de grado médico (HENKEL, Alemania) pensado para minimizar la irritación. Aun así, no podemos garantizar la misma respuesta en todas las pieles: si notas molestias, suspende el uso." },
-  "faq_p4_q": { ja: "メイクの上から貼っても大丈夫ですか？", es: "¿Puedo aplicarla sobre el maquillaje?" },
+                en: "We use a medical-grade adhesive made by HENKEL (Germany), designed to be gentle on skin. That said, individual reactions vary. If you notice any discomfort, stop using it.",
+                es: "Utilizamos un adhesivo de grado médico (HENKEL, Alemania) pensado para minimizar la irritación. Aun así, no podemos garantizar la misma respuesta en todas las pieles: si notas molestias, suspende el uso.",
+                pt: "Usamos um adesivo de grau médico fabricado pela HENKEL (Alemanha), pensado para ser suave com a pele. Ainda assim, cada pele reage de um jeito: se sentir incômodo, interrompa o uso." },
+  "faq_p4_q": { ja: "メイクの上から貼っても大丈夫ですか？", en: "Can I apply it over makeup?", es: "¿Puedo aplicarla sobre el maquillaje?", pt: "Posso aplicar sobre a maquiagem?" },
   "faq_p4_a": { ja: "油分やメイクが残っていると、剥がれやすくなる場合があります。装着前に鼻周りの油分を軽く拭き取り、乾いた状態で貼ることを推奨します。",
-                es: "Los restos de grasa o maquillaje pueden hacer que se despegue antes. Limpia bien la zona y déjala seca antes de aplicarla." },
-  "faq_p5_q": { ja: "運動中もずれませんか？", es: "¿Aguanta durante el ejercicio?" },
+                en: "Oil or makeup residue can make the strip come off sooner. Wipe the area around your nose and let it dry before applying.",
+                es: "Los restos de grasa o maquillaje pueden hacer que se despegue antes. Limpia bien la zona y déjala seca antes de aplicarla.",
+                pt: "Resíduos de oleosidade ou maquiagem podem fazer com que a fita solte antes. Limpe bem a região do nariz e deixe-a seca antes de aplicar." },
+  "faq_p5_q": { ja: "運動中もずれませんか？", en: "Will it stay on during exercise?", es: "¿Aguanta durante el ejercicio?", pt: "Ela aguenta durante o exercício?" },
   "faq_p5_a": { ja: "通常の運動であれば、しっかりフィットします。汗を多くかく環境では粘着力が弱まる場合がありますので、装着前に鼻周りを拭き取っていただくと効果的です。",
-                es: "Para entrenamiento habitual, se adapta sin problema. En condiciones de mucho sudor la adherencia puede disminuir; limpia bien la zona antes de colocarla." },
+                en: "For typical workouts, it stays in place. In high-sweat conditions, adhesion may weaken — wiping the area before applying helps.",
+                es: "Para entrenamiento habitual, se adapta sin problema. En condiciones de mucho sudor la adherencia puede disminuir; limpia bien la zona antes de colocarla.",
+                pt: "Em treinos normais, ela fica firme. Em condições de muito suor a adesão pode diminuir; limpar bem a região antes de aplicar ajuda." },
 
-  "faq_h3_order": { ja: "ご注文・配送について", es: "Pedidos y envío" },
-  "faq_o1_q": { ja: "配送料はかかりますか？", es: "¿Hay gastos de envío?" },
+  "faq_h3_order": { ja: "ご注文・配送について", en: "Orders & shipping", es: "Pedidos y envío", pt: "Pedidos e envio" },
+  "faq_o1_q": { ja: "配送料はかかりますか？", en: "Do you charge for shipping?", es: "¿Hay gastos de envío?", pt: "O frete é cobrado?" },
   "faq_o1_a": { ja: "全国一律送料無料です。離島・一部地域も追加料金はかかりません。",
-                es: "El envío estándar es gratuito en toda la Unión Europea. En zonas remotas o entregas urgentes pueden aplicarse tarifas adicionales, siempre indicadas antes de confirmar el pedido." },
-  "faq_o2_q": { ja: "注文してからどのくらいで届きますか？", es: "¿Cuánto tarda la entrega?" },
+                en: "Standard shipping is free across the contiguous United States. Additional fees may apply for express delivery or remote areas, and any extra charge is shown before you confirm your order.",
+                es: "El envío estándar es gratuito en toda la Unión Europea. En zonas remotas o entregas urgentes pueden aplicarse tarifas adicionales, siempre indicadas antes de confirmar el pedido.",
+                pt: "O frete padrão é gratuito para todo o Brasil. Em entregas expressas ou regiões remotas pode haver taxa adicional, sempre informada antes da confirmação do pedido." },
+  "faq_o2_q": { ja: "注文してからどのくらいで届きますか？", en: "How long does delivery take?", es: "¿Cuánto tarda la entrega?", pt: "Quanto tempo demora a entrega?" },
   "faq_o2_a": { ja: "通常、ご注文確定から 2〜4 営業日でお届けします。地域・繁忙期によって前後する場合があります。出荷後に追跡番号をメールでお送りします。",
-                es: "Habitualmente entregamos en 3–7 días hábiles dentro de la UE. En cualquier caso, conforme al art. 109 LGDCU, el plazo máximo es de 30 días. Tras el envío recibirás el número de seguimiento por correo." },
-  "faq_o3_q": { ja: "注文内容を変更・キャンセルしたい", es: "¿Puedo modificar o cancelar mi pedido?" },
+                en: "Standard orders typically arrive in 3–5 business days. We'll email you a tracking number as soon as your order ships.",
+                es: "Habitualmente entregamos en 3–7 días hábiles dentro de la UE. En cualquier caso, conforme al art. 109 LGDCU, el plazo máximo es de 30 días. Tras el envío recibirás el número de seguimiento por correo.",
+                pt: "Em geral, entregamos em 3 a 7 dias úteis. Após o envio, você recebe o código de rastreamento por e-mail." },
+  "faq_o3_q": { ja: "注文内容を変更・キャンセルしたい", en: "Can I change or cancel my order?", es: "¿Puedo modificar o cancelar mi pedido?", pt: "Posso alterar ou cancelar meu pedido?" },
   "faq_o3_a": { ja: "出荷準備に入るまでであれば変更・キャンセルが可能です。ご注文後すぐに <a href=\"mailto:support@openair.example\" class=\"underline\">support@openair.example</a> までご連絡ください。",
-                es: "Sí, mientras el pedido no haya entrado en preparación. Escríbenos cuanto antes a <a href=\"mailto:support@openair.example\" class=\"underline\">support@openair.example</a> indicando el número de pedido." },
-  "faq_o4_q": { ja: "お支払い方法は何が使えますか？", es: "¿Qué medios de pago aceptáis?" },
+                en: "Yes — as long as the order has not yet entered fulfillment. Contact us at <a href=\"mailto:support@openair.example\" class=\"underline\">support@openair.example</a> as soon as possible with your order number.",
+                es: "Sí, mientras el pedido no haya entrado en preparación. Escríbenos cuanto antes a <a href=\"mailto:support@openair.example\" class=\"underline\">support@openair.example</a> indicando el número de pedido.",
+                pt: "Sim, desde que o pedido ainda não tenha entrado em separação. Fale com a gente o quanto antes em <a href=\"mailto:support@openair.example\" class=\"underline\">support@openair.example</a>, informando o número do pedido. Lembrando que, conforme o art. 49 do CDC, você também tem 7 dias para desistir da compra após o recebimento." },
+  "faq_o4_q": { ja: "お支払い方法は何が使えますか？", en: "Which payment methods do you accept?", es: "¿Qué medios de pago aceptáis?", pt: "Quais formas de pagamento são aceitas?" },
   "faq_o4_a": { ja: "クレジットカード（Visa / Master / JCB / AMEX）、Apple Pay、PayPay、コンビニ払いに対応しています。",
-                es: "Tarjeta de crédito o débito (Visa, Mastercard, American Express), Apple Pay, Google Pay, PayPal y, en países seleccionados, Bizum." },
-  "faq_o5_q": { ja: "領収書は発行できますか？", es: "¿Emitís factura?" },
+                en: "We accept Visa, Mastercard, American Express, Discover, Apple Pay, Google Pay, PayPal, and Shop Pay.",
+                es: "Tarjeta de crédito o débito (Visa, Mastercard, American Express), Apple Pay, Google Pay, PayPal y, en países seleccionados, Bizum.",
+                pt: "Aceitamos cartões de crédito e débito (Visa, Mastercard, American Express, Elo), Pix, boleto bancário e Apple Pay/Google Pay." },
+  "faq_o5_q": { ja: "領収書は発行できますか？", en: "Do you provide a receipt?", es: "¿Emitís factura?", pt: "Vocês emitem nota fiscal?" },
   "faq_o5_a": { ja: "発送完了メールから PDF の領収書をダウンロードいただけます。インボイス（適格請求書）にも対応しています。",
-                es: "Sí. Tras el envío recibirás un correo con la factura en PDF. Si necesitas datos fiscales adicionales (NIF/CIF, razón social), indícalo en las observaciones del pedido o escríbenos a soporte." },
+                en: "Yes. You'll receive a PDF receipt by email after your order ships. If you need additional billing details for business purchases, just include them in the order notes or write to support.",
+                es: "Sí. Tras el envío recibirás un correo con la factura en PDF. Si necesitas datos fiscales adicionales (NIF/CIF, razón social), indícalo en las observaciones del pedido o escríbenos a soporte.",
+                pt: "Sim. Após o envio, você recebe a nota fiscal eletrônica (NF-e) por e-mail. Caso precise de dados adicionais (CNPJ, razão social), informe nas observações do pedido ou fale com o suporte." },
 
-  "faq_h3_return": { ja: "返品・返金について", es: "Devoluciones y reembolsos" },
-  "faq_r1_q": { ja: "返品はできますか？", es: "¿Puedo devolver el producto?" },
+  "faq_h3_return": { ja: "返品・返金について", en: "Returns & refunds", es: "Devoluciones y reembolsos", pt: "Devoluções e reembolsos" },
+  "faq_r1_q": { ja: "返品はできますか？", en: "Can I return a product?", es: "¿Puedo devolver el producto?", pt: "Posso devolver o produto?" },
   "faq_r1_a": { ja: "商品到着後 30 日以内、未開封のものに限り返品をお受けします。返送送料は当社負担です。お手続きは <a href=\"mailto:support@openair.example\" class=\"underline\">support@openair.example</a> までご連絡ください。",
-                es: "Sí. Como consumidor en la UE dispones de 14 días naturales desde la recepción para ejercer tu derecho de desistimiento sin justificación. Adicionalmente aceptamos devoluciones de productos sin abrir hasta 30 días. Escríbenos a <a href=\"mailto:support@openair.example\" class=\"underline\">support@openair.example</a> para iniciar el proceso." },
-  "faq_r2_q": { ja: "商品に不具合があった場合は？", es: "¿Y si el producto está defectuoso?" },
+                en: "Yes. We accept returns of unopened products within 30 days of delivery, and we cover the return shipping. To start a return, write to <a href=\"mailto:support@openair.example\" class=\"underline\">support@openair.example</a>.",
+                es: "Sí. Como consumidor en la UE dispones de 14 días naturales desde la recepción para ejercer tu derecho de desistimiento sin justificación. Adicionalmente aceptamos devoluciones de productos sin abrir hasta 30 días. Escríbenos a <a href=\"mailto:support@openair.example\" class=\"underline\">support@openair.example</a> para iniciar el proceso.",
+                pt: "Sim. Conforme o art. 49 do Código de Defesa do Consumidor, você tem 7 dias a partir do recebimento para desistir da compra sem precisar justificar. Além disso, aceitamos devoluções de produtos lacrados em até 30 dias. Para iniciar o processo, escreva para <a href=\"mailto:support@openair.example\" class=\"underline\">support@openair.example</a>." },
+  "faq_r2_q": { ja: "商品に不具合があった場合は？", en: "What if my product is defective?", es: "¿Y si el producto está defectuoso?", pt: "E se o produto vier com defeito?" },
   "faq_r2_a": { ja: "商品の欠陥、配送間違いなど当社の手違いによる場合は、当社負担で交換・返金いたします。商品到着後 14 日以内にご連絡ください。",
-                es: "Los productos están cubiertos por la garantía legal de conformidad de 3 años (art. 115 ss. LGDCU). Si detectas un defecto o un envío erróneo, contacta con nosotros y te enviaremos un sustituto o procederemos al reembolso, sin coste para ti." },
-  "faq_r3_q": { ja: "開封済みでも返品できますか？", es: "¿Puedo devolver un producto abierto?" },
+                en: "Our products are covered by the manufacturer warranty against defects. If you receive a defective item or the wrong product, contact us within 14 days of delivery and we'll send a replacement or issue a refund at no cost to you.",
+                es: "Los productos están cubiertos por la garantía legal de conformidad de 3 años (art. 115 ss. LGDCU). Si detectas un defecto o un envío erróneo, contacta con nosotros y te enviaremos un sustituto o procederemos al reembolso, sin coste para ti.",
+                pt: "O produto é coberto pela garantia legal contra vícios prevista no art. 18 do CDC (90 dias para produtos não duráveis a partir do recebimento). Se houver defeito ou envio incorreto, fale com a gente e enviaremos uma substituição ou faremos o reembolso, sem custo para você." },
+  "faq_r3_q": { ja: "開封済みでも返品できますか？", en: "Can I return an opened product?", es: "¿Puedo devolver un producto abierto?", pt: "Posso devolver um produto aberto?" },
   "faq_r3_a": { ja: "衛生上の理由から、開封済み商品の返品はお受けできません。ただし、明らかな不具合がある場合はこの限りではありません。",
-                es: "Por motivos de higiene, los productos abiertos no admiten devolución (art. 103.e LGDCU), salvo que presenten un defecto manifiesto." },
-  "faq_r4_q": { ja: "返金にはどのくらいかかりますか？", es: "¿En cuánto tiempo recibo el reembolso?" },
+                en: "For hygiene reasons, opened products cannot be returned, except in cases of a clear defect.",
+                es: "Por motivos de higiene, los productos abiertos no admiten devolución (art. 103.e LGDCU), salvo que presenten un defecto manifiesto.",
+                pt: "Por motivos de higiene, produtos abertos não podem ser devolvidos, exceto em casos de defeito evidente." },
+  "faq_r4_q": { ja: "返金にはどのくらいかかりますか？", en: "How long do refunds take?", es: "¿En cuánto tiempo recibo el reembolso?", pt: "Em quanto tempo recebo o reembolso?" },
   "faq_r4_a": { ja: "返品商品到着後、5 営業日以内に返金処理を行います。クレジットカードの場合、ご利用明細への反映は カード会社により 1〜2 ヶ月程度かかる場合があります。",
-                es: "Procesamos el reembolso en un máximo de 14 días naturales desde que recibimos la devolución o la prueba de envío, mediante el mismo método de pago utilizado en la compra. La aparición en tu cuenta puede tardar unos días adicionales según tu banco." },
+                en: "We process refunds within 5 business days of receiving your return, using the same payment method as the original purchase. The credit may take 1–2 billing cycles to appear on your card statement.",
+                es: "Procesamos el reembolso en un máximo de 14 días naturales desde que recibimos la devolución o la prueba de envío, mediante el mismo método de pago utilizado en la compra. La aparición en tu cuenta puede tardar unos días adicionales según tu banco.",
+                pt: "Processamos o reembolso em até 5 dias úteis após o recebimento da devolução, no mesmo meio de pagamento usado na compra. O crédito pode levar 1 a 2 faturas para aparecer no extrato do cartão." },
 
   // Contact form
-  "contact_eyebrow":   { ja: "Contact", es: "Contacto" },
-  "contact_title":     { ja: "お問い合わせ", es: "Escríbenos" },
-  "contact_lede":      { ja: "通常 1〜2 営業日以内にご返信します。", es: "Respondemos en 1–2 días hábiles." },
-  "contact_intro_es":  { ja: "", es: 'Cuéntanos en qué podemos ayudarte. Tus datos serán tratados conforme a nuestra <a href="./privacy.html" class="underline">Política de Privacidad</a>, exclusivamente para gestionar tu solicitud.' },
+  "contact_eyebrow":   { ja: "Contact", en: "Contact", es: "Contacto", pt: "Contato" },
+  "contact_title":     { ja: "お問い合わせ", en: "Contact us", es: "Escríbenos", pt: "Fale com a gente" },
+  "contact_lede":      { ja: "通常 1〜2 営業日以内にご返信します。", en: "We reply within 1–2 business days.", es: "Respondemos en 1–2 días hábiles.", pt: "Respondemos em 1 a 2 dias úteis." },
+  "contact_intro_es":  { ja: "",
+                          en: "",
+                          es: 'Cuéntanos en qué podemos ayudarte. Tus datos serán tratados conforme a nuestra <a href="./privacy.html" class="underline">Política de Privacidad</a>, exclusivamente para gestionar tu solicitud.',
+                          pt: "" },
 
-  "form_name":      { ja: "お名前", es: "Nombre" },
-  "form_email":     { ja: "メールアドレス", es: "Correo electrónico" },
-  "form_topic":     { ja: "お問い合わせ種別", es: "Tipo de consulta" },
-  "opt_choose":     { ja: "選択してください", es: "Selecciona una opción" },
-  "opt_product":    { ja: "製品について", es: "Producto" },
-  "opt_order":      { ja: "注文・配送について", es: "Pedidos y envío" },
-  "opt_return":     { ja: "返品・返金について", es: "Devoluciones y reembolsos" },
-  "opt_defect":     { ja: "不具合のご報告", es: "Reportar un defecto" },
-  "opt_b2b":        { ja: "取引・卸について", es: "Mayoristas y B2B" },
-  "opt_other":      { ja: "その他", es: "Otros" },
-  "form_order":     { ja: "注文番号（任意）", es: "Número de pedido (opcional)" },
-  "form_message":   { ja: "お問い合わせ内容", es: "Mensaje" },
+  "form_name":      { ja: "お名前",            en: "Name",          es: "Nombre",                  pt: "Nome" },
+  "form_email":     { ja: "メールアドレス",     en: "Email",         es: "Correo electrónico",      pt: "E-mail" },
+  "form_topic":     { ja: "お問い合わせ種別", en: "Topic",         es: "Tipo de consulta",        pt: "Tipo de solicitação" },
+  "opt_choose":     { ja: "選択してください", en: "Select an option", es: "Selecciona una opción", pt: "Selecione uma opção" },
+  "opt_product":    { ja: "製品について",      en: "Product",       es: "Producto",                pt: "Produto" },
+  "opt_order":      { ja: "注文・配送について", en: "Orders & shipping", es: "Pedidos y envío",   pt: "Pedidos e envio" },
+  "opt_return":     { ja: "返品・返金について", en: "Returns & refunds", es: "Devoluciones y reembolsos", pt: "Devoluções e reembolsos" },
+  "opt_defect":     { ja: "不具合のご報告",   en: "Report a defect", es: "Reportar un defecto",   pt: "Relatar um defeito" },
+  "opt_b2b":        { ja: "取引・卸について", en: "Wholesale & B2B", es: "Mayoristas y B2B",      pt: "Atacado e B2B" },
+  "opt_other":      { ja: "その他",            en: "Other",         es: "Otros",                   pt: "Outros" },
+  "form_order":     { ja: "注文番号（任意）", en: "Order number (optional)", es: "Número de pedido (opcional)", pt: "Número do pedido (opcional)" },
+  "form_message":   { ja: "お問い合わせ内容", en: "Message",       es: "Mensaje",                 pt: "Mensagem" },
 
   "form_consent":         { ja: '<a href="./privacy.html" class="underline">プライバシーポリシー</a>に同意します',
-                            es: 'He leído y acepto la <a href="./privacy.html" class="underline">Política de Privacidad</a>' },
+                            en: 'I agree to the <a href="./privacy.html" class="underline">Privacy Policy</a>',
+                            es: 'He leído y acepto la <a href="./privacy.html" class="underline">Política de Privacidad</a>',
+                            pt: 'Li e concordo com a <a href="./privacy.html" class="underline">Política de Privacidade</a>' },
   "form_gdpr_notice":     { ja: "",
-                            es: '<strong>Información básica sobre protección de datos:</strong> el responsable del tratamiento es OPEN AIR, Inc. La finalidad es atender tu consulta. La base legal es tu consentimiento. No cedemos tus datos a terceros salvo obligación legal. Puedes ejercer tus derechos de acceso, rectificación, supresión, oposición, limitación y portabilidad escribiendo a <a href="mailto:dpo@openair.example" class="underline">dpo@openair.example</a>. Más información en nuestra <a href="./privacy.html" class="underline">Política de Privacidad</a>.' },
+                            en: '<strong>Information about your privacy:</strong> we use the details you share only to respond to your request. For more on how we handle your data, see our <a href="./privacy.html" class="underline">Privacy Policy</a>. Questions? Write to <a href="mailto:dpo@openair.example" class="underline">dpo@openair.example</a>.',
+                            es: '<strong>Información básica sobre protección de datos:</strong> el responsable del tratamiento es OPEN AIR, Inc. La finalidad es atender tu consulta. La base legal es tu consentimiento. No cedemos tus datos a terceros salvo obligación legal. Puedes ejercer tus derechos de acceso, rectificación, supresión, oposición, limitación y portabilidad escribiendo a <a href="mailto:dpo@openair.example" class="underline">dpo@openair.example</a>. Más información en nuestra <a href="./privacy.html" class="underline">Política de Privacidad</a>.',
+                            pt: '<strong>Informação sobre proteção de dados:</strong> o controlador é a OPEN AIR, Inc. Tratamos seus dados apenas para responder à sua solicitação, com base no seu consentimento, conforme a LGPD (Lei 13.709/2018). Você pode exercer seus direitos de acesso, correção, exclusão, portabilidade e revogação do consentimento escrevendo para <a href="mailto:dpo@openair.example" class="underline">dpo@openair.example</a>. Mais detalhes na nossa <a href="./privacy.html" class="underline">Política de Privacidade</a>.' },
 
-  "form_submit":        { ja: "送信する", es: "Enviar" },
-  "form_submit_done":   { ja: "送信完了", es: "Enviado" },
-  "form_success_title": { ja: "送信しました", es: "Mensaje enviado" },
+  "form_submit":        { ja: "送信する", en: "Send",        es: "Enviar",       pt: "Enviar" },
+  "form_submit_done":   { ja: "送信完了", en: "Sent",        es: "Enviado",      pt: "Enviado" },
+  "form_success_title": { ja: "送信しました", en: "Message sent", es: "Mensaje enviado", pt: "Mensagem enviada" },
   "form_success_body":  { ja: "通常 1〜2 営業日以内にご返信します。確認用メールを送信しました。",
-                          es: "Responderemos en 1–2 días hábiles. Hemos enviado un correo de confirmación a tu dirección." },
+                          en: "We'll reply within 1–2 business days. A confirmation email is on its way.",
+                          es: "Responderemos en 1–2 días hábiles. Hemos enviado un correo de confirmación a tu dirección.",
+                          pt: "Vamos responder em 1 a 2 dias úteis. Um e-mail de confirmação foi enviado para você." },
 
   // Form placeholders
-  "form_name_ph":    { ja: "山田 太郎", es: "Tu nombre" },
-  "form_message_ph": { ja: "ご質問・ご要望をご記入ください。", es: "Cuéntanos tu consulta o sugerencia." },
+  "form_name_ph":    { ja: "山田 太郎", en: "Your name", es: "Tu nombre", pt: "Seu nome" },
+  "form_message_ph": { ja: "ご質問・ご要望をご記入ください。",
+                        en: "Tell us how we can help.",
+                        es: "Cuéntanos tu consulta o sugerencia.",
+                        pt: "Conte como podemos ajudar." },
 
   // Contact info
-  "info_email_label": { ja: "Email", es: "Email" },
-  "info_email_sub":   { ja: "24時間受付", es: "Disponible 24/7" },
-  "info_hours_label": { ja: "Hours", es: "Horario" },
-  "info_hours_value": { ja: "平日 10:00 – 18:00", es: "Lun–Vie · 9:00 – 18:00 (CET)" },
-  "info_hours_sub":   { ja: "土日祝・年末年始を除く", es: "Excepto festivos" },
-  "info_addr_label":  { ja: "Address", es: "Dirección" },
-  "info_addr_value":  { ja: "東京都千代田区", es: "Tokio, Japón" },
-  "info_data_link":   { ja: "", es: "Cómo tratamos tus datos &rarr; Política de Privacidad" },
+  "info_email_label": { ja: "Email", en: "Email", es: "Email", pt: "E-mail" },
+  "info_email_sub":   { ja: "24時間受付", en: "Available 24/7", es: "Disponible 24/7", pt: "Disponível 24/7" },
+  "info_hours_label": { ja: "Hours", en: "Hours", es: "Horario", pt: "Horário" },
+  "info_hours_value": { ja: "平日 10:00 – 18:00",
+                         en: "Mon–Fri · 9:00 – 18:00 (PT)",
+                         es: "Lun–Vie · 9:00 – 18:00 (CET)",
+                         pt: "Seg–Sex · 9:00 – 18:00 (BRT)" },
+  "info_hours_sub":   { ja: "土日祝・年末年始を除く", en: "Excluding holidays", es: "Excepto festivos", pt: "Exceto feriados" },
+  "info_addr_label":  { ja: "Address", en: "Address", es: "Dirección", pt: "Endereço" },
+  "info_addr_value":  { ja: "東京都千代田区", en: "Tokyo, Japan", es: "Tokio, Japón", pt: "Tóquio, Japão" },
+  "info_data_link":   { ja: "",
+                         en: "How we handle your data &rarr; Privacy Policy",
+                         es: "Cómo tratamos tus datos &rarr; Política de Privacidad",
+                         pt: "Como tratamos seus dados &rarr; Política de Privacidade" },
 
   // Footer
-  "footer_privacy": { ja: "プライバシー", es: "Privacidad" },
-  "footer_terms":   { ja: "利用規約",     es: "Términos" },
-  "footer_support": { ja: "サポート",     es: "Soporte" }
+  "footer_privacy": { ja: "プライバシー", en: "Privacy", es: "Privacidad", pt: "Privacidade" },
+  "footer_terms":   { ja: "利用規約",     en: "Terms",   es: "Términos",   pt: "Termos" },
+  "footer_support": { ja: "サポート",     en: "Support", es: "Soporte",    pt: "Suporte" }
 };
 
 const I18N_KEY = 'openair_lang';
+const SUPPORTED_LANGS = ['ja','en','es','pt'];
+const LANG_LABEL = { ja: '日本語', en: 'English', es: 'Español', pt: 'Português' };
 function getLang(){
-  // 1) URL ?lang=xx override (e.g. share a forced-language link)
   try {
     const u = new URLSearchParams(location.search).get('lang');
-    if (u === 'ja' || u === 'es') { localStorage.setItem(I18N_KEY, u); return u; }
+    if (SUPPORTED_LANGS.includes(u)) { localStorage.setItem(I18N_KEY, u); return u; }
   } catch(e){}
-  // 2) Saved manual preference
   const saved = localStorage.getItem(I18N_KEY);
-  if (saved === 'ja' || saved === 'es') return saved;
-  // 3) Browser language detection — check the full navigator.languages array
+  if (SUPPORTED_LANGS.includes(saved)) return saved;
   const langs = (navigator.languages && navigator.languages.length)
     ? navigator.languages
     : [navigator.language || navigator.userLanguage || ''];
   for (const l of langs){
     const lc = (l || '').toLowerCase();
-    if (lc.startsWith('es')) return 'es';
     if (lc.startsWith('ja')) return 'ja';
+    if (lc.startsWith('pt')) return 'pt';
+    if (lc.startsWith('es')) return 'es';
+    if (lc.startsWith('en')) return 'en';
   }
   return 'ja';
 }
 function applyLang(lang){
+  if (!SUPPORTED_LANGS.includes(lang)) lang = 'ja';
   document.documentElement.lang = lang;
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
     const t = translations[key];
     if (!t) return;
-    const text = (lang === 'es' && t.es) ? t.es : t.ja;
+    const text = (t[lang] != null) ? t[lang] : t.ja;
     if (text) el.innerHTML = text;
   });
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
     const key = el.getAttribute('data-i18n-placeholder');
     const t = translations[key];
     if (!t) return;
-    const text = (lang === 'es' && t.es) ? t.es : t.ja;
+    const text = (t[lang] != null) ? t[lang] : t.ja;
     if (text) el.setAttribute('placeholder', text);
   });
-  document.querySelectorAll('[data-jp-only]').forEach(el => { el.style.display = lang === 'es' ? 'none' : ''; });
-  document.querySelectorAll('[data-es-only]').forEach(el => { el.style.display = lang === 'es' ? '' : 'none'; });
+  document.querySelectorAll('[data-jp-only]').forEach(el => { el.style.display = (lang === 'ja') ? '' : 'none'; });
+  // data-es-only on this page = "data-handling notices and privacy links".
+  // Show for ES, EN, PT (any market with privacy notice translations). Hide only for JA.
+  document.querySelectorAll('[data-es-only]').forEach(el => {
+    el.style.display = (lang === 'ja') ? 'none' : '';
+  });
   const titleEntry = translations['page_title'];
-  if (titleEntry) document.title = (lang === 'es' && titleEntry.es) ? titleEntry.es : titleEntry.ja;
+  if (titleEntry) document.title = (titleEntry[lang] != null) ? titleEntry[lang] : titleEntry.ja;
   const langLabel = document.getElementById('lang-current');
-  if (langLabel) langLabel.textContent = lang === 'es' ? 'Español' : '日本語';
+  if (langLabel) langLabel.textContent = LANG_LABEL[lang] || '日本語';
 }
-function setLang(lang){ localStorage.setItem(I18N_KEY, lang); applyLang(lang); }
+function setLang(lang){
+  if (!SUPPORTED_LANGS.includes(lang)) lang = 'ja';
+  localStorage.setItem(I18N_KEY, lang);
+  applyLang(lang);
+}
 function t(key){
   const lang = getLang();
   const e = translations[key];
   if (!e) return key;
-  return (lang === 'es' && e.es) ? e.es : e.ja;
+  return (e[lang] != null) ? e[lang] : e.ja;
 }
 applyLang(getLang());
-document.getElementById('lang-switcher')?.addEventListener('click', (e) => {
-  e.preventDefault();
-  setLang(getLang() === 'ja' ? 'es' : 'ja');
-});
 
 // Contact form (mock submit)
 document.getElementById('contact-form').addEventListener('submit', (e) => {
@@ -596,7 +650,7 @@ document.getElementById('contact-form').addEventListener('submit', (e) => {
   document.getElementById('success').scrollIntoView({behavior:'smooth', block:'center'});
 });
 
-// Region modal logic
+// Region / language modal logic (4 languages, flat)
 (function(){
   const modal = document.getElementById('region-modal');
   const switcher = document.getElementById('lang-switcher');
@@ -605,28 +659,24 @@ document.getElementById('contact-form').addEventListener('submit', (e) => {
   const newSwitcher = switcher.cloneNode(true);
   switcher.parentNode.replaceChild(newSwitcher, switcher);
 
+  const MODAL_TEXT = {
+    ja: { title: '配送地域を選択',         sub: 'ご利用の地域に合わせて、言語と通貨が切り替わります。', close: '閉じる' },
+    en: { title: 'Choose your region',     sub: 'Language and currency adapt to your region.',           close: 'Close' },
+    es: { title: 'Selecciona tu región',   sub: 'El idioma y la moneda se ajustan a tu región.',         close: 'Cerrar' },
+    pt: { title: 'Escolha sua região',     sub: 'O idioma e a moeda se ajustam à sua região.',           close: 'Fechar' }
+  };
+
   function openModal(){
     modal.classList.remove('hidden');
     updateChecks();
     const lang = getLang();
+    const t = MODAL_TEXT[lang] || MODAL_TEXT.ja;
     const title = modal.querySelector('#region-modal-title');
     const sub = modal.querySelector('#region-modal-sub');
     const close = modal.querySelector('#region-close');
-    const brSub = modal.querySelector('#region-br-sub');
-    const usSub = modal.querySelector('#region-us-sub');
-    if (lang === 'es') {
-      if (title) title.textContent = 'Selecciona tu región';
-      if (sub) sub.textContent = 'El idioma y la moneda se ajustan a tu región.';
-      if (close) close.textContent = 'Cerrar';
-      if (brSub) brSub.textContent = 'Estamos trabajando para que pronto puedas comprarlo aquí.';
-      if (usSub) usSub.textContent = 'Estamos trabajando para que pronto puedas comprarlo aquí.';
-    } else {
-      if (title) title.textContent = '配送地域を選択';
-      if (sub) sub.textContent = 'ご利用の地域に合わせて、言語と通貨が切り替わります。';
-      if (close) close.textContent = '閉じる';
-      if (brSub) brSub.textContent = 'ご購入できるよう、準備を進めています。';
-      if (usSub) usSub.textContent = 'ご購入できるよう、準備を進めています。';
-    }
+    if (title) title.textContent = t.title;
+    if (sub) sub.textContent = t.sub;
+    if (close) close.textContent = t.close;
   }
   function closeModal(){ modal.classList.add('hidden'); }
   function updateChecks(){
@@ -634,48 +684,8 @@ document.getElementById('contact-form').addEventListener('submit', (e) => {
     modal.querySelectorAll('.region-option').forEach(btn => {
       const check = btn.querySelector('.region-check');
       if (!check) return;
-      const region = btn.dataset.region;
-      if ((region === 'ja' && lang === 'ja') || (region === 'es' && lang === 'es')) {
-        check.classList.remove('hidden');
-      } else {
-        check.classList.add('hidden');
-      }
+      check.classList.toggle('hidden', btn.dataset.region !== lang);
     });
-  }
-  function showSoonToast(region){
-    const lang = getLang();
-    const msg = lang === 'es'
-      ? 'Estamos trabajando para que pronto puedas comprarlo aquí.'
-      : 'ご購入できるよう、準備を進めています。';
-    let toast = document.getElementById('region-toast');
-    if (!toast){
-      toast = document.createElement('div');
-      toast.id = 'region-toast';
-      toast.setAttribute('role','status');
-      toast.setAttribute('aria-live','polite');
-      document.body.appendChild(toast);
-    }
-    toast.style.cssText = `
-      position:fixed; bottom:24px; left:50%;
-      transform:translateX(-50%) translateY(20px);
-      background:rgba(10,10,10,.92); color:#fff;
-      padding:14px 22px; border-radius:999px;
-      font-size:14px; max-width:90vw;
-      z-index:200; opacity:0;
-      transition:opacity .25s, transform .25s;
-      box-shadow:0 10px 40px rgba(0,0,0,.25);
-      backdrop-filter:blur(10px);
-    `;
-    toast.textContent = msg;
-    requestAnimationFrame(()=>{
-      toast.style.opacity = '1';
-      toast.style.transform = 'translateX(-50%) translateY(0)';
-    });
-    clearTimeout(window.__regionToastT);
-    window.__regionToastT = setTimeout(()=>{
-      toast.style.opacity = '0';
-      toast.style.transform = 'translateX(-50%) translateY(20px)';
-    }, 3200);
   }
 
   newSwitcher.addEventListener('click', (e) => { e.preventDefault(); openModal(); });
@@ -686,10 +696,9 @@ document.getElementById('contact-form').addEventListener('submit', (e) => {
   modal.querySelectorAll('.region-option').forEach(btn => {
     btn.addEventListener('click', () => {
       const region = btn.dataset.region;
-      if (region === 'ja') { setLang('ja'); closeModal(); }
-      else if (region === 'es') { setLang('es'); closeModal(); }
-      else if (region === 'br' || region === 'us') {
-        showSoonToast(region);
+      if (SUPPORTED_LANGS.includes(region)) {
+        setLang(region);
+        closeModal();
       }
     });
   });

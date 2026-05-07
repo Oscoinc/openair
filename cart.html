@@ -158,7 +158,7 @@
           <dt data-i18n="sum_shipping">送料</dt>
           <dd class="text-emerald-700 font-medium" data-i18n="sum_free">無料</dd>
         </div>
-        <div class="flex justify-between text-zinc-600">
+        <div class="flex justify-between text-zinc-600" id="sum-tax-row">
           <dt data-i18n="sum_tax_label">消費税（込）</dt>
           <dd id="sum-tax">¥0</dd>
         </div>
@@ -223,6 +223,16 @@
         </button>
       </li>
       <li>
+        <button data-region="en" class="region-option w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
+          <span class="text-2xl">🇺🇸</span>
+          <div class="flex-1">
+            <div class="text-[14px] font-medium text-zinc-900">United States</div>
+            <div class="text-[11px] text-zinc-500">English · USA shipping · $</div>
+          </div>
+          <span class="region-check text-zinc-900 hidden text-[18px]">✓</span>
+        </button>
+      </li>
+      <li>
         <button data-region="es" class="region-option w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
           <span class="text-2xl">🇪🇸</span>
           <div class="flex-1">
@@ -233,23 +243,13 @@
         </button>
       </li>
       <li>
-        <button data-region="br" class="region-option region-soon w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
-          <span class="text-2xl opacity-70">🇧🇷</span>
+        <button data-region="pt" class="region-option w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
+          <span class="text-2xl">🇧🇷</span>
           <div class="flex-1">
             <div class="text-[14px] font-medium text-zinc-900">Brasil</div>
-            <div class="text-[11px] text-zinc-500" id="region-br-sub">ご購入できるよう、準備を進めています</div>
+            <div class="text-[11px] text-zinc-500">Português · Envio Brasil · R$</div>
           </div>
-          <span class="text-[10px] tracking-[0.18em] uppercase text-zinc-500 px-2.5 py-1 rounded-full border border-zinc-200" id="region-br-badge">Soon</span>
-        </button>
-      </li>
-      <li>
-        <button data-region="us" class="region-option region-soon w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
-          <span class="text-2xl opacity-70">🇺🇸</span>
-          <div class="flex-1">
-            <div class="text-[14px] font-medium text-zinc-900">United States</div>
-            <div class="text-[11px] text-zinc-500" id="region-us-sub">ご購入できるよう、準備を進めています</div>
-          </div>
-          <span class="text-[10px] tracking-[0.18em] uppercase text-zinc-500 px-2.5 py-1 rounded-full border border-zinc-200" id="region-us-badge">Soon</span>
+          <span class="region-check text-zinc-900 hidden text-[18px]">✓</span>
         </button>
       </li>
     </ul>
@@ -261,69 +261,70 @@
 // ============== i18n ==============
 const translations = {
   // Nav
-  "nav_concept":  { ja: "コンセプト", es: "Concepto" },
-  "nav_features": { ja: "特徴",       es: "Características" },
-  "nav_scenes":   { ja: "シーン",     es: "Escenas" },
-  "nav_buy":      { ja: "購入",       es: "Comprar" },
-  "nav_cart":     { ja: "カート",     es: "Carrito" },
+  "nav_concept":  { ja: "コンセプト", en: "Concept",  es: "Concepto",         pt: "Conceito" },
+  "nav_features": { ja: "特徴",       en: "Features", es: "Características",  pt: "Recursos" },
+  "nav_scenes":   { ja: "シーン",     en: "Moments",  es: "Escenas",          pt: "Momentos" },
+  "nav_buy":      { ja: "購入",       en: "Buy",      es: "Comprar",          pt: "Comprar" },
+  "nav_cart":     { ja: "カート",     en: "Bag",      es: "Carrito",          pt: "Sacola" },
 
   // Header
-  "cart_h1":              { ja: "カート", es: "Tu carrito" },
-  "cart_count_loading":   { ja: "商品を確認しています…", es: "Revisando tus productos…" },
-  "cart_count_items":     { ja: "{n} 点の商品", es: "{n} producto(s)" },
-  "cart_count_empty":     { ja: "商品はまだ追加されていません。", es: "Aún no has agregado productos." },
+  "cart_h1":              { ja: "カート",                          en: "Your bag",                  es: "Tu carrito",                       pt: "Sua sacola" },
+  "cart_count_loading":   { ja: "商品を確認しています…",            en: "Reviewing your items…",      es: "Revisando tus productos…",         pt: "Conferindo seus produtos…" },
+  "cart_count_items":     { ja: "{n} 点の商品",                     en: "{n} item(s)",                es: "{n} producto(s)",                  pt: "{n} produto(s)" },
+  "cart_count_empty":     { ja: "商品はまだ追加されていません。",    en: "Nothing in your bag yet.",    es: "Aún no has agregado productos.",   pt: "Você ainda não adicionou produtos." },
 
   // Empty state
-  "cart_empty_h2":  { ja: "カートは空です", es: "Tu carrito está vacío" },
-  "cart_empty_sub": { ja: "気になる商品をカートに追加してください。", es: "Agrega lo que te interese a tu carrito." },
-  "cart_empty_btn": { ja: "商品を見る", es: "Ver productos" },
+  "cart_empty_h2":  { ja: "カートは空です",                       en: "Your bag is empty",           es: "Tu carrito está vacío",            pt: "Sua sacola está vazia" },
+  "cart_empty_sub": { ja: "気になる商品をカートに追加してください。", en: "Add anything you'd like to your bag.", es: "Agrega lo que te interese a tu carrito.", pt: "Adicione o que você quiser à sua sacola." },
+  "cart_empty_btn": { ja: "商品を見る",                          en: "View products",                es: "Ver productos",                    pt: "Ver produtos" },
 
   // Order summary
-  "sum_subtotal":  { ja: "小計", es: "Subtotal" },
-  "sum_shipping":  { ja: "送料", es: "Envío" },
-  "sum_free":      { ja: "無料", es: "Gratis" },
-  "sum_tax_label": { ja: "消費税（込）", es: "Impuestos (incl.)" },
-  "sum_total":     { ja: "合計", es: "Total" },
+  "sum_subtotal":  { ja: "小計",         en: "Subtotal",            es: "Subtotal",          pt: "Subtotal" },
+  "sum_shipping":  { ja: "送料",         en: "Shipping",            es: "Envío",             pt: "Frete" },
+  "sum_free":      { ja: "無料",         en: "Free",                es: "Gratis",            pt: "Grátis" },
+  "sum_tax_label": { ja: "消費税（込）", en: "Tax (incl.)",         es: "Impuestos (incl.)", pt: "Impostos (inc.)" },
+  "sum_total":     { ja: "合計",         en: "Total",               es: "Total",             pt: "Total" },
 
   // CTA / perks
-  "cart_checkout_btn":  { ja: "購入手続きへ", es: "Finalizar compra" },
-  "cart_continue":      { ja: "買い物を続ける", es: "Seguir comprando" },
-  "cart_perk_return":   { ja: "30 日返品保証", es: "30 días de garantía" },
-  "cart_perk_shipping": { ja: "送料無料（全国一律）", es: "Envío gratis a todo el país" },
-  "cart_perk_clean":    { ja: "個包装で清潔", es: "Empaque individual e higiénico" },
+  "cart_checkout_btn":  { ja: "購入手続きへ",          en: "Check out",                          es: "Finalizar compra",              pt: "Finalizar compra" },
+  "cart_continue":      { ja: "買い物を続ける",        en: "Continue shopping",                  es: "Seguir comprando",              pt: "Continuar comprando" },
+  "cart_perk_return":   { ja: "30 日返品保証",          en: "30-day returns",                     es: "30 días de garantía",           pt: "30 dias para devolução" },
+  "cart_perk_shipping": { ja: "送料無料（全国一律）",   en: "Free shipping (everywhere in USA)",  es: "Envío gratis a todo el país",   pt: "Frete grátis para todo o Brasil" },
+  "cart_perk_clean":    { ja: "個包装で清潔",          en: "Individually wrapped",               es: "Empaque individual e higiénico", pt: "Embalagem individual e higiênica" },
 
   // Recommend
-  "cart_recommend_h2":  { ja: "あわせて検討", es: "También para ti" },
+  "cart_recommend_h2":  { ja: "あわせて検討", en: "You might also like", es: "También para ti", pt: "Talvez você também queira" },
 
   // Item card / dynamic
-  "item_brand":  { ja: "OPEN AIR Nasal Strip", es: "OPEN AIR Nasal Strip" },
-  "item_remove": { ja: "削除", es: "Eliminar" },
-  "item_add":    { ja: "カートに追加", es: "Agregar al carrito" },
+  "item_brand":  { ja: "OPEN AIR Nasal Strip", en: "OPEN AIR Nasal Strip", es: "OPEN AIR Nasal Strip", pt: "OPEN AIR Nasal Strip" },
+  "item_remove": { ja: "削除",          en: "Remove",         es: "Eliminar",            pt: "Remover" },
+  "item_add":    { ja: "カートに追加",  en: "Add to bag",     es: "Agregar al carrito",  pt: "Adicionar à sacola" },
 
   // Footer
-  "footer_privacy": { ja: "プライバシー", es: "Privacidad" },
-  "footer_terms":   { ja: "利用規約",     es: "Términos" },
-  "footer_support": { ja: "サポート",     es: "Soporte" }
+  "footer_privacy": { ja: "プライバシー", en: "Privacy", es: "Privacidad", pt: "Privacidade" },
+  "footer_terms":   { ja: "利用規約",     en: "Terms",   es: "Términos",   pt: "Termos" },
+  "footer_support": { ja: "サポート",     en: "Support", es: "Soporte",    pt: "Suporte" }
 };
 
 const I18N_KEY = 'openair_lang';
+const SUPPORTED_LANGS = ['ja','en','es','pt'];
+const LANG_LABEL = { ja: '日本語', en: 'English', es: 'Español', pt: 'Português' };
 function getLang(){
-  // 1) URL ?lang=xx override (e.g. share a forced-language link)
   try {
     const u = new URLSearchParams(location.search).get('lang');
-    if (u === 'ja' || u === 'es') { localStorage.setItem(I18N_KEY, u); return u; }
+    if (SUPPORTED_LANGS.includes(u)) { localStorage.setItem(I18N_KEY, u); return u; }
   } catch(e){}
-  // 2) Saved manual preference
   const saved = localStorage.getItem(I18N_KEY);
-  if (saved === 'ja' || saved === 'es') return saved;
-  // 3) Browser language detection — check the full navigator.languages array
+  if (SUPPORTED_LANGS.includes(saved)) return saved;
   const langs = (navigator.languages && navigator.languages.length)
     ? navigator.languages
     : [navigator.language || navigator.userLanguage || ''];
   for (const l of langs){
     const lc = (l || '').toLowerCase();
-    if (lc.startsWith('es')) return 'es';
     if (lc.startsWith('ja')) return 'ja';
+    if (lc.startsWith('pt')) return 'pt';
+    if (lc.startsWith('es')) return 'es';
+    if (lc.startsWith('en')) return 'en';
   }
   return 'ja';
 }
@@ -334,6 +335,7 @@ function t(key){
   return entry[lang] || entry.ja || key;
 }
 function applyLang(lang){
+  if (!SUPPORTED_LANGS.includes(lang)) lang = 'ja';
   document.documentElement.lang = lang;
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
@@ -342,22 +344,31 @@ function applyLang(lang){
     el.innerHTML = entry[lang] || entry.ja;
   });
   const langLabel = document.getElementById('lang-current');
-  if (langLabel) langLabel.textContent = lang === 'es' ? 'Español' : '日本語';
-  const langOther = document.getElementById('lang-other');
-  if (langOther) langOther.textContent = lang === 'es' ? '日本語' : 'Español';
-  // Re-render dynamic content so translated strings appear
+  if (langLabel) langLabel.textContent = LANG_LABEL[lang] || '日本語';
   if (typeof render === 'function') render();
 }
 function setLang(lang){
+  if (!SUPPORTED_LANGS.includes(lang)) lang = 'ja';
   localStorage.setItem(I18N_KEY, lang);
   applyLang(lang);
 }
 
 // ============== Shared cart logic ==============
 const PRODUCTS = {
-  single: { id:'single', name:'Single',  desc:{ ja:'30 枚 · 1ヶ月分',  es:'30 unidades · 1 mes' },  price:{ja:1980, es:15}, image:'./assets/part_package.png?v=7' },
-  three:  { id:'three',  name:'Three',   desc:{ ja:'90 枚 · 3ヶ月分',  es:'90 unidades · 3 meses' },  price:{ja:4980, es:39}, image:'./assets/part_package.png?v=7', discount:{ja:'¥1,000 OFF', es:'€6 OFF'} },
-  six:    { id:'six',    name:'Six',     desc:{ ja:'180 枚 · 6ヶ月分', es:'180 unidades · 6 meses' }, price:{ja:8980, es:69}, image:'./assets/part_package.png?v=7', discount:{ja:'¥2,900 OFF', es:'€21 OFF'} }
+  single: { id:'single', name:'Single',
+    desc:{ ja:'30 枚 · 1ヶ月分',  en:'30 strips · 1 month',  es:'30 unidades · 1 mes',    pt:'30 unidades · 1 mês' },
+    price:{ ja:1980, en:13, es:15, pt:65 },
+    image:'./assets/part_package.png?v=7' },
+  three:  { id:'three',  name:'Three',
+    desc:{ ja:'90 枚 · 3ヶ月分',  en:'90 strips · 3 months', es:'90 unidades · 3 meses',  pt:'90 unidades · 3 meses' },
+    price:{ ja:4980, en:33, es:39, pt:165 },
+    image:'./assets/part_package.png?v=7',
+    discount:{ ja:'¥1,000 OFF', en:'$6 OFF', es:'€6 OFF', pt:'R$ 30 OFF' } },
+  six:    { id:'six',    name:'Six',
+    desc:{ ja:'180 枚 · 6ヶ月分', en:'180 strips · 6 months', es:'180 unidades · 6 meses', pt:'180 unidades · 6 meses' },
+    price:{ ja:8980, en:59, es:69, pt:295 },
+    image:'./assets/part_package.png?v=7',
+    discount:{ ja:'¥2,900 OFF', en:'$19 OFF', es:'€21 OFF', pt:'R$ 95 OFF' } }
 };
 const STORAGE_KEY = 'openair_cart';
 function readCart(){
@@ -374,10 +385,19 @@ function setQty(id, q){
 function inc(id){ const c = readCart(); setQty(id, (c[id]||0) + 1); }
 function dec(id){ const c = readCart(); setQty(id, (c[id]||0) - 1); }
 function fmtYen(n){ return '¥' + n.toLocaleString('ja-JP'); }
-function fmtEur(n){ return '€' + n.toLocaleString('es-ES'); }
+function fmtEur(n){ return '€' + Number(n).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+function fmtUsd(n){ return '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+function fmtBrl(n){ return 'R$ ' + Number(n).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
 function getPrice(p, lang){ return (typeof p.price === 'object') ? (p.price[lang] || p.price.ja) : p.price; }
 function getDiscount(p, lang){ return p.discount ? ((typeof p.discount === 'object') ? (p.discount[lang] || p.discount.ja) : p.discount) : null; }
-function fmtPrice(n, lang){ return lang === 'es' ? fmtEur(n) : fmtYen(n); }
+function fmtPrice(n, lang){
+  if (lang === 'en') return fmtUsd(n);
+  if (lang === 'es') return fmtEur(n);
+  if (lang === 'pt') return fmtBrl(n);
+  return fmtYen(n);
+}
+// Tax-inclusive rates by region: JA 10% / EN 0% (sales tax not embedded) / ES 21% IVA / PT (Brazil) included via price
+const TAX_RATE_INCLUSIVE = { ja: 1.10, en: 1.00, es: 1.21, pt: 1.00 };
 
 // ============== Render ==============
 function render(){
@@ -429,12 +449,23 @@ function render(){
     }).join('');
     document.getElementById('cart-items').innerHTML = itemsHtml;
 
-    // Sums — tax handling (10% Japan / 21% IVA Spain)
+    // Sums — tax-inclusive rates by region (10% JA, 0% EN, 21% ES, 0% PT)
     const subtotal = ids.reduce((s,id)=>s + getPrice(PRODUCTS[id], lang) * cart[id], 0);
-    const taxRate = lang === 'es' ? 1.21 : 1.10;
-    const tax = Math.round((subtotal - subtotal / taxRate) * 100) / 100;
-    document.getElementById('sum-subtotal').textContent = fmtPrice(Math.round((subtotal - tax) * 100) / 100, lang);
-    document.getElementById('sum-tax').textContent = fmtPrice(tax, lang);
+    const taxRate = TAX_RATE_INCLUSIVE[lang] || 1.0;
+    const round2 = (n) => Math.round(n * 100) / 100;
+    const tax = round2(subtotal - subtotal / taxRate);
+    const taxRow = document.getElementById('sum-tax-row');
+    if (tax > 0) {
+      if (taxRow) taxRow.style.display = '';
+      document.getElementById('sum-subtotal').textContent = fmtPrice(round2(subtotal - tax), lang);
+      document.getElementById('sum-tax').textContent = fmtPrice(tax, lang);
+    } else {
+      // No tax breakdown: hide the tax row and show full subtotal
+      if (taxRow) taxRow.style.display = 'none';
+      document.getElementById('sum-subtotal').textContent = fmtPrice(subtotal, lang);
+      const sumTax = document.getElementById('sum-tax');
+      if (sumTax) sumTax.textContent = '';
+    }
     document.getElementById('sum-total').textContent = fmtPrice(subtotal, lang);
   }
 
@@ -490,13 +521,8 @@ window.addEventListener('focus', updateBadge);
 
 // ============== i18n init ==============
 applyLang(getLang());
-document.getElementById('lang-switcher')?.addEventListener('click', (e) => {
-  e.preventDefault();
-  const cur = getLang();
-  setLang(cur === 'ja' ? 'es' : 'ja');
-});
 
-// Region modal logic
+// Region / language modal logic (4 languages, flat)
 (function(){
   const modal = document.getElementById('region-modal');
   const switcher = document.getElementById('lang-switcher');
@@ -505,28 +531,24 @@ document.getElementById('lang-switcher')?.addEventListener('click', (e) => {
   const newSwitcher = switcher.cloneNode(true);
   switcher.parentNode.replaceChild(newSwitcher, switcher);
 
+  const MODAL_TEXT = {
+    ja: { title: '配送地域を選択', sub: 'ご利用の地域に合わせて、言語と通貨が切り替わります。', close: '閉じる' },
+    en: { title: 'Choose your region',     sub: 'Language and currency adapt to your region.',           close: 'Close' },
+    es: { title: 'Selecciona tu región',   sub: 'El idioma y la moneda se ajustan a tu región.',         close: 'Cerrar' },
+    pt: { title: 'Escolha sua região',     sub: 'O idioma e a moeda se ajustam à sua região.',           close: 'Fechar' }
+  };
+
   function openModal(){
     modal.classList.remove('hidden');
     updateChecks();
     const lang = getLang();
+    const t = MODAL_TEXT[lang] || MODAL_TEXT.ja;
     const title = modal.querySelector('#region-modal-title');
     const sub = modal.querySelector('#region-modal-sub');
     const close = modal.querySelector('#region-close');
-    const brSub = modal.querySelector('#region-br-sub');
-    const usSub = modal.querySelector('#region-us-sub');
-    if (lang === 'es') {
-      if (title) title.textContent = 'Selecciona tu región';
-      if (sub) sub.textContent = 'El idioma y la moneda se ajustan a tu región.';
-      if (close) close.textContent = 'Cerrar';
-      if (brSub) brSub.textContent = 'Estamos trabajando para que pronto puedas comprarlo aquí.';
-      if (usSub) usSub.textContent = 'Estamos trabajando para que pronto puedas comprarlo aquí.';
-    } else {
-      if (title) title.textContent = '配送地域を選択';
-      if (sub) sub.textContent = 'ご利用の地域に合わせて、言語と通貨が切り替わります。';
-      if (close) close.textContent = '閉じる';
-      if (brSub) brSub.textContent = 'ご購入できるよう、準備を進めています。';
-      if (usSub) usSub.textContent = 'ご購入できるよう、準備を進めています。';
-    }
+    if (title) title.textContent = t.title;
+    if (sub) sub.textContent = t.sub;
+    if (close) close.textContent = t.close;
   }
   function closeModal(){ modal.classList.add('hidden'); }
   function updateChecks(){
@@ -534,48 +556,8 @@ document.getElementById('lang-switcher')?.addEventListener('click', (e) => {
     modal.querySelectorAll('.region-option').forEach(btn => {
       const check = btn.querySelector('.region-check');
       if (!check) return;
-      const region = btn.dataset.region;
-      if ((region === 'ja' && lang === 'ja') || (region === 'es' && lang === 'es')) {
-        check.classList.remove('hidden');
-      } else {
-        check.classList.add('hidden');
-      }
+      check.classList.toggle('hidden', btn.dataset.region !== lang);
     });
-  }
-  function showSoonToast(region){
-    const lang = getLang();
-    const msg = lang === 'es'
-      ? 'Estamos trabajando para que pronto puedas comprarlo aquí.'
-      : 'ご購入できるよう、準備を進めています。';
-    let toast = document.getElementById('region-toast');
-    if (!toast){
-      toast = document.createElement('div');
-      toast.id = 'region-toast';
-      toast.setAttribute('role','status');
-      toast.setAttribute('aria-live','polite');
-      document.body.appendChild(toast);
-    }
-    toast.style.cssText = `
-      position:fixed; bottom:24px; left:50%;
-      transform:translateX(-50%) translateY(20px);
-      background:rgba(10,10,10,.92); color:#fff;
-      padding:14px 22px; border-radius:999px;
-      font-size:14px; max-width:90vw;
-      z-index:200; opacity:0;
-      transition:opacity .25s, transform .25s;
-      box-shadow:0 10px 40px rgba(0,0,0,.25);
-      backdrop-filter:blur(10px);
-    `;
-    toast.textContent = msg;
-    requestAnimationFrame(()=>{
-      toast.style.opacity = '1';
-      toast.style.transform = 'translateX(-50%) translateY(0)';
-    });
-    clearTimeout(window.__regionToastT);
-    window.__regionToastT = setTimeout(()=>{
-      toast.style.opacity = '0';
-      toast.style.transform = 'translateX(-50%) translateY(20px)';
-    }, 3200);
   }
 
   newSwitcher.addEventListener('click', (e) => { e.preventDefault(); openModal(); });
@@ -586,10 +568,9 @@ document.getElementById('lang-switcher')?.addEventListener('click', (e) => {
   modal.querySelectorAll('.region-option').forEach(btn => {
     btn.addEventListener('click', () => {
       const region = btn.dataset.region;
-      if (region === 'ja') { setLang('ja'); closeModal(); }
-      else if (region === 'es') { setLang('es'); closeModal(); }
-      else if (region === 'br' || region === 'us') {
-        showSoonToast(region);
+      if (SUPPORTED_LANGS.includes(region)) {
+        setLang(region);
+        closeModal();
       }
     });
   });

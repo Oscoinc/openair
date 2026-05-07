@@ -311,7 +311,7 @@
           <dt data-i18n="sum_shipping">送料</dt>
           <dd class="text-emerald-700 font-medium" data-i18n="sum_free">無料</dd>
         </div>
-        <div class="flex justify-between text-zinc-600">
+        <div class="flex justify-between text-zinc-600" id="sum-tax-row">
           <dt data-i18n="sum_tax_label">消費税（込）</dt>
           <dd id="sum-tax">¥0</dd>
         </div>
@@ -369,6 +369,16 @@
         </button>
       </li>
       <li>
+        <button data-region="en" class="region-option w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
+          <span class="text-2xl">🇺🇸</span>
+          <div class="flex-1">
+            <div class="text-[14px] font-medium text-zinc-900">United States</div>
+            <div class="text-[11px] text-zinc-500">English · USA shipping · $</div>
+          </div>
+          <span class="region-check text-zinc-900 hidden text-[18px]">✓</span>
+        </button>
+      </li>
+      <li>
         <button data-region="es" class="region-option w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
           <span class="text-2xl">🇪🇸</span>
           <div class="flex-1">
@@ -379,23 +389,13 @@
         </button>
       </li>
       <li>
-        <button data-region="br" class="region-option region-soon w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
-          <span class="text-2xl opacity-70">🇧🇷</span>
+        <button data-region="pt" class="region-option w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
+          <span class="text-2xl">🇧🇷</span>
           <div class="flex-1">
             <div class="text-[14px] font-medium text-zinc-900">Brasil</div>
-            <div class="text-[11px] text-zinc-500" id="region-br-sub">ご購入できるよう、準備を進めています</div>
+            <div class="text-[11px] text-zinc-500">Português · Envio Brasil · R$</div>
           </div>
-          <span class="text-[10px] tracking-[0.18em] uppercase text-zinc-500 px-2.5 py-1 rounded-full border border-zinc-200" id="region-br-badge">Soon</span>
-        </button>
-      </li>
-      <li>
-        <button data-region="us" class="region-option region-soon w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
-          <span class="text-2xl opacity-70">🇺🇸</span>
-          <div class="flex-1">
-            <div class="text-[14px] font-medium text-zinc-900">United States</div>
-            <div class="text-[11px] text-zinc-500" id="region-us-sub">ご購入できるよう、準備を進めています</div>
-          </div>
-          <span class="text-[10px] tracking-[0.18em] uppercase text-zinc-500 px-2.5 py-1 rounded-full border border-zinc-200" id="region-us-badge">Soon</span>
+          <span class="region-check text-zinc-900 hidden text-[18px]">✓</span>
         </button>
       </li>
     </ul>
@@ -407,92 +407,95 @@
 // ============== i18n ==============
 const translations = {
   // Nav
-  "nav_concept":  { ja: "コンセプト", es: "Concepto" },
-  "nav_features": { ja: "特徴",       es: "Características" },
-  "nav_scenes":   { ja: "シーン",     es: "Escenas" },
-  "nav_buy":      { ja: "購入",       es: "Comprar" },
-  "nav_cart":     { ja: "カート",     es: "Carrito" },
+  "nav_concept":  { ja: "コンセプト", en: "Concept",  es: "Concepto",         pt: "Conceito" },
+  "nav_features": { ja: "特徴",       en: "Features", es: "Características",  pt: "Recursos" },
+  "nav_scenes":   { ja: "シーン",     en: "Moments",  es: "Escenas",          pt: "Momentos" },
+  "nav_buy":      { ja: "購入",       en: "Buy",      es: "Comprar",          pt: "Comprar" },
+  "nav_cart":     { ja: "カート",     en: "Bag",      es: "Carrito",          pt: "Sacola" },
 
   // Header / steps
-  "co_h1":     { ja: "購入手続き", es: "Finalizar compra" },
-  "co_step1":  { ja: "カート", es: "Carrito" },
-  "co_step2":  { ja: "お届け先 / 支払い", es: "Envío / Pago" },
-  "co_step3":  { ja: "完了", es: "Listo" },
+  "co_h1":     { ja: "購入手続き",          en: "Check out",                es: "Finalizar compra",   pt: "Finalizar compra" },
+  "co_step1":  { ja: "カート",              en: "Bag",                       es: "Carrito",            pt: "Sacola" },
+  "co_step2":  { ja: "お届け先 / 支払い",    en: "Shipping / Payment",       es: "Envío / Pago",       pt: "Envio / Pagamento" },
+  "co_step3":  { ja: "完了",                en: "Done",                      es: "Listo",              pt: "Concluído" },
 
   // Empty
-  "co_empty_h2":  { ja: "カートが空です", es: "Tu carrito está vacío" },
-  "co_empty_sub": { ja: "先に商品をカートに追加してください。", es: "Primero agrega productos a tu carrito." },
-  "co_empty_btn": { ja: "商品を見る", es: "Ver productos" },
+  "co_empty_h2":  { ja: "カートが空です",                  en: "Your bag is empty",                       es: "Tu carrito está vacío",                pt: "Sua sacola está vazia" },
+  "co_empty_sub": { ja: "先に商品をカートに追加してください。", en: "Please add products to your bag first.",  es: "Primero agrega productos a tu carrito.", pt: "Adicione produtos à sua sacola primeiro." },
+  "co_empty_btn": { ja: "商品を見る",                     en: "View products",                            es: "Ver productos",                        pt: "Ver produtos" },
 
   // Contact
-  "co_contact_h2": { ja: "連絡先", es: "Datos de contacto" },
-  "co_email":      { ja: "メールアドレス", es: "Correo electrónico" },
-  "co_news_optin": { ja: "新商品やお得な情報を受け取る（任意）", es: "Recibe novedades y ofertas (opcional)" },
+  "co_contact_h2": { ja: "連絡先",                              en: "Contact",                          es: "Datos de contacto",                pt: "Contato" },
+  "co_email":      { ja: "メールアドレス",                       en: "Email address",                    es: "Correo electrónico",               pt: "E-mail" },
+  "co_news_optin": { ja: "新商品やお得な情報を受け取る（任意）",   en: "Receive news and offers (optional)", es: "Recibe novedades y ofertas (opcional)", pt: "Receba novidades e ofertas (opcional)" },
 
   // Shipping
-  "co_ship_h2":         { ja: "お届け先", es: "Dirección de envío" },
-  "co_last_name":       { ja: "姓", es: "Apellido" },
-  "co_first_name":      { ja: "名", es: "Nombre" },
-  "co_country":         { ja: "国", es: "País" },
-  "co_zip":             { ja: "郵便番号", es: "Código postal" },
-  "co_pref":            { ja: "都道府県", es: "Provincia" },
-  "co_pref_placeholder":{ ja: "選択してください", es: "Selecciona una opción" },
-  "co_addr1":           { ja: "市区町村・番地", es: "Ciudad y dirección" },
-  "co_addr2":           { ja: "建物名・部屋番号（任意）", es: "Edificio o departamento (opcional)" },
-  "co_phone":           { ja: "電話番号", es: "Teléfono" },
+  "co_ship_h2":         { ja: "お届け先",                  en: "Shipping address",          es: "Dirección de envío",        pt: "Endereço de entrega" },
+  "co_last_name":       { ja: "姓",                       en: "Last name",                  es: "Apellido",                   pt: "Sobrenome" },
+  "co_first_name":      { ja: "名",                       en: "First name",                 es: "Nombre",                     pt: "Nome" },
+  "co_country":         { ja: "国",                       en: "Country",                    es: "País",                       pt: "País" },
+  "co_zip":             { ja: "郵便番号",                  en: "ZIP code",                   es: "Código postal",              pt: "CEP" },
+  "co_pref":            { ja: "都道府県",                  en: "State",                      es: "Provincia",                  pt: "Estado" },
+  "co_pref_placeholder":{ ja: "選択してください",           en: "Select an option",           es: "Selecciona una opción",      pt: "Selecione uma opção" },
+  "co_addr1":           { ja: "市区町村・番地",             en: "City and street address",    es: "Ciudad y dirección",         pt: "Cidade e endereço" },
+  "co_addr2":           { ja: "建物名・部屋番号（任意）",    en: "Apartment, suite, etc. (optional)", es: "Edificio o departamento (opcional)", pt: "Complemento (opcional)" },
+  "co_phone":           { ja: "電話番号",                  en: "Phone",                       es: "Teléfono",                   pt: "Telefone" },
 
   // Payment
-  "co_pay_h2":          { ja: "お支払い方法", es: "Método de pago" },
-  "co_pay_card":        { ja: "クレジットカード", es: "Tarjeta de crédito" },
-  "co_pay_apple_sub":   { ja: "ワンタッチで決済", es: "Paga con un toque" },
-  "co_pay_conv_badge":  { ja: "コンビニ", es: "Tienda" },
-  "co_pay_conv":        { ja: "コンビニ払い", es: "Pago en tienda" },
-  "co_pay_paypay_sub":  { ja: "残高 / 後払い", es: "Saldo / pago después" },
-  "co_card_number":     { ja: "カード番号", es: "Número de tarjeta" },
-  "co_card_exp":        { ja: "有効期限 (MM/YY)", es: "Vencimiento (MM/AA)" },
-  "co_card_cvc":        { ja: "セキュリティコード", es: "Código de seguridad" },
-  "co_card_name":       { ja: "カード名義", es: "Nombre del titular" },
+  "co_pay_h2":          { ja: "お支払い方法",     en: "Payment method",      es: "Método de pago",       pt: "Método de pagamento" },
+  "co_pay_card":        { ja: "クレジットカード", en: "Credit card",         es: "Tarjeta de crédito",   pt: "Cartão de crédito" },
+  "co_pay_apple_sub":   { ja: "ワンタッチで決済", en: "Pay with one touch",  es: "Paga con un toque",    pt: "Pague com um toque" },
+  "co_pay_conv_badge":  { ja: "コンビニ",         en: "Store",               es: "Tienda",               pt: "Loja" },
+  "co_pay_conv":        { ja: "コンビニ払い",     en: "Pay in store",        es: "Pago en tienda",       pt: "Pagar na loja" },
+  "co_pay_paypay_sub":  { ja: "残高 / 後払い",    en: "Wallet / pay later",  es: "Saldo / pago después", pt: "Saldo / pagar depois" },
+  "co_card_number":     { ja: "カード番号",         en: "Card number",            es: "Número de tarjeta",     pt: "Número do cartão" },
+  "co_card_exp":        { ja: "有効期限 (MM/YY)",   en: "Expiry (MM/YY)",         es: "Vencimiento (MM/AA)",   pt: "Validade (MM/AA)" },
+  "co_card_cvc":        { ja: "セキュリティコード", en: "Security code",          es: "Código de seguridad",   pt: "Código de segurança" },
+  "co_card_name":       { ja: "カード名義",         en: "Cardholder name",        es: "Nombre del titular",    pt: "Nome no cartão" },
 
   // Summary
-  "sum_subtotal":   { ja: "小計", es: "Subtotal" },
-  "sum_shipping":   { ja: "送料", es: "Envío" },
-  "sum_free":       { ja: "無料", es: "Gratis" },
-  "sum_tax_label":  { ja: "消費税（込）", es: "Impuestos (incl.)" },
-  "sum_total":      { ja: "合計", es: "Total" },
+  "sum_subtotal":   { ja: "小計",         en: "Subtotal",       es: "Subtotal",          pt: "Subtotal" },
+  "sum_shipping":   { ja: "送料",         en: "Shipping",       es: "Envío",             pt: "Frete" },
+  "sum_free":       { ja: "無料",         en: "Free",           es: "Gratis",            pt: "Grátis" },
+  "sum_tax_label":  { ja: "消費税（込）", en: "Tax (incl.)",    es: "Impuestos (incl.)", pt: "Impostos (inc.)" },
+  "sum_total":      { ja: "合計",         en: "Total",          es: "Total",             pt: "Total" },
 
   // Summary item dynamic
-  "co_item_brand_prefix": { ja: "OPEN AIR", es: "OPEN AIR" },
+  "co_item_brand_prefix": { ja: "OPEN AIR", en: "OPEN AIR", es: "OPEN AIR", pt: "OPEN AIR" },
 
   // CTA
-  "co_place_order": { ja: "注文を確定する", es: "Confirmar pedido" },
-  "co_back_cart":   { ja: "カートに戻る", es: "Volver al carrito" },
+  "co_place_order": { ja: "注文を確定する",  en: "Place order",       es: "Confirmar pedido",  pt: "Confirmar pedido" },
+  "co_back_cart":   { ja: "カートに戻る",   en: "Back to bag",        es: "Volver al carrito", pt: "Voltar à sacola" },
   "co_consent":     { ja: '※ ご注文を確定すると、<a href="#" class="underline">利用規約</a>と<a href="#" class="underline">プライバシーポリシー</a>に同意したものとみなします。',
-                     es: '* Al confirmar tu pedido, aceptas los <a href="#" class="underline">Términos</a> y la <a href="#" class="underline">Política de privacidad</a>.' },
+                     en: '* By placing your order you agree to our <a href="#" class="underline">Terms</a> and <a href="#" class="underline">Privacy Policy</a>.',
+                     es: '* Al confirmar tu pedido, aceptas los <a href="#" class="underline">Términos</a> y la <a href="#" class="underline">Política de privacidad</a>.',
+                     pt: '* Ao confirmar seu pedido, você concorda com os <a href="#" class="underline">Termos</a> e a <a href="#" class="underline">Política de privacidade</a>.' },
 
   // Footer
-  "footer_privacy": { ja: "プライバシー", es: "Privacidad" },
-  "footer_terms":   { ja: "利用規約",     es: "Términos" },
-  "footer_support": { ja: "サポート",     es: "Soporte" }
+  "footer_privacy": { ja: "プライバシー", en: "Privacy", es: "Privacidad", pt: "Privacidade" },
+  "footer_terms":   { ja: "利用規約",     en: "Terms",   es: "Términos",   pt: "Termos" },
+  "footer_support": { ja: "サポート",     en: "Support", es: "Soporte",    pt: "Suporte" }
 };
 
 const I18N_KEY = 'openair_lang';
+const SUPPORTED_LANGS = ['ja','en','es','pt'];
+const LANG_LABEL = { ja: '日本語', en: 'English', es: 'Español', pt: 'Português' };
 function getLang(){
-  // 1) URL ?lang=xx override (e.g. share a forced-language link)
   try {
     const u = new URLSearchParams(location.search).get('lang');
-    if (u === 'ja' || u === 'es') { localStorage.setItem(I18N_KEY, u); return u; }
+    if (SUPPORTED_LANGS.includes(u)) { localStorage.setItem(I18N_KEY, u); return u; }
   } catch(e){}
-  // 2) Saved manual preference
   const saved = localStorage.getItem(I18N_KEY);
-  if (saved === 'ja' || saved === 'es') return saved;
-  // 3) Browser language detection — check the full navigator.languages array
+  if (SUPPORTED_LANGS.includes(saved)) return saved;
   const langs = (navigator.languages && navigator.languages.length)
     ? navigator.languages
     : [navigator.language || navigator.userLanguage || ''];
   for (const l of langs){
     const lc = (l || '').toLowerCase();
-    if (lc.startsWith('es')) return 'es';
     if (lc.startsWith('ja')) return 'ja';
+    if (lc.startsWith('pt')) return 'pt';
+    if (lc.startsWith('es')) return 'es';
+    if (lc.startsWith('en')) return 'en';
   }
   return 'ja';
 }
@@ -503,6 +506,7 @@ function t(key){
   return entry[lang] || entry.ja || key;
 }
 function applyLang(lang){
+  if (!SUPPORTED_LANGS.includes(lang)) lang = 'ja';
   document.documentElement.lang = lang;
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
@@ -511,15 +515,16 @@ function applyLang(lang){
     el.innerHTML = entry[lang] || entry.ja;
   });
   const langLabel = document.getElementById('lang-current');
-  if (langLabel) langLabel.textContent = lang === 'es' ? 'Español' : '日本語';
-  const langOther = document.getElementById('lang-other');
-  if (langOther) langOther.textContent = lang === 'es' ? '日本語' : 'Español';
+  if (langLabel) langLabel.textContent = LANG_LABEL[lang] || '日本語';
 
-  // Address form: swap fields & placeholders for EU vs JP
-  const isES = lang === 'es';
-  const ph = isES
-    ? { lastName:'García', firstName:'María', zip:'28001', addr1:'Calle Mayor 12, Madrid', addr2:'Edificio OPEN AIR, 1A', phone:'+34 612 34 56 78' }
-    : { lastName:'山田', firstName:'太郎', zip:'100-0001', addr1:'千代田区千代田 1-1', addr2:'OPEN AIRビル 101', phone:'090-1234-5678' };
+  // Address form: per-region placeholders & country selector behavior
+  const PH = {
+    ja: { lastName:'山田',     firstName:'太郎',   zip:'100-0001',  addr1:'千代田区千代田 1-1',  addr2:'OPEN AIRビル 101',     phone:'090-1234-5678' },
+    en: { lastName:'Smith',     firstName:'Alex',   zip:'10001',     addr1:'350 5th Ave',          addr2:'Suite 1801',           phone:'(212) 555-1234' },
+    es: { lastName:'García',    firstName:'María',  zip:'28001',     addr1:'Calle Mayor 12, Madrid', addr2:'Edificio OPEN AIR, 1A', phone:'+34 612 34 56 78' },
+    pt: { lastName:'Silva',     firstName:'Ana',    zip:'01310-100', addr1:'Av. Paulista 1234, São Paulo', addr2:'Apto 502, Bloco B', phone:'(11) 91234-5678' }
+  };
+  const ph = PH[lang] || PH.ja;
   const setPh = (id, val) => { const el = document.getElementById(id); if (el) el.placeholder = val; };
   setPh('ship-lastname', ph.lastName);
   setPh('ship-firstname', ph.firstName);
@@ -527,16 +532,17 @@ function applyLang(lang){
   setPh('ship-addr1', ph.addr1);
   setPh('ship-addr2', ph.addr2);
   setPh('ship-phone', ph.phone);
-  // Hide JP-only payment options when in Spanish mode (and revert selection if needed)
+
+  // JP-only payment options (convenience-store / PayPay) — only show in JP
+  const isJP = lang === 'ja';
   document.querySelectorAll('[data-jp-only]').forEach(el => {
-    el.style.display = isES ? 'none' : '';
-    if (isES) {
+    el.style.display = isJP ? '' : 'none';
+    if (!isJP) {
       const radio = el.querySelector('input[type="radio"]');
       if (radio && radio.checked) {
         const cardRadio = document.querySelector('input[name="payment"][value="card"]');
         if (cardRadio) {
           cardRadio.checked = true;
-          // Show card fields again (in case they were hidden by another payment selection)
           const cardFields = document.getElementById('card-fields');
           if (cardFields) cardFields.style.display = '';
         }
@@ -544,40 +550,59 @@ function applyLang(lang){
     }
   });
 
-  // Toggle country selector & prefecture/province fields
+  // Country selector visibility: shown for EU (es) only. EN uses US states inline, PT uses BR states.
+  // For non-JP, prefecture <select> hidden, province text input visible (with locale-appropriate placeholder).
   const countryWrap = document.getElementById('ship-country-wrap');
   const prefSel = document.getElementById('ship-prefecture');
   const provInput = document.getElementById('ship-province');
   const countrySel = document.getElementById('ship-country');
   if (countryWrap && prefSel && provInput) {
-    if (isES) {
-      countryWrap.classList.remove('hidden');
-      prefSel.classList.add('hidden');
-      prefSel.required = false;
-      provInput.classList.remove('hidden');
-      provInput.required = true;
-      if (countrySel) countrySel.required = true;
-    } else {
+    if (isJP) {
       countryWrap.classList.add('hidden');
       prefSel.classList.remove('hidden');
       prefSel.required = true;
       provInput.classList.add('hidden');
       provInput.required = false;
       if (countrySel) countrySel.required = false;
+    } else {
+      // Show country selector for ES (EU). Hide for EN/PT (single country).
+      if (lang === 'es') {
+        countryWrap.classList.remove('hidden');
+        if (countrySel) countrySel.required = true;
+      } else {
+        countryWrap.classList.add('hidden');
+        if (countrySel) countrySel.required = false;
+      }
+      prefSel.classList.add('hidden');
+      prefSel.required = false;
+      provInput.classList.remove('hidden');
+      provInput.required = true;
+      const provPh = lang === 'en' ? 'New York' : (lang === 'pt' ? 'São Paulo' : 'Madrid');
+      provInput.placeholder = provPh;
     }
   }
 
   if (typeof render === 'function') render();
 }
 function setLang(lang){
+  if (!SUPPORTED_LANGS.includes(lang)) lang = 'ja';
   localStorage.setItem(I18N_KEY, lang);
   applyLang(lang);
 }
 
 const PRODUCTS = {
-  single: { id:'single', name:'Single',  desc:{ ja:'30 枚 · 1ヶ月分',  es:'30 unidades · 1 mes' },  price:{ja:1980, es:15}, image:'./assets/part_package.png?v=7' },
-  three:  { id:'three',  name:'Three',   desc:{ ja:'90 枚 · 3ヶ月分',  es:'90 unidades · 3 meses' },  price:{ja:4980, es:39}, image:'./assets/part_package.png?v=7' },
-  six:    { id:'six',    name:'Six',     desc:{ ja:'180 枚 · 6ヶ月分', es:'180 unidades · 6 meses' }, price:{ja:8980, es:69}, image:'./assets/part_package.png?v=7' }
+  single: { id:'single', name:'Single',
+    desc:{ ja:'30 枚 · 1ヶ月分',  en:'30 strips · 1 month',  es:'30 unidades · 1 mes',    pt:'30 unidades · 1 mês' },
+    price:{ ja:1980, en:13, es:15, pt:65 },
+    image:'./assets/part_package.png?v=7' },
+  three:  { id:'three',  name:'Three',
+    desc:{ ja:'90 枚 · 3ヶ月分',  en:'90 strips · 3 months', es:'90 unidades · 3 meses',  pt:'90 unidades · 3 meses' },
+    price:{ ja:4980, en:33, es:39, pt:165 },
+    image:'./assets/part_package.png?v=7' },
+  six:    { id:'six',    name:'Six',
+    desc:{ ja:'180 枚 · 6ヶ月分', en:'180 strips · 6 months', es:'180 unidades · 6 meses', pt:'180 unidades · 6 meses' },
+    price:{ ja:8980, en:59, es:69, pt:295 },
+    image:'./assets/part_package.png?v=7' }
 };
 const STORAGE_KEY = 'openair_cart';
 function readCart(){
@@ -585,9 +610,17 @@ function readCart(){
   catch(e){ return {}; }
 }
 function fmtYen(n){ return '¥' + n.toLocaleString('ja-JP'); }
-function fmtEur(n){ return '€' + n.toLocaleString('es-ES'); }
+function fmtEur(n){ return '€' + Number(n).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+function fmtUsd(n){ return '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+function fmtBrl(n){ return 'R$ ' + Number(n).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
 function getPrice(p, lang){ return (typeof p.price === 'object') ? (p.price[lang] || p.price.ja) : p.price; }
-function fmtPrice(n, lang){ return lang === 'es' ? fmtEur(n) : fmtYen(n); }
+function fmtPrice(n, lang){
+  if (lang === 'en') return fmtUsd(n);
+  if (lang === 'es') return fmtEur(n);
+  if (lang === 'pt') return fmtBrl(n);
+  return fmtYen(n);
+}
+const TAX_RATE_INCLUSIVE = { ja: 1.10, en: 1.00, es: 1.21, pt: 1.00 };
 
 function render(){
   const cart = readCart();
@@ -625,10 +658,18 @@ function render(){
   }).join('');
 
   const subtotal = ids.reduce((s,id)=>s + getPrice(PRODUCTS[id], lang) * cart[id], 0);
-  const taxRate = lang === 'es' ? 1.21 : 1.10;
-  const tax = Math.round((subtotal - subtotal / taxRate) * 100) / 100;
-  document.getElementById('sum-subtotal').textContent = fmtPrice(Math.round((subtotal - tax) * 100) / 100, lang);
-  document.getElementById('sum-tax').textContent = fmtPrice(tax, lang);
+  const taxRate = TAX_RATE_INCLUSIVE[lang] || 1.0;
+  const round2 = (n) => Math.round(n * 100) / 100;
+  const tax = round2(subtotal - subtotal / taxRate);
+  const taxRow = document.getElementById('sum-tax-row');
+  if (tax > 0) {
+    if (taxRow) taxRow.style.display = '';
+    document.getElementById('sum-subtotal').textContent = fmtPrice(round2(subtotal - tax), lang);
+    document.getElementById('sum-tax').textContent = fmtPrice(tax, lang);
+  } else {
+    if (taxRow) taxRow.style.display = 'none';
+    document.getElementById('sum-subtotal').textContent = fmtPrice(subtotal, lang);
+  }
   document.getElementById('sum-total').textContent = fmtPrice(subtotal, lang);
 }
 
@@ -647,9 +688,8 @@ document.getElementById('checkout-form').addEventListener('submit', (e) => {
   if (ids.length === 0) return;
 
   const fd = new FormData(e.target);
-  // Compute totals in BOTH currencies so complete page can switch language freely
-  const subtotalJa = ids.reduce((s,id)=>s + (typeof PRODUCTS[id].price==='object' ? PRODUCTS[id].price.ja : PRODUCTS[id].price) * cart[id], 0);
-  const subtotalEs = ids.reduce((s,id)=>s + (typeof PRODUCTS[id].price==='object' ? PRODUCTS[id].price.es : PRODUCTS[id].price) * cart[id], 0);
+  // Compute totals in ALL supported currencies so complete page can switch language freely
+  const sumIn = (l) => ids.reduce((s,id)=>s + (typeof PRODUCTS[id].price==='object' ? (PRODUCTS[id].price[l] || PRODUCTS[id].price.ja) : PRODUCTS[id].price) * cart[id], 0);
   const order = {
     id: 'OA-' + Date.now().toString(36).toUpperCase().slice(-6),
     date: new Date().toISOString(),
@@ -659,7 +699,7 @@ document.getElementById('checkout-form').addEventListener('submit', (e) => {
     phone: fd.get('phone'),
     payment: fd.get('payment'),
     items: ids.map(id => ({ ...PRODUCTS[id], qty: cart[id] })),
-    total: { ja: subtotalJa, es: subtotalEs }
+    total: { ja: sumIn('ja'), en: sumIn('en'), es: sumIn('es'), pt: sumIn('pt') }
   };
   localStorage.setItem('openair_last_order', JSON.stringify(order));
   localStorage.removeItem(STORAGE_KEY); // empty cart
@@ -683,13 +723,8 @@ render();
 
 // ============== i18n init ==============
 applyLang(getLang());
-document.getElementById('lang-switcher')?.addEventListener('click', (e) => {
-  e.preventDefault();
-  const cur = getLang();
-  setLang(cur === 'ja' ? 'es' : 'ja');
-});
 
-// Region modal logic
+// Region / language modal logic (4 languages, flat)
 (function(){
   const modal = document.getElementById('region-modal');
   const switcher = document.getElementById('lang-switcher');
@@ -698,28 +733,24 @@ document.getElementById('lang-switcher')?.addEventListener('click', (e) => {
   const newSwitcher = switcher.cloneNode(true);
   switcher.parentNode.replaceChild(newSwitcher, switcher);
 
+  const MODAL_TEXT = {
+    ja: { title: '配送地域を選択',         sub: 'ご利用の地域に合わせて、言語と通貨が切り替わります。', close: '閉じる' },
+    en: { title: 'Choose your region',     sub: 'Language and currency adapt to your region.',           close: 'Close' },
+    es: { title: 'Selecciona tu región',   sub: 'El idioma y la moneda se ajustan a tu región.',         close: 'Cerrar' },
+    pt: { title: 'Escolha sua região',     sub: 'O idioma e a moeda se ajustam à sua região.',           close: 'Fechar' }
+  };
+
   function openModal(){
     modal.classList.remove('hidden');
     updateChecks();
     const lang = getLang();
+    const t = MODAL_TEXT[lang] || MODAL_TEXT.ja;
     const title = modal.querySelector('#region-modal-title');
     const sub = modal.querySelector('#region-modal-sub');
     const close = modal.querySelector('#region-close');
-    const brSub = modal.querySelector('#region-br-sub');
-    const usSub = modal.querySelector('#region-us-sub');
-    if (lang === 'es') {
-      if (title) title.textContent = 'Selecciona tu región';
-      if (sub) sub.textContent = 'El idioma y la moneda se ajustan a tu región.';
-      if (close) close.textContent = 'Cerrar';
-      if (brSub) brSub.textContent = 'Estamos trabajando para que pronto puedas comprarlo aquí.';
-      if (usSub) usSub.textContent = 'Estamos trabajando para que pronto puedas comprarlo aquí.';
-    } else {
-      if (title) title.textContent = '配送地域を選択';
-      if (sub) sub.textContent = 'ご利用の地域に合わせて、言語と通貨が切り替わります。';
-      if (close) close.textContent = '閉じる';
-      if (brSub) brSub.textContent = 'ご購入できるよう、準備を進めています。';
-      if (usSub) usSub.textContent = 'ご購入できるよう、準備を進めています。';
-    }
+    if (title) title.textContent = t.title;
+    if (sub) sub.textContent = t.sub;
+    if (close) close.textContent = t.close;
   }
   function closeModal(){ modal.classList.add('hidden'); }
   function updateChecks(){
@@ -727,48 +758,8 @@ document.getElementById('lang-switcher')?.addEventListener('click', (e) => {
     modal.querySelectorAll('.region-option').forEach(btn => {
       const check = btn.querySelector('.region-check');
       if (!check) return;
-      const region = btn.dataset.region;
-      if ((region === 'ja' && lang === 'ja') || (region === 'es' && lang === 'es')) {
-        check.classList.remove('hidden');
-      } else {
-        check.classList.add('hidden');
-      }
+      check.classList.toggle('hidden', btn.dataset.region !== lang);
     });
-  }
-  function showSoonToast(region){
-    const lang = getLang();
-    const msg = lang === 'es'
-      ? 'Estamos trabajando para que pronto puedas comprarlo aquí.'
-      : 'ご購入できるよう、準備を進めています。';
-    let toast = document.getElementById('region-toast');
-    if (!toast){
-      toast = document.createElement('div');
-      toast.id = 'region-toast';
-      toast.setAttribute('role','status');
-      toast.setAttribute('aria-live','polite');
-      document.body.appendChild(toast);
-    }
-    toast.style.cssText = `
-      position:fixed; bottom:24px; left:50%;
-      transform:translateX(-50%) translateY(20px);
-      background:rgba(10,10,10,.92); color:#fff;
-      padding:14px 22px; border-radius:999px;
-      font-size:14px; max-width:90vw;
-      z-index:200; opacity:0;
-      transition:opacity .25s, transform .25s;
-      box-shadow:0 10px 40px rgba(0,0,0,.25);
-      backdrop-filter:blur(10px);
-    `;
-    toast.textContent = msg;
-    requestAnimationFrame(()=>{
-      toast.style.opacity = '1';
-      toast.style.transform = 'translateX(-50%) translateY(0)';
-    });
-    clearTimeout(window.__regionToastT);
-    window.__regionToastT = setTimeout(()=>{
-      toast.style.opacity = '0';
-      toast.style.transform = 'translateX(-50%) translateY(20px)';
-    }, 3200);
   }
 
   newSwitcher.addEventListener('click', (e) => { e.preventDefault(); openModal(); });
@@ -779,10 +770,9 @@ document.getElementById('lang-switcher')?.addEventListener('click', (e) => {
   modal.querySelectorAll('.region-option').forEach(btn => {
     btn.addEventListener('click', () => {
       const region = btn.dataset.region;
-      if (region === 'ja') { setLang('ja'); closeModal(); }
-      else if (region === 'es') { setLang('es'); closeModal(); }
-      else if (region === 'br' || region === 'us') {
-        showSoonToast(region);
+      if (SUPPORTED_LANGS.includes(region)) {
+        setLang(region);
+        closeModal();
       }
     });
   });
