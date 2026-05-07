@@ -543,6 +543,25 @@
       white-space: nowrap;
       text-shadow: 0 1px 6px rgba(255,255,255,.7);
     }
+    /* Mobile Henkel pill: matches the desktop rounded-border pill — overrides the generic .info span styling */
+    .design-mobile-pill .info span.design-mobile-henkel{
+      display: inline-flex !important;
+      align-items: center;
+      margin-top: 6px;
+      padding: 3px 9px;
+      border: 1px solid rgba(63,63,70,.22);
+      border-radius: 999px;
+      font-size: 8.5px;
+      line-height: 1.3;
+      letter-spacing: 0.04em;
+      font-weight: 500;
+      color: rgba(63,63,70,.85);
+      background: rgba(255,255,255,.6);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      white-space: nowrap;
+      text-shadow: none;
+    }
     /* Stage size */
     #design-anim .design-pin .aspect-\[5\/4\]{
       max-height: 42vh !important;
@@ -824,6 +843,62 @@
   .card-plus.card-plus-sm svg{ width: 12px; height: 12px; stroke-width: 2.4; }
   /* Flip back face: show "×" by default (rotated 45deg) */
   .flip-back .card-plus{ transform: rotate(45deg); }
+
+  /* ===== SCENES desktop carousel (Apple-style horizontal slider, 3 visible) ===== */
+  .scenes-arrow{
+    display: none; /* hidden on mobile */
+  }
+  @media (min-width: 769px){
+    .scenes-h-scroll{
+      display: flex !important;
+      grid-template-columns: none !important;
+      overflow-x: auto;
+      overflow-y: visible;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      gap: 16px !important;
+      padding: 8px 4px 28px 4px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .scenes-h-scroll::-webkit-scrollbar{ display: none; }
+    .scenes-h-scroll > .scene-card{
+      flex: 0 0 calc((100% - 32px) / 3); /* exactly 3 cards visible (gap 16px × 2) */
+      scroll-snap-align: start;
+      min-width: 0;
+      width: auto !important;
+    }
+    .scenes-arrow{
+      display: grid;
+      place-items: center;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(0,0,0,.06);
+      box-shadow: 0 4px 16px rgba(0,0,0,.10), 0 1px 3px rgba(0,0,0,.06);
+      color: #0a0a0a;
+      cursor: pointer;
+      z-index: 5;
+      opacity: .85;
+      transition: opacity .25s ease, transform .25s ease, background .25s ease;
+    }
+    .scenes-arrow:hover{
+      opacity: 1;
+      background: #fff;
+      transform: translateY(-50%) scale(1.05);
+    }
+    .scenes-arrow:disabled{
+      opacity: 0;
+      pointer-events: none;
+    }
+    .scenes-arrow-prev{ left: -22px; }
+    .scenes-arrow-next{ right: -22px; }
+  }
 
   /* ===== Closing manifesto: giant number reveal ===== */
   .closing-bignum-wrap{
@@ -1268,9 +1343,30 @@
         <h2 class="text-4xl md:text-5xl font-semibold tracking-tight text-gradient leading-[1.15]" data-i18n="scenes_h2">「寝るためだけ」の<br/>ものではない。</h2>
         <p class="mt-6 text-zinc-500 max-w-xl mx-auto leading-relaxed" data-i18n="scenes_sub">あなたの 1 日を通して、使えます。</p>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 reveal mobile-h-scroll" data-reveal>
+      <div class="scenes-carousel-wrap relative">
+        <!-- Prev button (desktop only) -->
+        <button id="scenes-prev" type="button" class="scenes-arrow scenes-arrow-prev" aria-label="前のシーン" tabindex="-1">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <!-- Next button (desktop only) -->
+        <button id="scenes-next" type="button" class="scenes-arrow scenes-arrow-next" aria-label="次のシーン" tabindex="-1">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 reveal mobile-h-scroll scenes-h-scroll" data-reveal>
 
-        <!-- SCENE 1 — トレーニング (assets/21.png) -->
+        <!-- SCENE 1 — 長距離移動／フライト -->
+        <div class="scene-card rounded-3xl aspect-[4/5]" role="button" tabindex="0" aria-pressed="false" aria-label="長距離移動・フライト中のシーン: タップで詳細を表示">
+          <img src="./assets/23.png?v=1" alt="" class="scene-img absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'">
+          <div class="scene-overlay"></div>
+          <div class="scene-content">
+            <div class="scene-eyebrow text-[11px] tracking-[0.28em] uppercase mb-2">Long flights</div>
+            <div class="scene-title text-2xl md:text-3xl font-semibold tracking-tight mb-2" data-i18n="scene6_title">長距離移動</div>
+            <p class="scene-desc text-[13px] leading-[1.85]" data-i18n="scene6_desc">乾燥した機内でも、<br/>自然な呼吸のまま。<br/>到着地で、整っている。</p>
+          </div>
+          <span class="card-plus" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+        </div>
+
+        <!-- SCENE 2 — トレーニング -->
         <div class="scene-card rounded-3xl aspect-[4/5]" role="button" tabindex="0" aria-pressed="false" aria-label="トレーニング中のシーン: タップで詳細を表示">
           <img src="./assets/21.png?v=7" alt="" class="scene-img absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'">
           <div class="scene-overlay"></div>
@@ -1282,7 +1378,19 @@
           <span class="card-plus" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
         </div>
 
-        <!-- SCENE 2 — デスクワーク (assets/22.png) -->
+        <!-- SCENE 3 — ランニング -->
+        <div class="scene-card rounded-3xl aspect-[4/5]" role="button" tabindex="0" aria-pressed="false" aria-label="ランニング中のシーン: タップで詳細を表示">
+          <img src="./assets/24.png?v=1" alt="" class="scene-img absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'">
+          <div class="scene-overlay"></div>
+          <div class="scene-content">
+            <div class="scene-eyebrow text-[11px] tracking-[0.28em] uppercase mb-2">Running</div>
+            <div class="scene-title text-2xl md:text-3xl font-semibold tracking-tight mb-2" data-i18n="scene5_title">ランニング</div>
+            <p class="scene-desc text-[13px] leading-[1.85]" data-i18n="scene5_desc">鼻で吸い、鼻で吐く。<br/>ペースが、<br/>ぶれない。</p>
+          </div>
+          <span class="card-plus" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+        </div>
+
+        <!-- SCENE 4 — デスクワーク -->
         <div class="scene-card rounded-3xl aspect-[4/5]" role="button" tabindex="0" aria-pressed="false" aria-label="デスクワーク中のシーン: タップで詳細を表示">
           <img src="./assets/22.png?v=7" alt="" class="scene-img absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'">
           <div class="scene-overlay"></div>
@@ -1294,7 +1402,19 @@
           <span class="card-plus" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
         </div>
 
-        <!-- SCENE 3 — 寝る前 (assets/20.png) -->
+        <!-- SCENE 5 — ヨガ・瞑想 -->
+        <div class="scene-card rounded-3xl aspect-[4/5]" role="button" tabindex="0" aria-pressed="false" aria-label="ヨガ・瞑想中のシーン: タップで詳細を表示">
+          <img src="./assets/25.png?v=1" alt="" class="scene-img absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'">
+          <div class="scene-overlay"></div>
+          <div class="scene-content">
+            <div class="scene-eyebrow text-[11px] tracking-[0.28em] uppercase mb-2">Yoga &amp; meditation</div>
+            <div class="scene-title text-2xl md:text-3xl font-semibold tracking-tight mb-2" data-i18n="scene4_title">ヨガ・瞑想</div>
+            <p class="scene-desc text-[13px] leading-[1.85]" data-i18n="scene4_desc">呼吸を、整える。<br/>意識の奥まで届く、<br/>静かな深さを。</p>
+          </div>
+          <span class="card-plus" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+        </div>
+
+        <!-- SCENE 6 — 寝る前 (must remain LAST: ties to the section's "not just for sleep" headline) -->
         <div class="scene-card rounded-3xl aspect-[4/5]" role="button" tabindex="0" aria-pressed="false" aria-label="寝る前のシーン: タップで詳細を表示">
           <img src="./assets/20.png?v=7" alt="" class="scene-img absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'">
           <div class="scene-overlay"></div>
@@ -1307,6 +1427,7 @@
         </div>
 
       </div>
+      </div><!-- /.scenes-carousel-wrap -->
     </div>
   </section>
 
@@ -1357,7 +1478,7 @@
                 <div class="info">
                   <strong>Medical-Grade Grip</strong>
                   <span data-i18n="design_feat3_desc">医療用テープを採用。肌にやさしく、しっかり固定。長時間でも、快適なつけ心地。</span>
-                  <span class="design-mobile-made-in" style="display:inline-block; margin-top:4px; font-size:8.5px; letter-spacing:0.16em; text-transform:uppercase; color:rgba(63,63,70,.7); font-weight:600;">Made in Germany</span>
+                  <span class="design-mobile-henkel">Adhesive by Henkel (Germany)</span>
                 </div>
               </div>
             </div>
@@ -2357,6 +2478,36 @@ function animateCounter(el, opts){
   requestAnimationFrame(step);
 }
 
+// ============== SCENES desktop carousel: arrow navigation + state ==============
+(function(){
+  const carousel = document.querySelector('#scenes .scenes-h-scroll');
+  const prev = document.getElementById('scenes-prev');
+  const next = document.getElementById('scenes-next');
+  if (!carousel || !prev || !next) return;
+  if (!window.matchMedia('(min-width: 769px)').matches){
+    // Mobile: hide arrows entirely (CSS already does this; just bail out)
+    return;
+  }
+  function step(){
+    // Scroll by one card width + gap
+    const card = carousel.querySelector('.scene-card');
+    if (!card) return 0;
+    const gap = parseFloat(getComputedStyle(carousel).gap) || 16;
+    return card.offsetWidth + gap;
+  }
+  function update(){
+    const max = carousel.scrollWidth - carousel.clientWidth - 1; // -1 for rounding
+    prev.disabled = carousel.scrollLeft <= 1;
+    next.disabled = carousel.scrollLeft >= max;
+  }
+  prev.addEventListener('click', () => { carousel.scrollBy({ left: -step(), behavior: 'smooth' }); });
+  next.addEventListener('click', () => { carousel.scrollBy({ left:  step(), behavior: 'smooth' }); });
+  carousel.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+  // Initial state
+  update();
+})();
+
 // ============== Closing big number: count up when in view ==============
 (function(){
   const el = document.getElementById('closing-bignum');
@@ -2607,6 +2758,15 @@ const translations = {
 
   "scene3_title": { ja: "デスクワーク", en: "At the desk",     es: "En el escritorio", pt: "No escritório" },
   "scene3_desc":  { ja: "気づかないうちの口呼吸を<br/>防ぎ、安定したコンディション<br/>をサポート。", en: "Stop unconscious<br/>mouth breathing.<br/>Stay in your flow.", es: "Evita la respiración<br/>por la boca, casi sin notarlo.<br/>Y mantén el ritmo.", pt: "Evite a respiração<br/>bucal sem perceber.<br/>Mantenha o ritmo." },
+
+  "scene4_title": { ja: "ヨガ・瞑想",   en: "Yoga & meditation", es: "Yoga y meditación", pt: "Yoga e meditação" },
+  "scene4_desc":  { ja: "呼吸を、整える。<br/>意識の奥まで届く、<br/>静かな深さを。", en: "Settle the breath.<br/>Reach the quiet<br/>that runs deeper.", es: "Ordena la respiración.<br/>Llega al silencio<br/>más profundo.", pt: "Equilibre a respiração.<br/>Alcance o silêncio<br/>mais profundo." },
+
+  "scene5_title": { ja: "ランニング",   en: "Running",            es: "Correr",            pt: "Corrida" },
+  "scene5_desc":  { ja: "鼻で吸い、鼻で吐く。<br/>ペースが、<br/>ぶれない。", en: "In through the nose,<br/>out through the nose.<br/>Steady, every step.", es: "Inhala por la nariz,<br/>exhala por la nariz.<br/>Un ritmo que no cambia.", pt: "Inspire pelo nariz,<br/>expire pelo nariz.<br/>Um ritmo constante." },
+
+  "scene6_title": { ja: "長距離移動",   en: "Long flights",       es: "En vuelos largos",  pt: "Em voos longos" },
+  "scene6_desc":  { ja: "乾燥した機内でも、<br/>自然な呼吸のまま。<br/>到着地で、整っている。", en: "Even in dry cabin air,<br/>your breath stays natural.<br/>You arrive, settled.", es: "En el aire seco del avión,<br/>tu respiración sigue tranquila.<br/>Llegas en calma.", pt: "No ar seco do avião,<br/>sua respiração permanece calma.<br/>Você chega centrado." },
 
   // DESIGN
   "design_h2": { ja: "目立たないことも、<br/>機能のひとつ。", en: "Discreet,<br/>by design.", es: "Discreto<br/>por diseño.", pt: "Discreto,<br/>por design." },
