@@ -214,6 +214,11 @@
   #nav[data-theme="dark"] .nav-divider     { border-color: rgba(255,255,255,.10); }
   #nav[data-theme="dark"] #nav-cart        { background:#fff; color:#0a0a0a; }
   #nav[data-theme="dark"] #nav-cart:hover  { background:#f4f4f5; }
+  /* OSCO logo: light-gray on dark hero, full red on light sections — syncs with nav theme */
+  #nav-osco{ transition: filter .5s ease, opacity .5s ease; }
+  /* dark theme: brightness(0)→all-black, invert(1)→all-white, opacity .72 → light gray */
+  #nav[data-theme="dark"]  #nav-osco{ filter: brightness(0) invert(1); opacity:.72; }
+  #nav[data-theme="light"] #nav-osco{ filter: none; opacity: 1; }
   /* === Instagram-style ガラス枠カード === */
   .ig-card{
     border-radius: 28px;
@@ -781,6 +786,7 @@
 <!-- ====== Persistent Nav (テーマ自動切替) ====== -->
 <nav id="nav" data-theme="dark" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 glass-pill-dark rounded-full pl-3 pr-2 py-2 flex items-center gap-5">
   <span class="nav-divider pr-3 border-r border-white/10 flex items-center gap-2">
+    <img id="nav-osco" src="./assets/osco_logo.png?v=1" alt="OSCO" class="block" style="height:16px; width:auto;" onerror="this.style.display='none'">
     <span id="nav-logo" class="nav-link-strong text-[15px] font-semibold tracking-tight cursor-pointer" role="button" tabindex="0" aria-label="ページ上部へ戻る / Volver arriba">OPEN AIR</span>
   </span>
   <a href="#concept"     class="nav-link text-[13px] transition" data-i18n="nav_concept">コンセプト</a>
@@ -1593,10 +1599,7 @@
 
   <footer class="border-t border-zinc-200/60 py-10 px-6">
     <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-6 text-zinc-500 text-sm">
-      <span class="flex items-center gap-3">
-        <img src="./assets/osco_logo.png?v=1" alt="OSCO" style="height:20px; width:auto; display:block; opacity:.9;" onerror="this.style.display='none'">
-        <span class="text-xs text-zinc-400">© 2026 OPEN AIR, Inc.</span>
-      </span>
+      <span class="text-xs text-zinc-400">© 2026 OPEN AIR, Inc.</span>
       <div class="flex gap-6 items-center">
         <a href="./privacy.html" class="hover:text-zinc-900" data-i18n="footer_privacy">プライバシー</a>
         <a href="./terms.html" class="hover:text-zinc-900" data-i18n="footer_terms">利用規約</a>
