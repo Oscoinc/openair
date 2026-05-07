@@ -1202,6 +1202,7 @@
                 <div class="info">
                   <strong>Medical-Grade Grip</strong>
                   <span data-i18n="design_feat3_desc">医療用テープを採用。肌にやさしく、しっかり固定。長時間でも、快適なつけ心地。</span>
+                  <span class="design-mobile-made-in" style="display:inline-block; margin-top:4px; font-size:8.5px; letter-spacing:0.16em; text-transform:uppercase; color:#FF3B30; font-weight:600;">Made in Germany</span>
                 </div>
               </div>
             </div>
@@ -1249,14 +1250,12 @@
               </div>
               <div class="text-[15px] font-semibold tracking-tight text-zinc-900 mb-1.5">Medical-Grade Grip</div>
               <p class="text-[12.5px] text-zinc-500 leading-[1.85]" data-i18n="design_feat3_desc">医療用テープを採用。<br/>肌にやさしく、しっかり固定。<br/>長時間でも、快適なつけ心地。</p>
-              <!-- Made in Germany badge — bottom-right of label 03 -->
-              <div class="absolute bottom-0 right-0 text-[10px] tracking-[0.22em] uppercase bg-white/70 backdrop-blur px-2.5 py-1 rounded-full" style="color:#c8102e;">Made in Germany</div>
             </div>
 
           </div>
 
-          <!-- Henkel pill — appears with label 03 -->
-          <div class="design-label mt-8 inline-flex items-center px-3 py-1.5 rounded-full border border-zinc-200 text-[11px] tracking-[0.04em] text-zinc-600" data-design-step="2" style="opacity:0; transform: translateX(16px);">Adhesive by Henkel (Germany)</div>
+          <!-- Henkel pill — appears with label 03, in Apple system red to echo Made in Germany -->
+          <div class="design-label mt-8 inline-flex items-center px-3 py-1.5 rounded-full border text-[11px] tracking-[0.04em]" data-design-step="2" style="opacity:0; transform: translateX(16px); color:#FF3B30; border-color:rgba(255,59,48,0.35);">Adhesive by Henkel (Germany)</div>
         </div>
       </div>
     </div>
@@ -1298,7 +1297,7 @@
           <div class="mt-auto pt-8 flex items-end justify-center min-h-[200px]">
             <img src="./assets/function_grip.png?v=7" alt="" class="w-full max-h-[210px] object-contain" onerror="this.style.display='none'">
           </div>
-          <div class="absolute bottom-5 right-5 text-[10px] tracking-[0.22em] uppercase bg-white/70 backdrop-blur px-2.5 py-1 rounded-full" style="color:#c8102e;">Made in Germany</div>
+          <div class="absolute bottom-5 right-5 text-[10px] tracking-[0.22em] uppercase bg-white/70 backdrop-blur px-2.5 py-1 rounded-full" style="color:#FF3B30;">Made in Germany</div>
         </div>
 
         <!-- Card 4: 強すぎず、弱すぎない -->
@@ -1594,7 +1593,10 @@
 
   <footer class="border-t border-zinc-200/60 py-10 px-6">
     <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-6 text-zinc-500 text-sm">
-      <span class="text-xs text-zinc-400">© 2026 OPEN AIR, Inc.</span>
+      <span class="flex items-center gap-3">
+        <img src="./assets/osco_logo.png?v=1" alt="OSCO" style="height:20px; width:auto; display:block; opacity:.9;" onerror="this.style.display='none'">
+        <span class="text-xs text-zinc-400">© 2026 OPEN AIR, Inc.</span>
+      </span>
       <div class="flex gap-6 items-center">
         <a href="./privacy.html" class="hover:text-zinc-900" data-i18n="footer_privacy">プライバシー</a>
         <a href="./terms.html" class="hover:text-zinc-900" data-i18n="footer_terms">利用規約</a>
