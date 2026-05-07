@@ -545,11 +545,9 @@
     }
     /* Mobile Henkel pill: matches the desktop rounded-border pill — overrides the generic .info span styling */
     .design-mobile-pill .info span.design-mobile-henkel{
-      display: flex !important;
+      display: inline-flex !important;
       align-items: center;
-      justify-content: center;
-      width: fit-content;
-      margin: 8px auto 0 auto;
+      margin-top: 6px;
       padding: 3px 9px;
       border: 1px solid rgba(63,63,70,.22);
       border-radius: 999px;
@@ -1489,7 +1487,7 @@
 
         <!-- RIGHT — 3 numbered features (each appears with its corresponding visual phase) -->
         <div class="md:col-span-3 relative" id="design-labels">
-          <div class="space-y-10 md:pl-6">
+          <div class="space-y-10">
 
             <!-- 01 Invisible Surface — appears with single piece -->
             <div class="design-label" data-design-step="0" style="opacity:0; transform: translateX(16px);">
@@ -1532,8 +1530,8 @@
 
           </div>
 
-          <!-- Henkel pill — appears with label 03; flush-left, aligned with the description text above -->
-          <div class="design-label mt-8 flex w-fit items-center px-3 py-1.5 rounded-full border border-zinc-200 text-[11px] tracking-[0.04em] text-zinc-600" data-design-step="2" style="opacity:0; transform: translateX(16px); margin-left:-12px;">Adhesive by Henkel (Germany)</div>
+          <!-- Henkel pill — appears with label 03 -->
+          <div class="design-label mt-8 inline-flex items-center px-3 py-1.5 rounded-full border border-zinc-200 text-[11px] tracking-[0.04em] text-zinc-600" data-design-step="2" style="opacity:0; transform: translateX(16px);">Adhesive by Henkel (Germany)</div>
         </div>
       </div>
     </div>
@@ -2377,46 +2375,10 @@
   }
   function updateBadge(){
     const badge = document.getElementById('nav-cart-badge');
-    const navCart = document.getElementById('nav-cart');
-    if (!badge || !navCart) return;
+    if (!badge) return;
     const q = totalQty();
-    const textSpan = navCart.querySelector('span[data-i18n]');
-    const isMobile = window.matchMedia('(max-width: 768px)').matches;
-
-    if (q > 0){
-      // Cart has items — show cart link with badge (both mobile & desktop)
-      badge.textContent = q;
-      badge.classList.remove('hidden');
-      navCart.setAttribute('href', './cart.html');
-      if (textSpan){
-        textSpan.setAttribute('data-i18n', 'nav_cart');
-        const lang = (typeof getLang === 'function') ? getLang() : 'ja';
-        const t = (window.translations && translations['nav_cart']) || null;
-        textSpan.textContent = t ? (t[lang] || t.ja) : 'カート';
-      }
-    } else {
-      // Cart empty — hide badge
-      badge.classList.add('hidden');
-      if (isMobile){
-        // Mobile + empty: switch to "購入" button linking to #buy section (stronger CTA)
-        navCart.setAttribute('href', '#buy');
-        if (textSpan){
-          textSpan.setAttribute('data-i18n', 'nav_buy');
-          const lang = (typeof getLang === 'function') ? getLang() : 'ja';
-          const t = (window.translations && translations['nav_buy']) || null;
-          textSpan.textContent = t ? (t[lang] || t.ja) : '購入';
-        }
-      } else {
-        // Desktop: always show cart link
-        navCart.setAttribute('href', './cart.html');
-        if (textSpan){
-          textSpan.setAttribute('data-i18n', 'nav_cart');
-          const lang = (typeof getLang === 'function') ? getLang() : 'ja';
-          const t = (window.translations && translations['nav_cart']) || null;
-          textSpan.textContent = t ? (t[lang] || t.ja) : 'カート';
-        }
-      }
-    }
+    if (q > 0){ badge.textContent = q; badge.classList.remove('hidden'); }
+    else { badge.classList.add('hidden'); }
   }
 
   // Toast (mobile-aware)
@@ -2485,11 +2447,6 @@
   // Refresh badge on tab focus (in case other tab modified storage)
   window.addEventListener('storage', updateBadge);
   window.addEventListener('focus', updateBadge);
-  // Re-evaluate when crossing the mobile/desktop breakpoint (rotate, resize)
-  window.addEventListener('resize', updateBadge);
-  window.addEventListener('orientationchange', updateBadge);
-  // Make updateBadge globally accessible so applyLang can re-sync the cart/buy text after a language change
-  window.__openairUpdateNavCart = updateBadge;
 })();
 
 // ============== Flip cards (Why) — with counter animation on flip ==============
@@ -2965,8 +2922,6 @@ function applyLang(lang){
   // Update language switcher label
   const langLabel = document.getElementById('lang-current');
   if (langLabel) langLabel.textContent = LANG_LABEL[lang] || '日本語';
-  // Re-sync the dynamic nav cart/buy button (it picks the correct nav_cart vs nav_buy translation)
-  if (typeof window.__openairUpdateNavCart === 'function') window.__openairUpdateNavCart();
 }
 function setLang(lang){
   if (!SUPPORTED_LANGS.includes(lang)) lang = 'ja';
