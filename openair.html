@@ -22,6 +22,18 @@
 <meta name="twitter:description" content="意識しなくても、整う。ただ、それだけ。">
 <meta name="twitter:image" content="https://openair-three.vercel.app/assets/og-image.jpg">
 <style>
+/* iOS Safari は一時停止中の video に再生ボタンを重ねてくる。CSSでは確実に消せないため、
+   video 自体を透明にして描画を canvas に肩代わりさせる。
+   video はデコード元として残す（display:none にすると frame が得られなくなる）。 */
+#oa-hero-video, #oa-film-video{ opacity:0 !important; }
+.oa-canvas{
+  position:absolute; inset:0; width:100%; height:100%;
+  display:block; z-index:0; pointer-events:none; background:#000;
+}
+#cinematic .oa-canvas{ z-index:0; }
+</style>
+
+<style>
 /* iOS Safari は一時停止中の video に再生ボタンを重ねてくる。
    このサイトの動画はスクロールで操作するので、そのボタンは邪魔になる。
    Chrome/Android のオーバーレイ再生ボタンも同時に消す。 */
@@ -1062,6 +1074,7 @@
        autoplay disablepictureinpicture poster="./assets/openair-intro-poster.jpg">
   <source id="oa-hero-src" src="./assets/openair-intro.mp4" type="video/mp4">
 </video>
+<canvas id="oa-hero-canvas" class="oa-canvas" aria-hidden="true"></canvas>
 <div id="oa-hero-vig"></div>
 
     <!-- Glow halo -->
@@ -1660,7 +1673,7 @@
           <div class="text-[18px] font-semibold mb-3 tracking-tight text-zinc-900" data-i18n="function_card1_title">自然に、空気が通る。</div>
           <p class="text-[13px] text-zinc-500 leading-[1.9]" data-i18n="function_card1_desc">内部構造を最適化し、<br/>スムーズな空気の流れを<br/>サポート。</p>
           <div class="mt-auto pt-8 flex items-end justify-center min-h-[200px]">
-            <img src="./assets/function_air.webp?v=7" alt="" class="w-full max-h-[210px] object-contain" onerror="this.style.display='none'" loading="lazy" decoding="async">
+            <img src="./assets/function_air.webp?v=7" alt="" class="w-full max-h-[210px] object-contain" onerror="this.style.display='none'" loading="lazy" decoding="async" width="1254" height="1254">
           </div>
         </div>
 
@@ -1669,7 +1682,7 @@
           <div class="text-[18px] font-semibold mb-3 tracking-tight text-zinc-900" data-i18n="function_card2_title">つけている感覚がない。</div>
           <p class="text-[13px] text-zinc-500 leading-[1.9]" data-i18n="function_card2_desc">過度な圧迫はなく、<br/>肌に寄り添うように<br/>フィット。</p>
           <div class="mt-auto pt-8 flex items-end justify-center min-h-[200px]">
-            <img src="./assets/function_fit.webp?v=7" alt="" class="w-full max-h-[210px] object-contain" onerror="this.style.display='none'" loading="lazy" decoding="async">
+            <img src="./assets/function_fit.webp?v=7" alt="" class="w-full max-h-[210px] object-contain" onerror="this.style.display='none'" loading="lazy" decoding="async" width="1306" height="1205">
           </div>
         </div>
 
@@ -1678,7 +1691,7 @@
           <div class="text-[18px] font-semibold mb-3 tracking-tight text-zinc-900" data-i18n="function_card3_title">長時間でも、ズレない。</div>
           <p class="text-[13px] text-zinc-500 leading-[1.9]" data-i18n="function_card3_desc">ドイツ製 HENKEL 社の<br/>粘着素材を採用。<br/>やさしさと確かな固定力。</p>
           <div class="mt-auto pt-8 flex items-end justify-center min-h-[200px]">
-            <img src="./assets/function_grip.webp?v=7" alt="" class="w-full max-h-[210px] object-contain" onerror="this.style.display='none'" loading="lazy" decoding="async">
+            <img src="./assets/function_grip.webp?v=7" alt="" class="w-full max-h-[210px] object-contain" onerror="this.style.display='none'" loading="lazy" decoding="async" width="1374" height="1145">
           </div>
           <div class="absolute bottom-5 right-5 text-[10px] tracking-[0.22em] uppercase text-zinc-400 bg-white/70 backdrop-blur px-2.5 py-1 rounded-full">Made in Germany</div>
         </div>
@@ -1688,7 +1701,7 @@
           <div class="text-[18px] font-semibold mb-3 tracking-tight text-zinc-900" data-i18n="function_card4_title">強すぎず、弱すぎない。</div>
           <p class="text-[13px] text-zinc-500 leading-[1.9]" data-i18n="function_card4_desc">やさしさと固定力を両立。<br/>長時間でも違和感が少ない、<br/>最適なバランス設計。</p>
           <div class="mt-auto pt-8 flex items-end justify-center min-h-[200px]">
-            <img src="./assets/function_balance.webp?v=7" alt="" class="w-full max-h-[210px] object-contain" onerror="this.style.display='none'" loading="lazy" decoding="async">
+            <img src="./assets/function_balance.webp?v=7" alt="" class="w-full max-h-[210px] object-contain" onerror="this.style.display='none'" loading="lazy" decoding="async" width="1328" height="1184">
           </div>
         </div>
       </div>
@@ -1769,6 +1782,7 @@
            autoplay loop disablepictureinpicture poster="./assets/openair-film-poster.jpg">
       <source id="oa-film-src" src="./assets/openair-film.mp4" type="video/mp4">
     </video>
+<canvas id="oa-film-canvas" class="oa-canvas" aria-hidden="true"></canvas>
     <div class="oa-vig"></div>
     <div class="oa-eyebrow">OPEN AIR</div>
     <p class="oa-line" data-in=".08" data-out=".32" data-i18n="film_line_1">貼るのは、数秒。</p>
@@ -3297,5 +3311,45 @@ applyLang(getLang());
 </script>
 
 <script>oaScrub("oa-film","oa-film-video","oa-film-src",Array.prototype.slice.call(document.querySelectorAll("#oa-film .oa-line")));</script>
+
+<script>
+(function () {
+  function mirror(videoId, canvasId, posterUrl) {
+    var v = document.getElementById(videoId), c = document.getElementById(canvasId);
+    if (!v || !c) return;
+    var ctx = c.getContext('2d', { alpha: false });
+    var poster = new Image(); var posterOK = false; var drewVideo = false;
+    poster.onload = function () { posterOK = true; };
+    poster.src = posterUrl;
+
+    function resize() {
+      var r = c.getBoundingClientRect();
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      var w = Math.max(1, Math.round(r.width * dpr)), h = Math.max(1, Math.round(r.height * dpr));
+      if (c.width !== w || c.height !== h) { c.width = w; c.height = h; }
+    }
+    // object-fit: cover と同じ計算
+    function cover(sw, sh) {
+      var s = Math.max(c.width / sw, c.height / sh);
+      return [(c.width - sw * s) / 2, (c.height - sh * s) / 2, sw * s, sh * s];
+    }
+    function draw() {
+      resize();
+      if (v.readyState >= 2 && v.videoWidth) {
+        var d = cover(v.videoWidth, v.videoHeight);
+        try { ctx.drawImage(v, d[0], d[1], d[2], d[3]); drewVideo = true; } catch (e) {}
+      } else if (!drewVideo && posterOK) {
+        var d2 = cover(poster.naturalWidth, poster.naturalHeight);
+        ctx.drawImage(poster, d2[0], d2[1], d2[2], d2[3]);
+      }
+      requestAnimationFrame(draw);
+    }
+    requestAnimationFrame(draw);
+    window.addEventListener('resize', resize, { passive: true });
+  }
+  mirror('oa-hero-video', 'oa-hero-canvas', './assets/openair-intro-poster.jpg');
+  mirror('oa-film-video', 'oa-film-canvas', './assets/openair-film-poster.jpg');
+})();
+</script>
 </body>
 </html>
