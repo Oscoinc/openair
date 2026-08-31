@@ -3314,6 +3314,9 @@ applyLang(getLang());
 
 <script>
 (function () {
+  // BLUR_BACKDROP: 画面と映像の縦横比が大きく違うとき（＝スマホ縦持ち）は、
+  // 映像を切らずに全体を見せる。空いた部分には同じ映像を大きくぼかして敷くので、
+  // 黒帯にならず背景と地続きに見える。
   function mirror(videoId, canvasId, posterUrl) {
     var v = document.getElementById(videoId), c = document.getElementById(canvasId);
     if (!v || !c) return;
@@ -3322,25 +3325,62 @@ applyLang(getLang());
     poster.onload = function () { posterOK = true; };
     poster.src = posterUrl;
 
+    // ぼかし用の小さいキャンバス（縮めてから拡大すると自然にボケる。
+    // ctx.filter は古い iOS で効かないので使わない）
+    var blurC = document.createElement('canvas');
+    blurC.width = 14; blurC.height = 14;
+    var blurCtx = blurC.getContext('2d');
+
     function resize() {
       var r = c.getBoundingClientRect();
       var dpr = Math.min(window.devicePixelRatio || 1, 2);
       var w = Math.max(1, Math.round(r.width * dpr)), h = Math.max(1, Math.round(r.height * dpr));
       if (c.width !== w || c.height !== h) { c.width = w; c.height = h; }
     }
-    // object-fit: cover と同じ計算
-    function cover(sw, sh) {
-      var s = Math.max(c.width / sw, c.height / sh);
-      return [(c.width - sw * s) / 2, (c.height - sh * s) / 2, sw * s, sh * s];
+    function rect(sw, sh, scale) {
+      return [(c.width - sw * scale) / 2, (c.height - sh * scale) / 2, sw * scale, sh * scale];
+    }
+    function paint(src, sw, sh) {
+      if (!sw || !sh) return;
+      var cover = Math.max(c.width / sw, c.height / sh);
+      var contain = Math.min(c.width / sw, c.height / sh);
+      // 切り落とす量が 15% 未満なら、これまで通り画面いっぱいに広げる
+      if (contain / cover > 0.85) {
+        var d = rect(sw, sh, cover);
+        ctx.drawImage(src, d[0], d[1], d[2], d[3]);
+        return;
+      }
+      // 背景：映像を極端に縮めてから引き伸ばす＝ぼけた下地
+      blurCtx.drawImage(src, 0, 0, blurC.width, blurC.height);
+      ctx.imageSmoothingEnabled = true;
+      var bd = rect(blurC.width, blurC.height, Math.max(c.width / blurC.width, c.height / blurC.height));
+      ctx.drawImage(blurC, bd[0], bd[1], bd[2], bd[3]);
+      // 少し沈めて、手前の映像と文字を立たせる
+      ctx.fillStyle = 'rgba(0,0,0,0.72)';
+      ctx.fillRect(0, 0, c.width, c.height);
+      // 手前：映像の全体
+      var f = rect(sw, sh, contain);
+      ctx.drawImage(src, f[0], f[1], f[2], f[3]);
+      // 継ぎ目をぼかす（上下 or 左右にごく薄いグラデーションを重ねる）
+      var vertical = f[3] < c.height - 2;
+      var g = vertical
+        ? ctx.createLinearGradient(0, f[1], 0, f[1] + f[3])
+        : ctx.createLinearGradient(f[0], 0, f[0] + f[2], 0);
+      var fade = 0.055;
+      g.addColorStop(0, 'rgba(0,0,0,0.22)');
+      g.addColorStop(fade, 'rgba(0,0,0,0)');
+      g.addColorStop(1 - fade, 'rgba(0,0,0,0)');
+      g.addColorStop(1, 'rgba(0,0,0,0.22)');
+      ctx.fillStyle = g;
+      if (vertical) ctx.fillRect(f[0], f[1], f[2], f[3]);
+      else ctx.fillRect(f[0], f[1], f[2], f[3]);
     }
     function draw() {
       resize();
       if (v.readyState >= 2 && v.videoWidth) {
-        var d = cover(v.videoWidth, v.videoHeight);
-        try { ctx.drawImage(v, d[0], d[1], d[2], d[3]); drewVideo = true; } catch (e) {}
+        try { paint(v, v.videoWidth, v.videoHeight); drewVideo = true; } catch (e) {}
       } else if (!drewVideo && posterOK) {
-        var d2 = cover(poster.naturalWidth, poster.naturalHeight);
-        ctx.drawImage(poster, d2[0], d2[1], d2[2], d2[3]);
+        try { paint(poster, poster.naturalWidth, poster.naturalHeight); } catch (e) {}
       }
       requestAnimationFrame(draw);
     }
