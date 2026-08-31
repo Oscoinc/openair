@@ -21,6 +21,30 @@
 <meta name="twitter:title" content="OPEN AIR — 呼吸を、整える。">
 <meta name="twitter:description" content="意識しなくても、整う。ただ、それだけ。">
 <meta name="twitter:image" content="https://openair-three.vercel.app/assets/og-image.jpg">
+<style>
+/* iOS Safari は一時停止中の video に再生ボタンを重ねてくる。
+   このサイトの動画はスクロールで操作するので、そのボタンは邪魔になる。
+   Chrome/Android のオーバーレイ再生ボタンも同時に消す。 */
+#oa-hero-video::-webkit-media-controls,
+#oa-hero-video::-webkit-media-controls-enclosure,
+#oa-hero-video::-webkit-media-controls-panel,
+#oa-hero-video::-webkit-media-controls-start-playback-button,
+#oa-hero-video::-webkit-media-controls-overlay-play-button,
+#oa-film-video::-webkit-media-controls,
+#oa-film-video::-webkit-media-controls-enclosure,
+#oa-film-video::-webkit-media-controls-panel,
+#oa-film-video::-webkit-media-controls-start-playback-button,
+#oa-film-video::-webkit-media-controls-overlay-play-button{
+  display:none !important;
+  -webkit-appearance:none !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+  width:0 !important;
+  height:0 !important;
+}
+#oa-hero-video, #oa-film-video{ pointer-events:none; }
+</style>
+
 
 <script>
   // Disable browser scroll restoration so initial visits start at top
