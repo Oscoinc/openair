@@ -3322,12 +3322,6 @@ applyLang(getLang());
     if (!v || !c) return;
     var ctx = c.getContext('2d', { alpha: false });
     var poster = new Image(); var posterOK = false; var drewVideo = false;
-    // 下地用（極端に縮めてから拡大＝ぼかし）と、継ぎ目をぼかすための作業用キャンバス。
-    // ctx.filter は古い iOS Safari で効かないので使わない。
-    var blurC = document.createElement('canvas'); blurC.width = 14; blurC.height = 14;
-    var blurCtx = blurC.getContext('2d');
-    var fadeC = document.createElement('canvas');
-    var fadeCtx = fadeC.getContext('2d');
     poster.onload = function () { posterOK = true; };
     poster.src = posterUrl;
 
@@ -3343,34 +3337,8 @@ applyLang(getLang());
     // EDGE_EXTEND: 余白は「映像の端の列をそのまま引き伸ばす」ことで埋める。
     // 継ぎ目の色が映像の端の色と完全に一致するため、境界線が原理的に出ない。
     // さらに外側へ向けてわずかに沈め、ページの黒背景に溶かす。
-    // EDGE_FEATHER: 余白は2層で埋める。
-    //  1) 下地 … 映像を強くぼかしたもの（空白感を消す）
-    //  2) 継ぎ目 … 映像の端の色をそのまま引き伸ばし、外へ向けて透明に消す
-    // 継ぎ目のすぐ外側は端と同じ色なので線が出ず、
-    // 端に模様がある映像（肌など）でも筋が伸びきる前に消える。
-    function edgeFeather(src, sx, sy, sw2, sh2, dx, dy, dw, dh, dir) {
-      if (dw < 1 || dh < 1) return;
-      fadeC.width = Math.max(1, Math.round(dw));
-      fadeC.height = Math.max(1, Math.round(dh));
-      fadeCtx.clearRect(0, 0, fadeC.width, fadeC.height);
-      try { fadeCtx.drawImage(src, sx, sy, sw2, sh2, 0, 0, fadeC.width, fadeC.height); }
-      catch (e) { return; }
-      // 継ぎ目から外へ向けて透明にしていく
-      var g = dir === 'up'    ? fadeCtx.createLinearGradient(0, fadeC.height, 0, 0)
-            : dir === 'down'  ? fadeCtx.createLinearGradient(0, 0, 0, fadeC.height)
-            : dir === 'left'  ? fadeCtx.createLinearGradient(fadeC.width, 0, 0, 0)
-            :                   fadeCtx.createLinearGradient(0, 0, fadeC.width, 0);
-      g.addColorStop(0, 'rgba(0,0,0,0)');
-      g.addColorStop(0.35, 'rgba(0,0,0,0.55)');
-      g.addColorStop(0.75, 'rgba(0,0,0,0.94)');
-      g.addColorStop(1, 'rgba(0,0,0,1)');
-      fadeCtx.globalCompositeOperation = 'destination-out';
-      fadeCtx.fillStyle = g;
-      fadeCtx.fillRect(0, 0, fadeC.width, fadeC.height);
-      fadeCtx.globalCompositeOperation = 'source-over';
-      ctx.drawImage(fadeC, Math.round(dx), Math.round(dy));
-    }
-
+    // PLAIN_BLACK: 余白は黒のみ。ぼかし下地や光の演出は入れない。
+    // 映像の上下端が黒なので、黒背景と地続きに見える。
     function paint(src, sw, sh) {
       if (!sw || !sh) return;
       var cover = Math.max(c.width / sw, c.height / sh);
@@ -3383,40 +3351,11 @@ applyLang(getLang());
         return;
       }
 
-      var f  = rect(sw, sh, contain);
-      var fx = Math.round(f[0]), fy = Math.round(f[1]);
-      var fw = Math.round(f[2]), fh = Math.round(f[3]);
-
-      // 1) ぼかした下地
-      ctx.fillStyle = '#000'; ctx.fillRect(0, 0, c.width, c.height);
-      try {
-        blurCtx.drawImage(src, 0, 0, blurC.width, blurC.height);
-        ctx.imageSmoothingEnabled = true;
-        var bs = Math.max(c.width / blurC.width, c.height / blurC.height);
-        ctx.drawImage(blurC, (c.width - blurC.width * bs) / 2, (c.height - blurC.height * bs) / 2,
-                      blurC.width * bs, blurC.height * bs);
-      } catch (e) {}
-      ctx.fillStyle = 'rgba(0,0,0,0.74)';
+      // それ以外（スマホ縦持ちなど）は映像の全体を見せ、余りは黒のまま
+      ctx.fillStyle = '#000';
       ctx.fillRect(0, 0, c.width, c.height);
-
-      // 2) 継ぎ目：端の色を引き伸ばして、外へ向けて消す
-      var topGap = fy, botGap = c.height - (fy + fh);
-      var lftGap = fx, rgtGap = c.width - (fx + fw);
-      var EH = Math.max(2, Math.round(sh * 0.012));
-      var EW = Math.max(2, Math.round(sw * 0.012));
-      // 継ぎ目をまたぐ帯だけに限定する。長く伸ばすと端の模様が筋になるので、
-      // 線を消すのに必要な最小限（画面の6%程度）に留める。
-      var bandV = Math.min(topGap, Math.max(24, Math.round(c.height * 0.06)));
-      var bandV2 = Math.min(botGap, Math.max(24, Math.round(c.height * 0.06)));
-      var bandH = Math.min(lftGap, Math.max(24, Math.round(c.width * 0.06)));
-      var bandH2 = Math.min(rgtGap, Math.max(24, Math.round(c.width * 0.06)));
-      if (bandV  > 1) edgeFeather(src, 0, 0,       sw, EH, fx, fy - bandV,  fw, bandV,  'up');
-      if (bandV2 > 1) edgeFeather(src, 0, sh - EH, sw, EH, fx, fy + fh,     fw, bandV2, 'down');
-      if (bandH  > 1) edgeFeather(src, 0, 0,       EW, sh, fx - bandH, fy,  bandH,  fh, 'left');
-      if (bandH2 > 1) edgeFeather(src, sw - EW, 0, EW, sh, fx + fw, fy,     bandH2, fh, 'right');
-
-      // 3) 映像の全体
-      ctx.drawImage(src, fx, fy, fw, fh);
+      var f = rect(sw, sh, contain);
+      ctx.drawImage(src, Math.round(f[0]), Math.round(f[1]), Math.round(f[2]), Math.round(f[3]));
     }
     function draw() {
       resize();
