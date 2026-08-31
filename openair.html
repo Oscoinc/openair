@@ -4,6 +4,24 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OPEN AIR — 呼吸を、整える。</title>
+<!-- ====== SEO / SNS共有プレビュー ====== -->
+<meta name="description" content="呼吸を、整える。意識しなくても、整う。ただ、それだけ。OPEN AIR は、貼っていることを忘れる透明の鼻用テープです。">
+<link rel="canonical" href="https://openair-three.vercel.app/openair.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="OPEN AIR">
+<meta property="og:title" content="OPEN AIR — 呼吸を、整える。">
+<meta property="og:description" content="意識しなくても、整う。ただ、それだけ。貼っていることを忘れる透明の鼻用テープ。">
+<meta property="og:url" content="https://openair-three.vercel.app/openair.html">
+<meta property="og:image" content="https://openair-three.vercel.app/assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:locale:alternate" content="es_ES">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="OPEN AIR — 呼吸を、整える。">
+<meta name="twitter:description" content="意識しなくても、整う。ただ、それだけ。">
+<meta name="twitter:image" content="https://openair-three.vercel.app/assets/og-image.jpg">
+
 <script>
   // Disable browser scroll restoration so initial visits start at top
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
@@ -584,7 +602,7 @@
     .reveal{ opacity: 1 !important; transform: none !important; }
 
     /* --- Cinematic section: shorten on mobile for less scroll --- */
-    #cinematic{ height: 500vh !important; }
+    #cinematic{ height: 300vh !important; }
 
     /* --- Pricing cards: tighten padding --- */
     section#buy .rounded-\[28px\]{ padding: 28px !important; }
@@ -941,7 +959,7 @@
 <!-- ====== Persistent Nav (テーマ自動切替) ====== -->
 <nav id="nav" data-theme="dark" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 glass-pill-dark rounded-full pl-3 pr-2 py-2 flex items-center gap-5">
   <span class="nav-divider pr-3 border-r border-white/10 flex items-center flex-shrink-0" style="gap:10px; white-space:nowrap;">
-    <img id="nav-osco" src="./assets/osco_logo.png?v=1" alt="OSCO" class="block flex-shrink-0" style="height:18px; width:auto; transform:translateY(0.5px);" onerror="this.style.display='none'">
+    <img id="nav-osco" src="./assets/osco_logo.webp?v=1" alt="OSCO" class="block flex-shrink-0" style="height:18px; width:auto; transform:translateY(0.5px);" onerror="this.style.display='none'" loading="lazy" decoding="async">
     <span id="nav-logo" class="nav-link-strong text-[15px] font-semibold tracking-tight cursor-pointer leading-none whitespace-nowrap" role="button" tabindex="0" aria-label="ページ上部へ戻る / Volver arriba">OPEN AIR</span>
   </span>
   <a href="#concept"     class="nav-link text-[13px] transition" data-i18n="nav_concept">コンセプト</a>
@@ -955,19 +973,84 @@
 </nav>
 
 <!-- ====== Cinematic Scroll Hero ====== -->
-<section id="cinematic" style="height: 700vh; position:relative;">
+<section id="cinematic" style="height: 380vh; position:relative;">
   <div class="stage-pin stage-bg">
+<!-- ====== [OPEN AIR] intro film hero (2秒の映像 → 見出しが浮かび上がる) ====== -->
+<style>
+  /* 既存の静止画レイヤーを隠す（削除ではなく非表示。戻すのはこの3行を消すだけ） */
+  #cinematic .stage-img{ display:none !important; }
+  #cinematic #breath{ display:none !important; }
+  #cinematic .stage-glow{ display:none !important; }
+  /* 新しい映像には装着カットが無いので「装着、たった2ステップ」だけ外す */
+  #cinematic #cap-6{ display:none !important; }
+
+  #oa-hero-video{
+    position:absolute; inset:0; width:100%; height:100%;
+    object-fit:cover; pointer-events:none; z-index:0;
+  }
+  #oa-hero-vig{
+    position:absolute; inset:0; z-index:1; pointer-events:none;
+    background:linear-gradient(to bottom, rgba(0,0,0,.55) 0%, rgba(0,0,0,.05) 32%, rgba(0,0,0,.05) 58%, rgba(0,0,0,.7) 100%);
+  }
+  #cinematic .grain{ z-index:2; }
+  #cinematic .stage-caption, #cinematic #hero-headline{ z-index:3; }
+
+  /* --- イントロ中：映像だけにする --- */
+  #cinematic.oa-intro #hero-headline{
+    opacity:0 !important;
+    pointer-events:none !important;
+    transform:translateY(-50%) translateY(14px) !important;
+  }
+  #cinematic.oa-intro ~ * #scroll-hint,
+  #cinematic.oa-intro #scroll-hint{ opacity:0 !important; }
+  /* イントロ明け：ふわっと浮かび上がらせる（直後にJSがこのクラスを外す） */
+  #cinematic.oa-intro-soft #hero-headline{
+    transition:opacity 1.2s ease, transform 1.4s cubic-bezier(.22,.61,.36,1) !important;
+  }
+
+  /* 実写の上に乗せるので、静止画時代のキャプションより大きく・強く */
+  #cinematic .stage-caption[style*="bottom"]{ bottom:22% !important; }
+  #cinematic .stage-caption > div:last-child{
+    font-size:clamp(26px,4vw,48px) !important;
+    line-height:1.4 !important;
+    text-shadow:0 2px 44px rgba(0,0,0,.85), 0 0 12px rgba(0,0,0,.5);
+  }
+  #cinematic .stage-caption > div:first-child{
+    color:rgba(255,255,255,.72) !important;
+    text-shadow:0 2px 24px rgba(0,0,0,.85);
+  }
+  #cinematic #hero-headline h1, #cinematic #hero-headline p{
+    text-shadow:0 2px 44px rgba(0,0,0,.8);
+  }
+  /* 見出しが製品の真上に来るので、文字の後ろだけ柔らかく落とす（製品は消さない） */
+  #cinematic #hero-headline{ position:absolute; isolation:isolate; }
+  #cinematic #hero-headline::before{
+    content:''; position:absolute; inset:-14% -18%; z-index:-1; pointer-events:none;
+    background:radial-gradient(ellipse at center,
+      rgba(0,0,0,.62) 0%, rgba(0,0,0,.42) 42%, rgba(0,0,0,.12) 66%, rgba(0,0,0,0) 78%);
+  }
+  @media (max-width:600px){
+    #cinematic .stage-caption[style*="bottom"]{ bottom:26% !important; }
+    #cinematic .stage-caption > div:last-child{ font-size:clamp(22px,6vw,30px) !important; }
+  }
+</style>
+<video id="oa-hero-video" muted playsinline webkit-playsinline preload="auto"
+       autoplay disablepictureinpicture poster="./assets/openair-intro-poster.jpg">
+  <source id="oa-hero-src" src="./assets/openair-intro.mp4" type="video/mp4">
+</video>
+<div id="oa-hero-vig"></div>
+
     <!-- Glow halo -->
     <div id="glow" class="stage-glow"></div>
 
     <!-- Layered photos (10-phase animation) -->
-    <img id="logo"          class="stage-img" src="./assets/hero_logo.png?v=7"          alt="OPEN AIRロゴ"     style="opacity:0" onerror="this.src='./assets/part_logo.png?v=7'">
-    <img id="package"       class="stage-img" src="./assets/hero_package.png?v=7"       alt="OPEN AIRのパッケージ" style="opacity:0" onerror="this.src='./assets/part_package.png?v=7'">
-    <img id="strips_fan"    class="stage-img" src="./assets/hero_fan.png?v=7"           alt="複数枚のテープ"    style="opacity:0" onerror="this.src='./assets/part_strips_fan.png?v=7'">
-    <img id="single_strip"  class="stage-img" src="./assets/hero_single.png?v=7"        alt="1枚のテープ"      style="opacity:0" onerror="this.src='./assets/part_single_strip.png?v=7'">
-    <img id="three_layers"  class="stage-img" src="./assets/hero_layers.png?v=7"        alt="3層構造"          style="opacity:0" onerror="this.src='./assets/part_three_layers.png?v=7'">
-    <img id="united_strip"  class="stage-img" src="./assets/hero_united.png?v=7"        alt="合体したテープ"    style="opacity:0" onerror="this.src='./assets/hero_single.png?v=7'">
-    <img id="nose"          class="stage-img" src="./assets/hero_nose.png?v=7"          alt="鼻に装着した状態"  style="opacity:0" onerror="this.src='./assets/part_nose.png?v=7'">
+    <img id="logo"          class="stage-img"          alt="OPEN AIRロゴ"     style="opacity:0">
+    <img id="package"       class="stage-img"       alt="OPEN AIRのパッケージ" style="opacity:0">
+    <img id="strips_fan"    class="stage-img"           alt="複数枚のテープ"    style="opacity:0">
+    <img id="single_strip"  class="stage-img"        alt="1枚のテープ"      style="opacity:0">
+    <img id="three_layers"  class="stage-img"        alt="3層構造"          style="opacity:0">
+    <img id="united_strip"  class="stage-img"        alt="合体したテープ"    style="opacity:0">
+    <img id="nose"          class="stage-img"          alt="鼻に装着した状態"  style="opacity:0">
 
     <!-- Breath arrows for the final phase -->
     <div id="breath" class="breath">
@@ -1356,7 +1439,7 @@
 
         <!-- SCENE 1 — 長距離移動／フライト -->
         <div class="scene-card rounded-3xl aspect-[4/5]" role="button" tabindex="0" aria-pressed="false" aria-label="長距離移動・フライト中のシーン: タップで詳細を表示">
-          <img src="./assets/23.png?v=1" alt="" class="scene-img absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'">
+          <img src="./assets/23.webp?v=1" alt="" class="scene-img absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'" loading="lazy" decoding="async">
           <div class="scene-overlay"></div>
           <div class="scene-content">
             <div class="scene-eyebrow text-[11px] tracking-[0.28em] uppercase mb-2">Long flights</div>
@@ -1368,7 +1451,7 @@
 
         <!-- SCENE 2 — トレーニング -->
         <div class="scene-card rounded-3xl aspect-[4/5]" role="button" tabindex="0" aria-pressed="false" aria-label="トレーニング中のシーン: タップで詳細を表示">
-          <img src="./assets/21.png?v=7" alt="" class="scene-img absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'">
+          <img src="./assets/21.webp?v=7" alt="" class="scene-img absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'" loading="lazy" decoding="async">
           <div class="scene-overlay"></div>
           <div class="scene-content">
             <div class="scene-eyebrow text-[11px] tracking-[0.28em] uppercase mb-2">Training</div>
@@ -1380,7 +1463,7 @@
 
         <!-- SCENE 3 — デスクワーク -->
         <div class="scene-card rounded-3xl aspect-[4/5]" role="button" tabindex="0" aria-pressed="false" aria-label="デスクワーク中のシーン: タップで詳細を表示">
-          <img src="./assets/22.png?v=7" alt="" class="scene-img absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'">
+          <img src="./assets/22.webp?v=7" alt="" class="scene-img absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'" loading="lazy" decoding="async">
           <div class="scene-overlay"></div>
           <div class="scene-content">
             <div class="scene-eyebrow text-[11px] tracking-[0.28em] uppercase mb-2">Desk work</div>
@@ -1392,7 +1475,7 @@
 
         <!-- SCENE 4 — ランニング -->
         <div class="scene-card rounded-3xl aspect-[4/5]" role="button" tabindex="0" aria-pressed="false" aria-label="ランニング中のシーン: タップで詳細を表示">
-          <img src="./assets/24.png?v=1" alt="" class="scene-img absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'">
+          <img src="./assets/24.webp?v=1" alt="" class="scene-img absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'" loading="lazy" decoding="async">
           <div class="scene-overlay"></div>
           <div class="scene-content">
             <div class="scene-eyebrow text-[11px] tracking-[0.28em] uppercase mb-2">Running</div>
@@ -1404,7 +1487,7 @@
 
         <!-- SCENE 5 — ヨガ・瞑想 -->
         <div class="scene-card rounded-3xl aspect-[4/5]" role="button" tabindex="0" aria-pressed="false" aria-label="ヨガ・瞑想中のシーン: タップで詳細を表示">
-          <img src="./assets/25.png?v=1" alt="" class="scene-img absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'">
+          <img src="./assets/25.webp?v=1" alt="" class="scene-img absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'" loading="lazy" decoding="async">
           <div class="scene-overlay"></div>
           <div class="scene-content">
             <div class="scene-eyebrow text-[11px] tracking-[0.28em] uppercase mb-2">Yoga &amp; meditation</div>
@@ -1416,7 +1499,7 @@
 
         <!-- SCENE 6 — 寝る前 (must remain LAST: ties to the section's "not just for sleep" headline) -->
         <div class="scene-card rounded-3xl aspect-[4/5]" role="button" tabindex="0" aria-pressed="false" aria-label="寝る前のシーン: タップで詳細を表示">
-          <img src="./assets/20.png?v=7" alt="" class="scene-img absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'">
+          <img src="./assets/20.webp?v=7" alt="" class="scene-img absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'" loading="lazy" decoding="async">
           <div class="scene-overlay"></div>
           <div class="scene-content">
             <div class="scene-eyebrow text-[11px] tracking-[0.28em] uppercase mb-2">Before sleep</div>
@@ -1455,8 +1538,8 @@
         <!-- CENTER — large product stage (no card, floats on bg) -->
         <div class="md:col-span-6">
           <div class="relative aspect-[5/4] flex items-center justify-center">
-            <img id="design-single" src="./assets/design_single.png?v=7" alt="Single" class="absolute max-w-[78%] max-h-[78%] object-contain transition-[opacity,transform] duration-300 ease-out" style="opacity:1; transform: translate(0,0) scale(1); filter: drop-shadow(0 30px 30px rgba(0,0,0,.08));" onerror="this.src='./assets/part_single_strip.png?v=7'">
-            <img id="design-layers" src="./assets/design_layers.png?v=7" alt="Three layers" class="absolute max-w-[100%] max-h-[100%] object-contain transition-[opacity,transform] duration-300 ease-out" style="opacity:0; transform: scale(0.92); filter: drop-shadow(0 30px 30px rgba(0,0,0,.08));" onerror="this.src='./assets/part_three_layers.png?v=7'">
+            <img id="design-single" src="./assets/design_single.webp?v=7" alt="Single" class="absolute max-w-[78%] max-h-[78%] object-contain transition-[opacity,transform] duration-300 ease-out" style="opacity:1; transform: translate(0,0) scale(1); filter: drop-shadow(0 30px 30px rgba(0,0,0,.08));" onerror="this.src='./assets/part_single_strip.webp?v=7'" loading="lazy" decoding="async">
+            <img id="design-layers" src="./assets/design_layers.webp?v=7" alt="Three layers" class="absolute max-w-[100%] max-h-[100%] object-contain transition-[opacity,transform] duration-300 ease-out" style="opacity:0; transform: scale(0.92); filter: drop-shadow(0 30px 30px rgba(0,0,0,.08));" onerror="this.src='./assets/part_three_layers.webp?v=7'" loading="lazy" decoding="async">
             <!-- Mobile-only feature pills (overlay on product after morph) -->
             <div id="design-mobile-overlay" style="display:none;">
               <div class="design-mobile-pill" data-mobile-step="0">
@@ -1553,7 +1636,7 @@
           <div class="text-[18px] font-semibold mb-3 tracking-tight text-zinc-900" data-i18n="function_card1_title">自然に、空気が通る。</div>
           <p class="text-[13px] text-zinc-500 leading-[1.9]" data-i18n="function_card1_desc">内部構造を最適化し、<br/>スムーズな空気の流れを<br/>サポート。</p>
           <div class="mt-auto pt-8 flex items-end justify-center min-h-[200px]">
-            <img src="./assets/function_air.png?v=7" alt="" class="w-full max-h-[210px] object-contain" onerror="this.style.display='none'">
+            <img src="./assets/function_air.webp?v=7" alt="" class="w-full max-h-[210px] object-contain" onerror="this.style.display='none'" loading="lazy" decoding="async">
           </div>
         </div>
 
@@ -1562,7 +1645,7 @@
           <div class="text-[18px] font-semibold mb-3 tracking-tight text-zinc-900" data-i18n="function_card2_title">つけている感覚がない。</div>
           <p class="text-[13px] text-zinc-500 leading-[1.9]" data-i18n="function_card2_desc">過度な圧迫はなく、<br/>肌に寄り添うように<br/>フィット。</p>
           <div class="mt-auto pt-8 flex items-end justify-center min-h-[200px]">
-            <img src="./assets/function_fit.png?v=7" alt="" class="w-full max-h-[210px] object-contain" onerror="this.style.display='none'">
+            <img src="./assets/function_fit.webp?v=7" alt="" class="w-full max-h-[210px] object-contain" onerror="this.style.display='none'" loading="lazy" decoding="async">
           </div>
         </div>
 
@@ -1571,7 +1654,7 @@
           <div class="text-[18px] font-semibold mb-3 tracking-tight text-zinc-900" data-i18n="function_card3_title">長時間でも、ズレない。</div>
           <p class="text-[13px] text-zinc-500 leading-[1.9]" data-i18n="function_card3_desc">ドイツ製 HENKEL 社の<br/>粘着素材を採用。<br/>やさしさと確かな固定力。</p>
           <div class="mt-auto pt-8 flex items-end justify-center min-h-[200px]">
-            <img src="./assets/function_grip.png?v=7" alt="" class="w-full max-h-[210px] object-contain" onerror="this.style.display='none'">
+            <img src="./assets/function_grip.webp?v=7" alt="" class="w-full max-h-[210px] object-contain" onerror="this.style.display='none'" loading="lazy" decoding="async">
           </div>
           <div class="absolute bottom-5 right-5 text-[10px] tracking-[0.22em] uppercase text-zinc-400 bg-white/70 backdrop-blur px-2.5 py-1 rounded-full">Made in Germany</div>
         </div>
@@ -1581,7 +1664,7 @@
           <div class="text-[18px] font-semibold mb-3 tracking-tight text-zinc-900" data-i18n="function_card4_title">強すぎず、弱すぎない。</div>
           <p class="text-[13px] text-zinc-500 leading-[1.9]" data-i18n="function_card4_desc">やさしさと固定力を両立。<br/>長時間でも違和感が少ない、<br/>最適なバランス設計。</p>
           <div class="mt-auto pt-8 flex items-end justify-center min-h-[200px]">
-            <img src="./assets/function_balance.png?v=7" alt="" class="w-full max-h-[210px] object-contain" onerror="this.style.display='none'">
+            <img src="./assets/function_balance.webp?v=7" alt="" class="w-full max-h-[210px] object-contain" onerror="this.style.display='none'" loading="lazy" decoding="async">
           </div>
         </div>
       </div>
@@ -1635,7 +1718,42 @@
   </section>
 
   <!-- ============== HOW TO USE ============== -->
-  <section id="wear" class="py-32 px-6">
+  <!-- ====== [OPEN AIR] closing film — 購入セクションの直前 ====== -->
+<style>
+  #oa-film{ height:260vh; position:relative; background:#000; }
+  #oa-film .oa-pin{ position:sticky; top:0; height:100vh; height:100svh; overflow:hidden; display:grid; place-items:center; }
+  #oa-film .oa-video{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; pointer-events:none; }
+  #oa-film .oa-vig{ position:absolute; inset:0; pointer-events:none;
+    background:linear-gradient(to bottom, rgba(0,0,0,.55) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0) 62%, rgba(0,0,0,.7) 100%); }
+  #oa-film .oa-line{ position:absolute; left:50%; top:38%; transform:translate(-50%,-50%) translateY(18px);
+    opacity:0; transition:opacity .5s ease, transform .7s cubic-bezier(.22,.61,.36,1);
+    width:max-content; max-width:min(92vw,1100px); margin:0; z-index:2; text-align:center;
+    font-weight:600; letter-spacing:.04em; line-height:1.45; font-size:clamp(24px,4.4vw,52px);
+    color:#f5f5f7; word-break:keep-all; overflow-wrap:normal; text-shadow:0 2px 40px rgba(0,0,0,.85); }
+  #oa-film .oa-line small{ display:block; margin-top:14px; font-size:clamp(12px,1.5vw,16px);
+    font-weight:400; letter-spacing:.08em; color:rgba(245,245,247,.6); }
+  #oa-film .oa-line.is-on{ opacity:1; transform:translate(-50%,-50%) translateY(0); }
+  #oa-film .oa-eyebrow{ position:absolute; top:8%; left:50%; transform:translateX(-50%); z-index:3;
+    font-size:11px; letter-spacing:.32em; text-transform:uppercase; color:rgba(245,245,247,.42); }
+  @media (max-width:600px){ #oa-film{height:230vh;} #oa-film .oa-line{ top:32%; font-size:clamp(22px,6.4vw,32px);} }
+  @media (prefers-reduced-motion:reduce){ #oa-film{ height:100vh; } }
+</style>
+
+<section id="oa-film">
+  <div class="oa-pin">
+    <video id="oa-film-video" class="oa-video" muted playsinline webkit-playsinline preload="auto"
+           autoplay loop disablepictureinpicture poster="./assets/openair-film-poster.jpg">
+      <source id="oa-film-src" src="./assets/openair-film.mp4" type="video/mp4">
+    </video>
+    <div class="oa-vig"></div>
+    <div class="oa-eyebrow">OPEN AIR</div>
+    <p class="oa-line" data-in=".08" data-out=".32" data-i18n="film_line_1">貼るのは、数秒。</p>
+    <p class="oa-line" data-in=".38" data-out=".58" data-i18n="film_line_2">あとは、忘れていい。</p>
+    <p class="oa-line" data-in=".64" data-out=".95" data-i18n="film_line_3">鼻呼吸を、そのまま。</p>
+  </div>
+</section>
+
+<section id="wear" class="py-32 px-6">
     <div class="max-w-7xl mx-auto reveal" data-reveal>
       <div class="text-center mb-14">
         <div class="text-[12px] tracking-[0.32em] uppercase text-zinc-500 mb-4">How to use</div>
@@ -1652,7 +1770,7 @@
             <p class="mt-3 md:mt-4 text-zinc-500 text-[11.5px] md:text-[12.5px] leading-[1.7] md:leading-[1.85]" data-i18n="howto_step1_desc">油分が残っていると、剥がれやすくなる場合があります。</p>
           </div>
           <div class="relative -my-5 md:-my-8 -mr-5 md:-mr-8 overflow-hidden">
-            <img src="./assets/howto_step1.png?v=7" alt="" class="absolute inset-0 w-full h-full object-cover object-center" onerror="this.style.display='none'">
+            <img src="./assets/howto_step1.webp?v=7" alt="" class="absolute inset-0 w-full h-full object-cover object-center" onerror="this.style.display='none'" loading="lazy" decoding="async">
           </div>
         </div>
 
@@ -1664,7 +1782,7 @@
             <p class="mt-3 md:mt-4 text-zinc-400 text-[11.5px] md:text-[12.5px] leading-[1.7] md:leading-[1.85]" data-i18n="howto_step2_desc">それだけ。肌へのやさしさを優先した設計です。</p>
           </div>
           <div class="relative -my-5 md:-my-8 -mr-5 md:-mr-8 overflow-hidden">
-            <img src="./assets/howto_step2.png?v=7" alt="" class="absolute inset-0 w-full h-full object-cover object-center" onerror="this.style.display='none'">
+            <img src="./assets/howto_step2.webp?v=7" alt="" class="absolute inset-0 w-full h-full object-cover object-center" onerror="this.style.display='none'" loading="lazy" decoding="async">
           </div>
         </div>
       </div>
@@ -1685,7 +1803,7 @@
             <p class="text-[11.5px] text-zinc-500 leading-[1.85] pl-[38px]" data-i18n="howto_pos1_desc">鼻の中央にしっかりと装着。<br/>安定感を重視した使い方。</p>
           </div>
           <div class="flex items-center justify-center">
-            <img src="./assets/howto_pos1.png?v=7" alt="" class="w-[120px] h-[120px] object-contain" onerror="this.style.display='none'">
+            <img src="./assets/howto_pos1.webp?v=7" alt="" class="w-[120px] h-[120px] object-contain" onerror="this.style.display='none'" loading="lazy" decoding="async">
           </div>
         </div>
 
@@ -1698,7 +1816,7 @@
             <p class="text-[11.5px] text-zinc-500 leading-[1.85] pl-[38px]" data-i18n="howto_pos2_desc">やや上部に装着することで、<br/>自然なフィット感に。</p>
           </div>
           <div class="flex items-center justify-center">
-            <img src="./assets/howto_pos2.png?v=7" alt="" class="w-[120px] h-[120px] object-contain" onerror="this.style.display='none'">
+            <img src="./assets/howto_pos2.webp?v=7" alt="" class="w-[120px] h-[120px] object-contain" onerror="this.style.display='none'" loading="lazy" decoding="async">
           </div>
         </div>
 
@@ -1711,7 +1829,7 @@
             <p class="text-[11.5px] text-zinc-500 leading-[1.85] pl-[38px]" data-i18n="howto_pos3_desc">鼻の上部にやさしく装着。<br/>軽さを重視した使い方。</p>
           </div>
           <div class="flex items-center justify-center">
-            <img src="./assets/howto_pos3.png?v=7" alt="" class="w-[120px] h-[120px] object-contain" onerror="this.style.display='none'">
+            <img src="./assets/howto_pos3.webp?v=7" alt="" class="w-[120px] h-[120px] object-contain" onerror="this.style.display='none'" loading="lazy" decoding="async">
           </div>
         </div>
       </div>
@@ -1734,7 +1852,7 @@
         <!-- AMBASSADOR CARD 1 — Boxer (ricardobravofighter) -->
         <div class="ig-card" role="button" tabindex="0" aria-label="@ricardobravofighter の証言を見る">
           <div class="ig-photo">
-            <img src="./assets/10.png?v=7" alt="ricardobravofighter — ボクサー" class="ig-bg-photo">
+            <img src="./assets/10.webp?v=7" alt="ricardobravofighter — ボクサー" class="ig-bg-photo" loading="lazy" decoding="async">
             <div class="ig-overlay-label">
               <div class="ig-label-text" data-i18n="amb1_role">ボクサー</div>
             </div>
@@ -1750,7 +1868,7 @@
         <!-- AMBASSADOR CARD 2 — Desk Worker (willyosco) -->
         <div class="ig-card" role="button" tabindex="0" aria-label="@willyosco の証言を見る">
           <div class="ig-photo">
-            <img src="./assets/11.png?v=7" alt="willyosco — デスクワーカー" class="ig-bg-photo">
+            <img src="./assets/11.webp?v=7" alt="willyosco — デスクワーカー" class="ig-bg-photo" loading="lazy" decoding="async">
             <div class="ig-overlay-label">
               <div class="ig-label-text" data-i18n="amb2_role">デスクワーカー</div>
             </div>
@@ -1766,7 +1884,7 @@
         <!-- AMBASSADOR CARD 3 — Chef (natalianzai) -->
         <div class="ig-card" role="button" tabindex="0" aria-label="@natalianzai の証言を見る">
           <div class="ig-photo">
-            <img src="./assets/12.png?v=7" alt="natalianzai — 料理人" class="ig-bg-photo">
+            <img src="./assets/12.webp?v=7" alt="natalianzai — 料理人" class="ig-bg-photo" loading="lazy" decoding="async">
             <div class="ig-overlay-label">
               <div class="ig-label-text" data-i18n="amb3_role">ケータリングシェフ</div>
             </div>
@@ -2986,5 +3104,174 @@ applyLang(getLang());
   });
 })();
 </script>
+<!-- ====== [OPEN AIR] intro → scroll-scrub controller ====== -->
+<script>
+(function () {
+  var SEC = document.getElementById('cinematic');
+  var V   = document.getElementById('oa-hero-video');
+  var SRC = document.getElementById('oa-hero-src');
+  if (!SEC || !V || !SRC) return;
+
+  // 映像だけを見せる長さ。ここを変えれば「見出しが出るまで」が変わる
+  var INTRO_END = 2.0;
+
+  // 回線・画面に合わせて軽い方を読む
+  var conn = navigator.connection || {};
+  if (window.innerWidth < 900 || conn.saveData === true || /2g|slow-2g/.test(conn.effectiveType || '')) {
+    SRC.src = SRC.src.replace('openair-intro.mp4', 'openair-intro-mobile.mp4');
+    V.load();
+  }
+
+  SEC.classList.add('oa-intro');
+
+  function revealHeadline() {
+    SEC.classList.add('oa-intro-soft');
+    SEC.classList.remove('oa-intro');
+    setTimeout(function () { SEC.classList.remove('oa-intro-soft'); }, 1600);
+  }
+
+  // 動きを減らす設定の人：スクラブせず、静かにループ再生させるだけ
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    V.loop = true;
+    setTimeout(revealHeadline, 400);
+    return;
+  }
+
+  var introDone = false, duration = 0;
+  var target = INTRO_END, current = 0, running = false, inView = true;
+
+  var headlineTimer = setTimeout(revealHeadline, 1700);
+  var safetyTimer   = setTimeout(endIntro, 4000); // 自動再生が塞がれた場合の保険
+
+  function endIntro() {
+    if (introDone) return;
+    introDone = true;
+    clearTimeout(safetyTimer);
+    try { V.pause(); } catch (e) {}
+    duration = V.duration || 7.2;
+    // 今いる位置から引き継ぐ。あとは lerp が滑らかに埋めるのでジャンプしない
+    current = V.currentTime || 0;
+    update();
+    loop();
+  }
+
+  V.addEventListener('timeupdate', function () {
+    if (!introDone && V.currentTime >= INTRO_END) endIntro();
+  });
+
+  function progress() {
+    var rect = SEC.getBoundingClientRect();
+    var travel = SEC.offsetHeight - window.innerHeight;
+    if (travel <= 0) return 0;
+    var p = (-rect.top) / travel;
+    return p < 0 ? 0 : (p > 1 ? 1 : p);
+  }
+
+  // スクロール分は INTRO_END 〜 終端 に割り当てる（イントロ分を二度見せない）
+  function update() {
+    var d = duration || V.duration || 7.2;
+    target = INTRO_END + progress() * Math.max(d - INTRO_END, 0.1);
+  }
+
+  function loop() {
+    if (!inView) { running = false; return; }
+    running = true;
+    current += (target - current) * 0.14;
+    if (Math.abs(target - current) < 0.004) current = target;
+    if (isFinite(current) && V.readyState >= 2) { try { V.currentTime = current; } catch (e) {} }
+    requestAnimationFrame(loop);
+  }
+
+  window.addEventListener('scroll', function () {
+    // 先にスクロールされたら、イントロを打ち切って即スクラブへ
+    if (!introDone) { clearTimeout(headlineTimer); revealHeadline(); endIntro(); return; }
+    update();
+    if (!running && inView) loop();
+  }, { passive: true });
+
+  window.addEventListener('resize', update, { passive: true });
+
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (en) {
+      inView = en[0].isIntersecting;
+      if (inView && !running && introDone) loop();
+    }, { rootMargin: '150px' }).observe(SEC);
+  }
+})();
+</script>
+<!-- ====== [OPEN AIR] scroll-scrub controller (shared) ====== -->
+<script>
+(function () {
+  window.oaScrub = function (sectionId, videoId, srcId, lines) {
+    var scroller = document.getElementById(sectionId);
+    var video = document.getElementById(videoId);
+    var src = document.getElementById(srcId);
+    if (!scroller || !video || !src) return;
+
+    // 軽い方を読む条件（スマホ / 省データ / 低速回線）
+    var conn = navigator.connection || {};
+    if (window.innerWidth < 900 || conn.saveData === true || /2g|slow-2g/.test(conn.effectiveType || '')) {
+      src.src = src.src.replace('openair-film.mp4', 'openair-film-mobile.mp4');
+      video.load();
+    }
+
+    // 動きを減らす設定の人は、スクラブせず通常ループ再生のまま
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    var duration = 0, target = 0, current = 0, running = false, inView = true, primed = false;
+
+    function takeOver() {
+      if (primed) return;
+      primed = true;
+      video.removeAttribute('loop'); video.loop = false;
+      video.pause(); video.currentTime = 0;
+      duration = video.duration || 0;
+      update(); loop();
+    }
+    function prime() {
+      var p = video.play();
+      if (p && p.then) { p.then(function(){ video.pause(); takeOver(); }).catch(takeOver); }
+      else { video.pause(); takeOver(); }
+    }
+    if (video.readyState >= 1) prime();
+    else video.addEventListener('loadedmetadata', prime, { once: true });
+
+    function progress() {
+      var rect = scroller.getBoundingClientRect();
+      var travel = scroller.offsetHeight - window.innerHeight;
+      if (travel <= 0) return 0;
+      var p = (-rect.top) / travel;
+      return p < 0 ? 0 : (p > 1 ? 1 : p);
+    }
+    function update() {
+      var p = progress();
+      target = p * (duration || video.duration || 0);
+      if (lines) for (var i = 0; i < lines.length; i++) {
+        var el = lines[i];
+        el.classList.toggle('is-on', p >= parseFloat(el.dataset.in) && p <= parseFloat(el.dataset.out));
+      }
+    }
+    // lerp で滑らかに追従（これが Apple 的な質感の正体）
+    function loop() {
+      if (!inView) { running = false; return; }
+      running = true;
+      current += (target - current) * 0.14;
+      if (Math.abs(target - current) < 0.004) current = target;
+      if (isFinite(current) && video.readyState >= 2) { try { video.currentTime = current; } catch (e) {} }
+      requestAnimationFrame(loop);
+    }
+    window.addEventListener('scroll', function(){ update(); if (!running && inView) loop(); }, { passive:true });
+    window.addEventListener('resize', update, { passive:true });
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function(en){
+        inView = en[0].isIntersecting;
+        if (inView && !running && primed) loop();
+      }, { rootMargin:'150px' }).observe(scroller);
+    }
+  };
+})();
+</script>
+
+<script>oaScrub("oa-film","oa-film-video","oa-film-src",Array.prototype.slice.call(document.querySelectorAll("#oa-film .oa-line")));</script>
 </body>
 </html>

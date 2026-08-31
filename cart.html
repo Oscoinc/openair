@@ -113,7 +113,7 @@
 <!-- ====== Persistent Nav ====== -->
 <nav class="fixed top-4 left-1/2 -translate-x-1/2 z-50 glass-pill rounded-full pl-3 pr-2 py-2 flex items-center gap-5">
   <a href="./openair.html" class="pr-3 border-r border-black/10 flex items-center flex-shrink-0" style="gap:10px;">
-    <img src="./assets/osco_logo.png?v=1" alt="OSCO" class="block flex-shrink-0" style="height:18px; width:auto; transform:translateY(0.5px);" onerror="this.style.display='none'">
+    <img src="./assets/osco_logo.webp?v=1" alt="OSCO" class="block flex-shrink-0" style="height:18px; width:auto; transform:translateY(0.5px);" onerror="this.style.display='none'" loading="lazy" decoding="async">
     <span class="text-[15px] font-semibold tracking-tight text-zinc-900 leading-none whitespace-nowrap">OPEN AIR</span>
   </a>
   <a href="./openair.html#concept"  class="text-[13px] text-zinc-600 hover:text-zinc-900 transition" data-i18n="nav_concept">コンセプト</a>
@@ -359,16 +359,16 @@ const PRODUCTS = {
   single: { id:'single', name:'Single',
     desc:{ ja:'30 枚 · 1ヶ月分',  en:'30 strips · 1 month',  es:'30 unidades · 1 mes',    pt:'30 unidades · 1 mês' },
     price:{ ja:1980, en:13, es:15, pt:65 },
-    image:'./assets/part_package.png?v=7' },
+    image:'./assets/part_package.webp?v=7' },
   three:  { id:'three',  name:'Three',
     desc:{ ja:'90 枚 · 3ヶ月分',  en:'90 strips · 3 months', es:'90 unidades · 3 meses',  pt:'90 unidades · 3 meses' },
     price:{ ja:4980, en:33, es:39, pt:165 },
-    image:'./assets/part_package.png?v=7',
+    image:'./assets/part_package.webp?v=7',
     discount:{ ja:'¥1,000 OFF', en:'$6 OFF', es:'€6 OFF', pt:'R$ 30 OFF' } },
   six:    { id:'six',    name:'Six',
     desc:{ ja:'180 枚 · 6ヶ月分', en:'180 strips · 6 months', es:'180 unidades · 6 meses', pt:'180 unidades · 6 meses' },
     price:{ ja:8980, en:59, es:69, pt:295 },
-    image:'./assets/part_package.png?v=7',
+    image:'./assets/part_package.webp?v=7',
     discount:{ ja:'¥2,900 OFF', en:'$19 OFF', es:'€21 OFF', pt:'R$ 95 OFF' } }
 };
 const STORAGE_KEY = 'openair_cart';
@@ -431,7 +431,7 @@ function render(){
       return `
         <div class="flex gap-5 p-6 items-center">
           <div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-zinc-50 to-zinc-100 grid place-items-center shrink-0 overflow-hidden">
-            <img src="${p.image}" alt="${p.name}" class="max-w-[80%] max-h-[80%] object-contain" onerror="this.style.display='none'">
+            <img src="${p.image}" alt="${p.name}" class="max-w-[80%] max-h-[80%] object-contain" onerror="this.style.display='none'" loading="lazy" decoding="async">
           </div>
           <div class="flex-1 min-w-0">
             <div class="text-[11px] tracking-[0.18em] uppercase text-zinc-500 mb-1">${p.name}</div>
