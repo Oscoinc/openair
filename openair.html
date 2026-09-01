@@ -3157,6 +3157,7 @@ applyLang(getLang());
   var conn = navigator.connection || {};
   if (window.innerWidth < 900 || conn.saveData === true || /2g|slow-2g/.test(conn.effectiveType || '')) {
     SRC.src = SRC.src.replace('openair-intro.mp4', 'openair-intro-mobile.mp4');
+    V.poster = './assets/openair-intro-mobile-poster.jpg';
     V.load();
   }
 
@@ -3250,6 +3251,7 @@ applyLang(getLang());
     var conn = navigator.connection || {};
     if (window.innerWidth < 900 || conn.saveData === true || /2g|slow-2g/.test(conn.effectiveType || '')) {
       src.src = src.src.replace('openair-film.mp4', 'openair-film-mobile.mp4');
+      video.poster = './assets/openair-film-mobile-poster.jpg';
       video.load();
     }
 
@@ -3326,7 +3328,7 @@ applyLang(getLang());
     var sampC = document.createElement('canvas'); sampC.width = 1; sampC.height = 1;
     var sampCtx = sampC.getContext('2d', { willReadFrequently: true });
     poster.onload = function () { posterOK = true; };
-    poster.src = posterUrl;
+    poster.src = v.getAttribute('poster') || posterUrl;  // スマホ切替後の縦posterに追従
 
     function resize() {
       var r = c.getBoundingClientRect();
@@ -3368,8 +3370,9 @@ applyLang(getLang());
       var cover = Math.max(c.width / sw, c.height / sh);
       var contain = Math.min(c.width / sw, c.height / sh);
 
-      // 切り落としが 15% 未満なら、これまで通り画面いっぱいに広げる
-      if (contain / cover > 0.85) {
+      // 切り落としが 25% 未満なら画面いっぱいに広げる。
+      // 縦動画×縦画面はここに入る（約18%）。横動画×縦画面は約74%なので入らない。
+      if (contain / cover > 0.75) {
         var d0 = rect(sw, sh, cover);
         ctx.drawImage(src, d0[0], d0[1], d0[2], d0[3]);
         return;
