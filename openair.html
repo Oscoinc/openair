@@ -3152,12 +3152,16 @@ applyLang(getLang());
 
   // 映像だけを見せる長さ。ここを変えれば「見出しが出るまで」が変わる
   var INTRO_END = 2.0;
+  var SEG_END = 0;   // 0 = 動画の最後まで使う（PC）
 
   // 回線・画面に合わせて軽い方を読む
   var conn = navigator.connection || {};
   if (window.innerWidth < 900 || conn.saveData === true || /2g|slow-2g/.test(conn.effectiveType || '')) {
-    SRC.src = SRC.src.replace('openair-intro.mp4', 'openair-intro-mobile.mp4');
-    V.poster = './assets/openair-intro-mobile-poster.jpg';
+    // MOBILE_V2: スマホは縦動画1本（OPENAIRE１+2 を連結）。
+    // 冒頭はその前半、「使い方」の直前は後半を使うので、同じ絵が2回出ない。
+    SRC.src = './assets/openair-mobile-v2.mp4?v=2';
+    V.poster = './assets/openair-mobile-v2-poster.jpg?v=2';
+    SEG_END = 5.52;
     V.load();
   }
 
@@ -3209,6 +3213,7 @@ applyLang(getLang());
   // スクロール分は INTRO_END 〜 終端 に割り当てる（イントロ分を二度見せない）
   function update() {
     var d = duration || V.duration || 7.2;
+    if (SEG_END) d = Math.min(d, SEG_END);
     target = INTRO_END + progress() * Math.max(d - INTRO_END, 0.1);
   }
 
@@ -3247,11 +3252,14 @@ applyLang(getLang());
     var src = document.getElementById(srcId);
     if (!scroller || !video || !src) return;
 
+    var segStart = 0;   // 連結動画のどこから使うか（PCは0）
+
     // 軽い方を読む条件（スマホ / 省データ / 低速回線）
     var conn = navigator.connection || {};
     if (window.innerWidth < 900 || conn.saveData === true || /2g|slow-2g/.test(conn.effectiveType || '')) {
-      src.src = src.src.replace('openair-film.mp4', 'openair-film-mobile.mp4');
-      video.poster = './assets/openair-film-mobile-poster.jpg';
+      src.src = './assets/openair-mobile-v2.mp4?v=2';
+      video.poster = './assets/openair-mobile-v2-poster.jpg?v=2';
+      segStart = 5.52;          // 連結動画の後半だけを使う
       video.load();
     }
 
@@ -3264,8 +3272,10 @@ applyLang(getLang());
       if (primed) return;
       primed = true;
       video.removeAttribute('loop'); video.loop = false;
-      video.pause(); video.currentTime = 0;
+      video.pause();
       duration = video.duration || 0;
+      current = segStart;
+      try { video.currentTime = segStart; } catch (e) {}
       update(); loop();
     }
     function prime() {
@@ -3285,7 +3295,8 @@ applyLang(getLang());
     }
     function update() {
       var p = progress();
-      target = p * (duration || video.duration || 0);
+      var d = duration || video.duration || 0;
+      target = segStart + p * Math.max(d - segStart, 0.1);
       if (lines) for (var i = 0; i < lines.length; i++) {
         var el = lines[i];
         el.classList.toggle('is-on', p >= parseFloat(el.dataset.in) && p <= parseFloat(el.dataset.out));
