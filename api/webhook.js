@@ -18,13 +18,39 @@ import { getStripe, normalize } from './_orders.js';
 import { sendMail, orderConfirmation } from './_mail.js';
 import { SHOP } from './_shop.js';
 
-// 署名検証には「生のリクエストボディ」が必要なのでパースを止める
-export const config = { api: { bodyParser: false } };
-
+// 【重要】Vercel の素の Serverless Function では、Next.js の
+//   export const config = { api: { bodyParser: false } }
+// が効かない。ボディは勝手にパースされてしまい、署名検証に必要な
+// 「生のバイト列」が取れないことがある。そこで2段構えにする。
+//   1. 生ボディが取れたときは、本来どおり署名を検証する
+//   2. 取れなかったときは、届いたイベントIDで Stripe に問い合わせて
+//      「自分のアカウントに本当に存在するイベントか」を確認する
+// 2 でも、攻撃者は実在するイベントIDを作れないので偽の注文は通らない。
 async function readRawBody(req) {
-  const chunks = [];
-  for await (const chunk of req) chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
-  return Buffer.concat(chunks);
+  try {
+    const chunks = [];
+    for await (const chunk of req) chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
+    return Buffer.concat(chunks);
+  } catch {
+    return Buffer.alloc(0);
+  }
+}
+
+async function resolveEvent(req) {
+  const sig = req.headers['stripe-signature'];
+  const secret = process.env.STRIPE_WEBHOOK_SECRET;
+  const raw = await readRawBody(req);
+
+  if (raw.length > 0 && sig && secret) {
+    return getStripe().webhooks.constructEvent(raw, sig, secret);
+  }
+
+  const parsed = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
+  if (!parsed.id || !String(parsed.id).startsWith('evt_')) {
+    throw new Error('raw body unavailable and no event id in payload');
+  }
+  console.warn('[webhook] 生ボディが取れなかったのでイベントIDで照会します', parsed.id);
+  return await getStripe().events.retrieve(String(parsed.id));
 }
 
 // Webhook のイベントには line_items が入らないので取り直す
@@ -65,14 +91,9 @@ export default async function handler(req, res) {
 
   let event;
   try {
-    const raw = await readRawBody(req);
-    event = getStripe().webhooks.constructEvent(
-      raw,
-      req.headers['stripe-signature'],
-      process.env.STRIPE_WEBHOOK_SECRET
-    );
+    event = await resolveEvent(req);
   } catch (err) {
-    console.error('[webhook] signature verification failed', err.message);
+    console.error('[webhook] 検証に失敗', err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
