@@ -989,6 +989,16 @@
     transform: translateY(0);
   }
 </style>
+<script>
+/* IMG_HERO: スマホでは映像をやめ、以前の画像アニメーション（パッケージ版）に戻す。
+   PCは従来どおり映像。ここで <html> にクラスを付けるので、CSSもJSもこの1箇所で切り替わる。 */
+(function(){
+  var c = navigator.connection || {};
+  var m = window.innerWidth < 900 || c.saveData === true || /2g|slow-2g/.test(c.effectiveType || '');
+  window.OA_IMG_HERO = !!m;
+  if (m) document.documentElement.classList.add('oa-img-hero');
+})();
+</script>
 </head>
 <body class="overflow-x-hidden">
 
@@ -1016,6 +1026,17 @@
   #cinematic .stage-glow{ display:none !important; }
   /* 新しい映像には装着カットが無いので「装着、たった2ステップ」だけ外す */
   #cinematic #cap-6{ display:none !important; }
+
+  /* --- IMG_HERO：スマホは元の画像アニメーションに戻す --- */
+  html.oa-img-hero #cinematic .stage-img{ display:block !important; }
+  html.oa-img-hero #cinematic #breath{ display:block !important; }
+  html.oa-img-hero #cinematic .stage-glow{ display:block !important; }
+  html.oa-img-hero #cinematic #cap-6{ display:block !important; }
+  html.oa-img-hero #cinematic{ height:500vh !important; }
+  html.oa-img-hero #oa-hero-video,
+  html.oa-img-hero #oa-hero-canvas,
+  html.oa-img-hero #oa-hero-vig{ display:none !important; }
+  html.oa-img-hero #oa-film{ display:none !important; }
 
   #oa-hero-video{
     position:absolute; inset:0; width:100%; height:100%;
@@ -1073,8 +1094,8 @@
   }
 </style>
 <video id="oa-hero-video" muted playsinline webkit-playsinline preload="auto"
-       autoplay disablepictureinpicture poster="./assets/openair-intro-poster.jpg">
-  <source id="oa-hero-src" src="./assets/openair-intro.mp4" type="video/mp4">
+       autoplay disablepictureinpicture data-poster="./assets/openair-intro-poster.jpg">
+  <source id="oa-hero-src" data-src="./assets/openair-intro.mp4" type="video/mp4">
 </video>
 <canvas id="oa-hero-canvas" class="oa-canvas" aria-hidden="true"></canvas>
 <div id="oa-hero-vig"></div>
@@ -1083,13 +1104,13 @@
     <div id="glow" class="stage-glow"></div>
 
     <!-- Layered photos (10-phase animation) -->
-    <img id="logo"          class="stage-img"          alt="OPEN AIRロゴ"     style="opacity:0">
-    <img id="package"       class="stage-img"       alt="OPEN AIRのパッケージ" style="opacity:0">
-    <img id="strips_fan"    class="stage-img"           alt="複数枚のテープ"    style="opacity:0">
-    <img id="single_strip"  class="stage-img"        alt="1枚のテープ"      style="opacity:0">
-    <img id="three_layers"  class="stage-img"        alt="3層構造"          style="opacity:0">
-    <img id="united_strip"  class="stage-img"        alt="合体したテープ"    style="opacity:0">
-    <img id="nose"          class="stage-img"          alt="鼻に装着した状態"  style="opacity:0">
+    <img id="logo"          class="stage-img" data-src="./assets/hero_logo.webp?v=8" data-fallback="./assets/part_logo.webp?v=8"          alt="OPEN AIRロゴ"     style="opacity:0">
+    <img id="package"       class="stage-img" data-src="./assets/hero_package.webp?v=8" data-fallback="./assets/part_package.webp?v=8"       alt="OPEN AIRのパッケージ" style="opacity:0">
+    <img id="strips_fan"    class="stage-img" data-src="./assets/hero_fan.webp?v=8" data-fallback="./assets/part_strips_fan.webp?v=8"           alt="複数枚のテープ"    style="opacity:0">
+    <img id="single_strip"  class="stage-img" data-src="./assets/hero_single.webp?v=8" data-fallback="./assets/part_single_strip.webp?v=8"        alt="1枚のテープ"      style="opacity:0">
+    <img id="three_layers"  class="stage-img" data-src="./assets/hero_layers.webp?v=8" data-fallback="./assets/part_three_layers.webp?v=8"        alt="3層構造"          style="opacity:0">
+    <img id="united_strip"  class="stage-img" data-src="./assets/hero_united.webp?v=8" data-fallback="./assets/hero_single.webp?v=8"        alt="合体したテープ"    style="opacity:0">
+    <img id="nose"          class="stage-img" data-src="./assets/hero_nose.webp?v=8" data-fallback="./assets/part_nose.webp?v=8"          alt="鼻に装着した状態"  style="opacity:0">
 
     <!-- Breath arrows for the final phase -->
     <div id="breath" class="breath">
@@ -1781,8 +1802,8 @@
 <section id="oa-film">
   <div class="oa-pin">
     <video id="oa-film-video" class="oa-video" muted playsinline webkit-playsinline preload="auto"
-           autoplay loop disablepictureinpicture poster="./assets/openair-film-poster.jpg">
-      <source id="oa-film-src" src="./assets/openair-film.mp4" type="video/mp4">
+           autoplay loop disablepictureinpicture data-poster="./assets/openair-film-poster.jpg">
+      <source id="oa-film-src" data-src="./assets/openair-film.mp4" type="video/mp4">
     </video>
 <canvas id="oa-film-canvas" class="oa-canvas" aria-hidden="true"></canvas>
     <div class="oa-vig"></div>
@@ -3156,16 +3177,23 @@ applyLang(getLang());
   var INTRO_END = 2.0;
   var SEG_END = 0;   // 0 = 動画の最後まで使う（PC）
 
-  // 回線・画面に合わせて軽い方を読む
-  var conn = navigator.connection || {};
-  if (window.innerWidth < 900 || conn.saveData === true || /2g|slow-2g/.test(conn.effectiveType || '')) {
-    // MOBILE_V2: スマホは縦動画1本（OPENAIRE１+2 を連結）。
-    // 冒頭はその前半、「使い方」の直前は後半を使うので、同じ絵が2回出ない。
-    SRC.src = './assets/openair-mhero7.mp4?v=7';
-    V.poster = './assets/openair-mhero7-poster.jpg?v=7';
-    SEG_END = 0;            // 動画の最後まで使う
-    V.load();
+  // IMG_HERO: スマホは映像を使わない。画像に src を入れて、この制御は何もせず終わる。
+  if (window.OA_IMG_HERO) {
+    var imgs = SEC.querySelectorAll('.stage-img[data-src]');
+    for (var i = 0; i < imgs.length; i++) {
+      (function (el) {
+        var fb = el.getAttribute('data-fallback');
+        if (fb) el.onerror = function () { el.onerror = null; el.src = fb; };
+        el.src = el.getAttribute('data-src');
+      })(imgs[i]);
+    }
+    return;
   }
+
+  // PCはここで初めて映像を読み込む
+  SRC.src = SRC.getAttribute('data-src');
+  V.poster = V.getAttribute('data-poster') || '';
+  V.load();
 
   SEC.classList.add('oa-intro');
 
@@ -3256,14 +3284,12 @@ applyLang(getLang());
 
     var segStart = 0;   // 連結動画のどこから使うか（PCは0）
 
-    // 軽い方を読む条件（スマホ / 省データ / 低速回線）
-    var conn = navigator.connection || {};
-    if (window.innerWidth < 900 || conn.saveData === true || /2g|slow-2g/.test(conn.effectiveType || '')) {
-      src.src = './assets/openair-mfilm2.mp4?v=7';
-      video.poster = './assets/openair-mfilm2-poster.jpg?v=7';
-      segStart = 0;
-      video.load();
-    }
+    // IMG_HERO: スマホではこのセクションごと出さないので、何も読み込まない
+    if (window.OA_IMG_HERO) return;
+
+    src.src = src.getAttribute('data-src');
+    video.poster = video.getAttribute('data-poster') || '';
+    video.load();
 
     // 動きを減らす設定の人は、スクラブせず通常ループ再生のまま
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -3381,8 +3407,10 @@ applyLang(getLang());
       if (v.readyState < 2) { try { v.load(); } catch (e) {} }
     }, 4000);
   }
-  mirror('oa-hero-video', 'oa-hero-canvas', './assets/openair-intro-poster.jpg');
-  mirror('oa-film-video', 'oa-film-canvas', './assets/openair-film-poster.jpg');
+  if (!window.OA_IMG_HERO) {
+    mirror('oa-hero-video', 'oa-hero-canvas', './assets/openair-intro-poster.jpg');
+    mirror('oa-film-video', 'oa-film-canvas', './assets/openair-film-poster.jpg');
+  }
 })();
 </script>
 </body>
