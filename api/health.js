@@ -44,6 +44,15 @@ export default function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
   return res.status(200).json({
     ok: missing.length === 0,
+    // どのデプロイが動いているかを確認するための情報。
+    // 環境変数を入れたのに missing のままなら、まずここを見る。
+    deploy: {
+      env: env.VERCEL_ENV || null,               // production / preview / development
+      commit: (env.VERCEL_GIT_COMMIT_SHA || '').slice(0, 7) || null,
+      branch: env.VERCEL_GIT_COMMIT_REF || null,
+      // プロジェクトを間違えていないかの確認用
+      project: env.VERCEL_PROJECT_PRODUCTION_URL || env.VERCEL_URL || null,
+    },
     stripeMode: mode,
     checks,
     missing,
