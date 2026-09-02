@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>OPEN AIR — 注文管理</title>
+<style>
+  :root{ --bg:#f5f5f7; --card:#fff; --line:#e8e8ed; --sub:#86868b; --fg:#1d1d1f; --accent:#0071e3; }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#000; --card:#1c1c1e; --line:#2c2c2e; --sub:#8e8e93; --fg:#f5f5f7; }
+  }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--bg); color:var(--fg); font-size:14px;
+    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif; }
+  header{ position:sticky; top:0; z-index:5; background:var(--bg);
+    border-bottom:1px solid var(--line); padding:14px 18px;
+    display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .brand{ letter-spacing:.28em; font-size:12px; color:var(--sub); }
+  h1{ font-size:17px; margin:0; font-weight:600; }
+  .grow{ flex:1; }
+  button, .btn{ font:inherit; border:1px solid var(--line); background:var(--card); color:var(--fg);
+    border-radius:999px; padding:7px 15px; cursor:pointer; text-decoration:none; display:inline-block; }
+  button.primary{ background:var(--accent); border-color:var(--accent); color:#fff; }
+  button:disabled{ opacity:.45; cursor:default; }
+  input, select{ font:inherit; padding:7px 11px; border:1px solid var(--line);
+    border-radius:9px; background:var(--card); color:var(--fg); }
+  main{ padding:18px; max-width:900px; margin:0 auto; }
+  .note{ background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:16px 18px; line-height:1.8; color:var(--sub); margin-bottom:16px; }
+  .order{ background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:16px 18px; margin-bottom:12px; }
+  .top{ display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }
+  .ref{ font-size:17px; font-weight:600; letter-spacing:.03em; }
+  .when{ color:var(--sub); font-size:12px; }
+  .tag{ font-size:11px; padding:3px 9px; border-radius:999px; border:1px solid var(--line); color:var(--sub); }
+  .tag.new{ background:#ffefe6; border-color:#ffd9c2; color:#a13d00; }
+  .tag.done{ background:#e8f6ec; border-color:#cceedb; color:#186b3a; }
+  @media (prefers-color-scheme: dark){
+    .tag.new{ background:#3a2415; border-color:#5a381f; color:#ffb27a; }
+    .tag.done{ background:#12301c; border-color:#1d4a2c; color:#7fd8a0; }
+  }
+  .addr{ margin:10px 0; line-height:1.7; }
+  .addr .nm{ font-size:16px; font-weight:600; }
+  .items{ color:var(--sub); font-size:13px; margin-bottom:12px; }
+  .acts{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+  .acts input{ width:180px; }
+  .msg{ font-size:12px; color:var(--sub); margin-top:8px; min-height:1em; }
+  .empty{ text-align:center; color:var(--sub); padding:60px 0; }
+</style>
+</head>
+<body>
+<header>
+  <span class="brand">OPEN AIR</span>
+  <h1>注文管理</h1>
+  <span class="grow"></span>
+  <input id="key" type="password" placeholder="ORDER_API_KEY" autocomplete="off">
+  <label style="color:var(--sub);font-size:12px;">
+    <input id="onlyNew" type="checkbox" style="width:auto;"> 未印刷のみ
+  </label>
+  <button id="reload" class="primary">読み込む</button>
+</header>
+<main>
+  <div id="note" class="note" hidden></div>
+  <div id="list"></div>
+</main>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var KEY = 'oa_admin_key';
+  try { $('key').value = localStorage.getItem(KEY) || ''; } catch(e){}
+
+  function esc(s){ return String(s == null ? '' : s)
+    .replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+
+  function addr(o){
+    var a = o.address || {};
+    if ((a.country || 'JP').toUpperCase() === 'JP') {
+      return [a.postal_code ? '〒' + a.postal_code : '', [a.state, a.city].filter(Boolean).join(' '),
+              [a.line1, a.line2].filter(Boolean).join(' ')].filter(Boolean);
+    }
+    return [[a.line1, a.line2].filter(Boolean).join(', '),
+            [a.city, a.state, a.postal_code].filter(Boolean).join(' '), a.country].filter(Boolean);
+  }
+
+  function money(o){
+    return o.currency === 'jpy'
+      ? '¥' + Number(o.total).toLocaleString('ja-JP')
+      : '€' + Number(o.total).toFixed(2);
+  }
+
+  function card(o, key){
+    var el = document.createElement('div');
+    el.className = 'order';
+    var status = o.shippedAt ? '<span class="tag done">発送済</span>'
+               : o.printedAt ? '<span class="tag">印刷済</span>'
+               : '<span class="tag new">未処理</span>';
+    el.innerHTML =
+      '<div class="top"><span class="ref">' + esc(o.id) + '</span>' + status +
+      '<span class="grow"></span><span class="when">' +
+        new Date(o.date).toLocaleString('ja-JP') + ' · ' + esc(money(o)) + '</span></div>' +
+      '<div class="addr"><div class="nm">' + esc(o.name) + ' 様</div>' +
+        addr(o).map(function(l){ return '<div>' + esc(l) + '</div>'; }).join('') +
+        (o.phone ? '<div>TEL ' + esc(o.phone) + '</div>' : '') +
+        '<div style="color:var(--sub)">' + esc(o.email) + '</div></div>' +
+      '<div class="items">' +
+        (o.items || []).map(function(i){ return esc(i.name) + ' × ' + esc(i.qty); }).join(' / ') +
+        (o.tracking ? ' — 追跡 ' + esc(o.tracking) : '') + '</div>' +
+      '<div class="acts">' +
+        '<a class="btn" target="_blank" href="/api/label?session_id=' +
+          encodeURIComponent(o.sessionId) + '&key=' + encodeURIComponent(key) + '">ラベルを印刷</a>' +
+        '<select class="carrier">' +
+          '<option value="yamato">ヤマト運輸</option>' +
+          '<option value="japanpost">日本郵便</option>' +
+          '<option value="sagawa">佐川急便</option>' +
+          '<option value="other">その他</option></select>' +
+        '<input class="trk" placeholder="追跡番号" value="' + esc(o.tracking || '') + '">' +
+        '<button class="shipBtn">発送を記録して通知</button>' +
+      '</div><div class="msg"></div>';
+
+    var msg = el.querySelector('.msg');
+    if (o.carrier) el.querySelector('.carrier').value = o.carrier;
+
+    el.querySelector('.shipBtn').addEventListener('click', function(){
+      var btn = this;
+      var tracking = el.querySelector('.trk').value.trim();
+      var carrier  = el.querySelector('.carrier').value;
+      if (tracking.length < 6) { msg.textContent = '追跡番号を入れてください'; return; }
+      btn.disabled = true; msg.textContent = '送信中…';
+      fetch('/api/ship', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': key },
+        body: JSON.stringify({ session_id: o.sessionId, carrier: carrier, tracking: tracking })
+      }).then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); })
+        .then(function(r){
+          btn.disabled = false;
+          if (!r.ok) { msg.textContent = 'エラー: ' + (r.j.error || '不明'); return; }
+          msg.textContent = r.j.mail && r.j.mail.sent
+            ? '発送を記録し、購入者へ通知メールを送りました'
+            : '発送を記録しました（メールは未送信: ' + ((r.j.mail || {}).reason || '-') + '）';
+        }).catch(function(e){ btn.disabled = false; msg.textContent = '通信エラー: ' + e; });
+    });
+
+    return el;
+  }
+
+  function load(){
+    var key = $('key').value.trim();
+    try { localStorage.setItem(KEY, key); } catch(e){}
+    var list = $('list'), note = $('note');
+    list.innerHTML = '<div class="empty">読み込み中…</div>';
+    note.hidden = true;
+
+    var url = '/api/orders?key=' + encodeURIComponent(key) +
+              ($('onlyNew').checked ? '&unprinted=1' : '');
+    fetch(url).then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); })
+      .then(function(r){
+        if (!r.ok) { list.innerHTML = '<div class="empty">' + esc(r.j.error || 'エラー') + '</div>'; return; }
+        if (!r.j.configured) {
+          note.hidden = false;
+          note.innerHTML = 'Stripe がまだ接続されていません（<code>STRIPE_SECRET_KEY</code> 未設定）。' +
+            '下に出ているのは動作確認用のサンプル注文です。';
+        }
+        var orders = r.j.orders || [];
+        list.innerHTML = '';
+        if (!orders.length) { list.innerHTML = '<div class="empty">注文はありません</div>'; return; }
+        orders.forEach(function(o){ list.appendChild(card(o, key)); });
+      })
+      .catch(function(e){ list.innerHTML = '<div class="empty">通信エラー: ' + esc(e) + '</div>'; });
+  }
+
+  $('reload').addEventListener('click', load);
+  $('onlyNew').addEventListener('change', load);
+  $('key').addEventListener('keydown', function(e){ if (e.key === 'Enter') load(); });
+  if ($('key').value) load();
+})();
+</script>
+</body>
+</html>

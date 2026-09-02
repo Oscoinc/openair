@@ -97,7 +97,7 @@
 <!-- ====== Persistent Nav ====== -->
 <nav class="fixed top-4 left-1/2 -translate-x-1/2 z-50 glass-pill rounded-full pl-3 pr-2 py-2 flex items-center gap-5">
   <a href="./openair.html" class="pr-3 border-r border-black/10 flex items-center flex-shrink-0" style="gap:10px;">
-    <img src="./assets/osco_logo.png?v=1" alt="OSCO" class="block flex-shrink-0" style="height:18px; width:auto; transform:translateY(0.5px);" onerror="this.style.display='none'">
+    <img src="./assets/osco_logo.webp?v=1" alt="OSCO" class="block flex-shrink-0" style="height:18px; width:auto; transform:translateY(0.5px);" onerror="this.style.display='none'" loading="lazy" decoding="async">
     <span class="text-[15px] font-semibold tracking-tight text-zinc-900 leading-none whitespace-nowrap">OPEN AIR</span>
   </a>
   <a href="./openair.html#concept"  class="text-[13px] text-zinc-600 hover:text-zinc-900 transition" data-i18n="nav_concept">コンセプト</a>
@@ -273,25 +273,19 @@
           </label>
         </div>
 
-        <!-- Card details (only for card) -->
-        <div id="card-fields" class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="md:col-span-2">
-            <label class="field-label" data-i18n="co_card_number">カード番号</label>
-            <input type="text" class="field" placeholder="1234 5678 9012 3456" maxlength="19" inputmode="numeric">
-          </div>
-          <div>
-            <label class="field-label" data-i18n="co_card_exp">有効期限 (MM/YY)</label>
-            <input type="text" class="field" placeholder="08/29" maxlength="5">
-          </div>
-          <div>
-            <label class="field-label" data-i18n="co_card_cvc">セキュリティコード</label>
-            <input type="text" class="field" placeholder="123" maxlength="4" inputmode="numeric">
-          </div>
-          <div class="md:col-span-2">
-            <label class="field-label" data-i18n="co_card_name">カード名義</label>
-            <input type="text" class="field" placeholder="TARO YAMADA">
+        <!-- カード情報はこのページでは受け取らない（PCI DSS 回避）。Stripe の決済ページへ委譲する -->
+        <div id="card-fields" class="mt-6">
+          <div class="flex items-start gap-3 rounded-2xl border border-black/10 bg-white/60 px-4 py-4">
+            <svg class="w-5 h-5 shrink-0 mt-0.5 text-zinc-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+              <rect x="4" y="10" width="16" height="10" rx="2.5"/><path d="M8 10V7.5a4 4 0 0 1 8 0V10"/>
+            </svg>
+            <p class="text-[13px] leading-relaxed text-zinc-600" data-i18n="co_pay_secure_note">
+              カード情報はこのページでは入力しません。「注文を確定する」を押すと、Stripe の安全な決済ページに移動します。
+            </p>
           </div>
         </div>
+
+        <div id="pay-error" class="mt-4 hidden rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-[13px] text-red-700"></div>
       </section>
     </div>
 
@@ -340,6 +334,7 @@
     <div class="flex gap-6 items-center">
       <a href="./privacy.html" class="hover:text-zinc-900" data-i18n="footer_privacy">プライバシー</a>
       <a href="./terms.html" class="hover:text-zinc-900" data-i18n="footer_terms">利用規約</a>
+      <a href="./tokushoho.html" class="hover:text-zinc-900">特定商取引法に基づく表記</a>
       <a href="./support.html" class="hover:text-zinc-900" data-i18n="footer_support">サポート</a>
       <button id="lang-switcher" type="button" class="text-zinc-500 hover:text-zinc-900 transition flex items-center gap-1.5" aria-label="言語切替 / Cambiar idioma">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -449,6 +444,19 @@ const translations = {
   "co_pay_conv_badge":  { ja: "コンビニ",         en: "Store",               es: "Tienda",               pt: "Loja" },
   "co_pay_conv":        { ja: "コンビニ払い",     en: "Pay in store",        es: "Pago en tienda",       pt: "Pagar na loja" },
   "co_pay_paypay_sub":  { ja: "残高 / 後払い",    en: "Wallet / pay later",  es: "Saldo / pago después", pt: "Saldo / pagar depois" },
+  "co_pay_secure_note": {
+    ja: "カード情報はこのページでは入力しません。「注文を確定する」を押すと、Stripe の安全な決済ページに移動します。",
+    en: "Card details are never entered on this page. Tap “Place order” and you'll be taken to Stripe's secure payment page.",
+    es: "Los datos de tu tarjeta no se introducen en esta página. Al pulsar «Confirmar pedido» irás a la página de pago segura de Stripe.",
+    pt: "Os dados do cartão não são inseridos nesta página. Ao confirmar, você irá para a página de pagamento segura da Stripe."
+  },
+  "co_pay_error": {
+    ja: "決済ページに接続できませんでした。時間をおいて再度お試しください。",
+    en: "We couldn't reach the payment page. Please try again in a moment.",
+    es: "No se pudo conectar con la página de pago. Inténtalo de nuevo en unos instantes.",
+    pt: "Não foi possível acessar a página de pagamento. Tente novamente em instantes."
+  },
+  "co_placing_order": { ja: "決済ページへ移動中…", en: "Redirecting to payment…", es: "Redirigiendo al pago…", pt: "Redirecionando ao pagamento…" },
   "co_card_number":     { ja: "カード番号",         en: "Card number",            es: "Número de tarjeta",     pt: "Número do cartão" },
   "co_card_exp":        { ja: "有効期限 (MM/YY)",   en: "Expiry (MM/YY)",         es: "Vencimiento (MM/AA)",   pt: "Validade (MM/AA)" },
   "co_card_cvc":        { ja: "セキュリティコード", en: "Security code",          es: "Código de seguridad",   pt: "Código de segurança" },
@@ -595,15 +603,15 @@ const PRODUCTS = {
   single: { id:'single', name:'Single',
     desc:{ ja:'30 枚 · 1ヶ月分',  en:'30 strips · 1 month',  es:'30 unidades · 1 mes',    pt:'30 unidades · 1 mês' },
     price:{ ja:1980, en:13, es:15, pt:65 },
-    image:'./assets/part_package.png?v=7' },
+    image:'./assets/part_package.webp?v=7' },
   three:  { id:'three',  name:'Three',
     desc:{ ja:'90 枚 · 3ヶ月分',  en:'90 strips · 3 months', es:'90 unidades · 3 meses',  pt:'90 unidades · 3 meses' },
     price:{ ja:4980, en:33, es:39, pt:165 },
-    image:'./assets/part_package.png?v=7' },
+    image:'./assets/part_package.webp?v=7' },
   six:    { id:'six',    name:'Six',
     desc:{ ja:'180 枚 · 6ヶ月分', en:'180 strips · 6 months', es:'180 unidades · 6 meses', pt:'180 unidades · 6 meses' },
     price:{ ja:8980, en:59, es:69, pt:295 },
-    image:'./assets/part_package.png?v=7' }
+    image:'./assets/part_package.webp?v=7' }
 };
 const STORAGE_KEY = 'openair_cart';
 function readCart(){
@@ -646,7 +654,7 @@ function render(){
     return `
       <div class="flex gap-3 items-center">
         <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-zinc-50 to-zinc-100 grid place-items-center shrink-0 overflow-hidden relative">
-          <img src="${p.image}" alt="" class="max-w-[80%] max-h-[80%] object-contain" onerror="this.style.display='none'">
+          <img src="${p.image}" alt="" class="max-w-[80%] max-h-[80%] object-contain" onerror="this.style.display='none'" loading="lazy" decoding="async">
           ${q > 1 ? `<span class="absolute -top-1 -right-1 w-5 h-5 grid place-items-center bg-zinc-900 text-white text-[10px] font-semibold rounded-full">${q}</span>` : ''}
         </div>
         <div class="flex-1 min-w-0">
@@ -674,37 +682,100 @@ function render(){
   document.getElementById('sum-total').textContent = fmtPrice(subtotal, lang);
 }
 
-// Toggle card-fields visibility
+// 決済手段の説明文の出し分け。
+// カード情報欄は廃止したので、#card-fields は「Stripe に移動します」の案内。
+// カード/Apple Pay のときだけ出す（コンビニ・PayPay には無関係な文言のため）。
 document.addEventListener('change', (e) => {
   if (e.target.name === 'payment'){
-    document.getElementById('card-fields').style.display = (e.target.value === 'card') ? '' : 'none';
+    const showNote = (e.target.value === 'card' || e.target.value === 'apple');
+    document.getElementById('card-fields').style.display = showNote ? '' : 'none';
   }
 });
 
-// Submit handler — store order summary, redirect to complete
-document.getElementById('checkout-form').addEventListener('submit', (e) => {
+// ---------------------------------------------------------------------------
+// Submit handler — Stripe Checkout セッションを作って決済ページへ送る
+//
+// 重要：金額はここでは一切送らない。商品IDと数量だけを送り、
+// 価格はサーバー（api/_products.js）が決める。カートを書き換えても値段は変わらない。
+// カートを空にするのも「支払い完了後」（complete.html）に移した。
+// ここで空にすると、決済をキャンセルした人のカートまで消えてしまうため。
+// ---------------------------------------------------------------------------
+
+// 日本以外では konbini / paypay を選べないので card 扱いにフォールバック
+const JP_ONLY_METHODS = ['convenience', 'paypay'];
+const METHOD_TO_STRIPE = { convenience: 'konbini', paypay: 'paypay' };
+
+document.getElementById('checkout-form').addEventListener('submit', async (e) => {
   e.preventDefault();
+
   const cart = readCart();
   const ids = Object.keys(cart).filter(id => PRODUCTS[id] && cart[id] > 0);
   if (ids.length === 0) return;
 
-  const fd = new FormData(e.target);
-  // Compute totals in ALL supported currencies so complete page can switch language freely
-  const sumIn = (l) => ids.reduce((s,id)=>s + (typeof PRODUCTS[id].price==='object' ? (PRODUCTS[id].price[l] || PRODUCTS[id].price.ja) : PRODUCTS[id].price) * cart[id], 0);
-  const order = {
-    id: 'OA-' + Date.now().toString(36).toUpperCase().slice(-6),
-    date: new Date().toISOString(),
-    email: fd.get('email'),
-    name: fd.get('lastName') + ' ' + fd.get('firstName'),
-    address: [fd.get('zip'), fd.get('prefecture') || fd.get('province'), fd.get('address1'), fd.get('address2'), fd.get('country')].filter(Boolean).join(' '),
-    phone: fd.get('phone'),
-    payment: fd.get('payment'),
-    items: ids.map(id => ({ ...PRODUCTS[id], qty: cart[id] })),
-    total: { ja: sumIn('ja'), en: sumIn('en'), es: sumIn('es'), pt: sumIn('pt') }
+  const lang = getLang();
+  const btn  = document.getElementById('place-order-btn');
+  const err  = document.getElementById('pay-error');
+  const originalLabel = btn.textContent;
+
+  const showError = (msg) => {
+    err.textContent = msg;
+    err.classList.remove('hidden');
+    btn.disabled = false;
+    btn.textContent = originalLabel;
   };
-  localStorage.setItem('openair_last_order', JSON.stringify(order));
-  localStorage.removeItem(STORAGE_KEY); // empty cart
-  window.location.href = './complete.html';
+
+  err.classList.add('hidden');
+  btn.disabled = true;
+  btn.textContent = t('co_placing_order');
+
+  const fd = new FormData(e.target);
+  const rawMethod = fd.get('payment');
+  const paymentMethod = (lang === 'ja' && JP_ONLY_METHODS.includes(rawMethod))
+    ? METHOD_TO_STRIPE[rawMethod]
+    : null; // null = Stripe に自動判定させる（カード / Apple Pay など）
+
+  const payload = {
+    lang,
+    paymentMethod,
+    items: ids.map(id => ({ id, qty: cart[id] })),
+    customer: {
+      email:      fd.get('email'),
+      lastName:   fd.get('lastName'),
+      firstName:  fd.get('firstName'),
+      zip:        fd.get('zip'),
+      prefecture: fd.get('prefecture') || undefined,
+      province:   fd.get('province')   || undefined,
+      city:       fd.get('city')       || undefined,
+      address1:   fd.get('address1'),
+      address2:   fd.get('address2') || undefined,
+      country:    fd.get('country') || (lang === 'ja' ? 'JP' : 'ES'),
+      phone:      fd.get('phone'),
+    },
+  };
+
+  try {
+    const res = await fetch('/api/create-checkout-session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json().catch(() => ({}));
+
+    if (!res.ok || !data.url) {
+      // 決済がまだ有効化されていない場合だけは、技術的なメッセージを出さない
+      if (data.error && /STRIPE_SECRET_KEY/.test(data.error)) {
+        showError(getLang() === 'es'
+          ? 'El pago en línea aún se está configurando. Escríbenos a herberttsukamoto@icloud.com y te ayudamos con el pedido.'
+          : 'ただいまオンライン決済を準備中です。お手数ですが herberttsukamoto@icloud.com までご連絡ください。ご注文を承ります。');
+        return;
+      }
+      showError(data.error ? `${t('co_pay_error')}（${data.error}）` : t('co_pay_error'));
+      return;
+    }
+    window.location.href = data.url; // → Stripe の決済ページ
+  } catch (e2) {
+    showError(t('co_pay_error'));
+  }
 });
 
 // Nav badge

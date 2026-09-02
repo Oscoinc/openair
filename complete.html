@@ -75,7 +75,7 @@
 <!-- ====== Persistent Nav ====== -->
 <nav class="fixed top-4 left-1/2 -translate-x-1/2 z-50 glass-pill rounded-full pl-3 pr-2 py-2 flex items-center gap-5">
   <a href="./openair.html" class="pr-3 border-r border-black/10 flex items-center flex-shrink-0" style="gap:10px;">
-    <img src="./assets/osco_logo.png?v=1" alt="OSCO" class="block flex-shrink-0" style="height:18px; width:auto; transform:translateY(0.5px);" onerror="this.style.display='none'">
+    <img src="./assets/osco_logo.webp?v=1" alt="OSCO" class="block flex-shrink-0" style="height:18px; width:auto; transform:translateY(0.5px);" onerror="this.style.display='none'" loading="lazy" decoding="async">
     <span class="text-[15px] font-semibold tracking-tight text-zinc-900 leading-none whitespace-nowrap">OPEN AIR</span>
   </a>
   <a href="./openair.html#concept"  class="text-[13px] text-zinc-600 hover:text-zinc-900 transition" data-i18n="nav_concept">コンセプト</a>
@@ -171,6 +171,7 @@
     <div class="flex gap-6 items-center">
       <a href="./privacy.html" class="hover:text-zinc-900" data-i18n="footer_privacy">プライバシー</a>
       <a href="./terms.html" class="hover:text-zinc-900" data-i18n="footer_terms">利用規約</a>
+      <a href="./tokushoho.html" class="hover:text-zinc-900">特定商取引法に基づく表記</a>
       <a href="./support.html" class="hover:text-zinc-900" data-i18n="footer_support">サポート</a>
       <button id="lang-switcher" type="button" class="text-zinc-500 hover:text-zinc-900 transition flex items-center gap-1.5" aria-label="言語切替 / Cambiar idioma">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -365,10 +366,74 @@ function fmtPrice(n, lang){
   return fmtYen(n);
 }
 
-const order = (() => {
-  try { return JSON.parse(localStorage.getItem('openair_last_order')); }
-  catch(e){ return null; }
-})();
+// ---------------------------------------------------------------------------
+// 注文データの取得
+//
+// ?session_id=cs_xxx が付いていれば Stripe に問い合わせて「本当に支払われた注文」
+// だけを表示する。localStorage だけを信じると、このURLを直接開いた人にも
+// 注文完了画面が出てしまうため。
+// session_id が無い場合のみ、旧来の localStorage を見る（後方互換）。
+// ---------------------------------------------------------------------------
+
+// 商品の見た目情報（画像・説明）。金額は API から来た実額を使う。
+const PRODUCT_META = {
+  single: { name:'Single', image:'./assets/part_package.webp?v=7',
+    desc:{ ja:'30 枚 · 1ヶ月分',  en:'30 strips · 1 month',  es:'30 unidades · 1 mes',   pt:'30 unidades · 1 mês' } },
+  three:  { name:'Three',  image:'./assets/part_package.webp?v=7',
+    desc:{ ja:'90 枚 · 3ヶ月分',  en:'90 strips · 3 months', es:'90 unidades · 3 meses', pt:'90 unidades · 3 meses' } },
+  six:    { name:'Six',    image:'./assets/part_package.webp?v=7',
+    desc:{ ja:'180 枚 · 6ヶ月分', en:'180 strips · 6 months', es:'180 unidades · 6 meses', pt:'180 unidades · 6 meses' } },
+};
+
+let order = null;
+
+function orderFromApi(data){
+  return {
+    id: data.id,
+    date: data.date,
+    status: data.status,
+    currency: data.currency,
+    email: data.email,
+    name: data.name,
+    address: data.address,
+    phone: data.phone,
+    payment: data.payment,
+    items: (data.items || []).map(it => {
+      const meta = PRODUCT_META[it.id] || {};
+      return {
+        name: meta.name || String(it.name || '').replace(/^OPEN AIR\s*/, ''),
+        desc: meta.desc || '',
+        image: meta.image || './assets/part_package.webp?v=7',
+        qty: it.qty,
+        price: it.amount / (it.qty || 1),
+      };
+    }),
+    total: data.total,
+  };
+}
+
+async function loadOrder(){
+  const sessionId = new URLSearchParams(location.search).get('session_id');
+
+  if (sessionId){
+    try {
+      const res = await fetch(`/api/order?session_id=${encodeURIComponent(sessionId)}`);
+      if (res.ok){
+        order = orderFromApi(await res.json());
+        // 支払いが確定した時点で初めてカートを空にする
+        localStorage.removeItem('openair_cart');
+        localStorage.setItem('openair_last_order', JSON.stringify(order));
+      }
+    } catch(e){ /* 通信失敗時は下の localStorage フォールバックへ */ }
+  }
+
+  if (!order){
+    try { order = JSON.parse(localStorage.getItem('openair_last_order')); }
+    catch(e){ order = null; }
+  }
+
+  renderOrder();
+}
 
 function renderOrder(){
   if (!order){
@@ -377,6 +442,10 @@ function renderOrder(){
     return;
   }
   const lang = getLang();
+  // 金額は「決済した通貨」で表示する。表示言語を切り替えても支払額は変わらないため、
+  // 言語に合わせて通貨記号だけ変えると実際と食い違う。
+  const CURRENCY_TO_LANG = { jpy: 'ja', eur: 'es', usd: 'en', brl: 'pt' };
+  const money = CURRENCY_TO_LANG[order.currency] || lang;
   document.getElementById('order-id').textContent = order.id;
   const d = new Date(order.date);
   document.getElementById('order-date').textContent =
@@ -387,14 +456,14 @@ function renderOrder(){
     return `
     <div class="flex gap-3 items-center">
       <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-zinc-50 to-zinc-100 grid place-items-center shrink-0 overflow-hidden relative">
-        <img src="${it.image}" alt="" class="max-w-[80%] max-h-[80%] object-contain" onerror="this.style.display='none'">
+        <img src="${it.image}" alt="" class="max-w-[80%] max-h-[80%] object-contain" onerror="this.style.display='none'" loading="lazy" decoding="async">
         ${it.qty > 1 ? `<span class="absolute -top-1 -right-1 w-5 h-5 grid place-items-center bg-zinc-900 text-white text-[10px] font-semibold rounded-full">${it.qty}</span>` : ''}
       </div>
       <div class="flex-1">
         <div class="text-[14px] font-semibold tracking-tight">${t('cp_item_brand_prefix')} ${it.name}</div>
         <div class="text-[12px] text-zinc-500">${descText}</div>
       </div>
-      <div class="text-[14px] font-semibold tabular-nums">${fmtPrice((typeof it.price === 'object' ? (it.price[lang] || it.price.ja) : it.price) * it.qty, lang)}</div>
+      <div class="text-[14px] font-semibold tabular-nums">${fmtPrice((typeof it.price === 'object' ? (it.price[money] || it.price.ja) : it.price) * it.qty, money)}</div>
     </div>
     `;
   }).join('');
@@ -407,11 +476,11 @@ function renderOrder(){
     (translations[payKey] ? t(payKey) : order.payment);
   document.getElementById('pay-email').textContent = order.email;
   // Order total: support multi-currency totals if stored, else fallback to legacy yen
-  const totalVal = (typeof order.total === 'object') ? (order.total[lang] || order.total.ja) : order.total;
-  document.getElementById('order-total').textContent = fmtPrice(totalVal, lang);
+  const totalVal = (typeof order.total === 'object') ? (order.total[money] || order.total.ja) : order.total;
+  document.getElementById('order-total').textContent = fmtPrice(totalVal, money);
 }
 
-renderOrder();
+loadOrder();
 
 // ============== i18n init ==============
 applyLang(getLang());

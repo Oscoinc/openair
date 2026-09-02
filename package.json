@@ -1,0 +1,10 @@
+{
+  "name": "open-air",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "OPEN AIR — nasal breathing tape LP + Stripe checkout",
+  "dependencies": {
+    "stripe": "^18.5.0"
+  }
+}
