@@ -296,16 +296,13 @@
   #nav-osco{ transition: filter .5s ease, opacity .5s ease; }
   /* dark theme: brightness(0)→all-black, invert(1)→all-white, opacity .72 → light gray */
   /* --- スマホ用のメニュー --- */
-  .nav-menu-btn{
-    display: none; place-items: center;
-    width: 22px; height: 22px; margin-left: -2px;
-    border: 0; background: transparent; cursor: pointer; padding: 0;
-    color: inherit; opacity: .6; transition: opacity .2s ease, transform .25s ease;
+  /* 開いているあいだ OSCO のマークを 1/4 回転させる。
+     「押せる」「今どっちの状態か」をこの動きだけで伝える。 */
+  #nav-osco{
+    transform: translateY(.5px);
+    transition: transform .42s cubic-bezier(.2,.8,.2,1), opacity .2s ease, filter .2s ease;
   }
-  .nav-menu-btn:hover{ opacity: 1; }
-  .nav-menu-btn[aria-expanded="true"]{ opacity: 1; transform: rotate(180deg); }
-  #nav[data-theme="dark"]  .nav-menu-btn{ color: #fff; }
-  #nav[data-theme="light"] .nav-menu-btn{ color: #0a0a0a; }
+  #nav-brand[aria-expanded="true"] #nav-osco{ transform: translateY(.5px) rotate(90deg); }
 
   .nav-menu{
     position: absolute; top: calc(100% + 10px); left: 50%;
@@ -583,7 +580,8 @@
     #nav{ gap: 12px; padding-left: 14px; padding-right: 6px; }
     #nav .nav-divider{ border-right: none; padding-right: 0; }
     #nav a.nav-link{ display: none; }
-    #nav-menu-btn{ display: grid; }
+    /* スマホではロゴ全体がメニューの開閉ボタンになる */
+    #nav-brand{ cursor: pointer; -webkit-tap-highlight-color: transparent; }
 
     /* --- Hero on mobile --- */
     #hero-headline h1{ font-size: 38px !important; line-height: 1.1; padding: 0 8px; }
@@ -1097,13 +1095,9 @@
 
 <!-- ====== Persistent Nav (テーマ自動切替) ====== -->
 <nav id="nav" data-theme="dark" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 glass-pill-dark rounded-full pl-3 pr-2 py-2 flex items-center gap-5">
-  <span class="nav-divider pr-3 border-r border-white/10 flex items-center flex-shrink-0" style="gap:10px; white-space:nowrap;">
-    <img id="nav-osco" src="./assets/osco_logo.webp?v=1" alt="OSCO" class="block flex-shrink-0" style="height:18px; width:auto; transform:translateY(0.5px);" onerror="this.style.display='none'" loading="lazy" decoding="async">
-    <span id="nav-logo" class="nav-link-strong text-[15px] font-semibold tracking-tight cursor-pointer leading-none whitespace-nowrap" role="button" tabindex="0" aria-label="ページ上部へ戻る / Volver arriba">OPEN AIR</span>
-    <!-- スマホでは中央のリンクが入らないので、ここを押すと下にメニューが開く -->
-    <button id="nav-menu-btn" type="button" class="nav-menu-btn" aria-expanded="false" aria-controls="nav-menu" data-i18n-aria="nav_menu_label" aria-label="メニュー">
-      <svg viewBox="0 0 12 8" width="11" height="8" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </button>
+  <span id="nav-brand" class="nav-divider pr-3 border-r border-white/10 flex items-center flex-shrink-0" style="gap:10px; white-space:nowrap;" aria-controls="nav-menu">
+    <img id="nav-osco" src="./assets/osco_logo.webp?v=1" alt="OSCO" class="block flex-shrink-0" style="height:18px; width:auto;" onerror="this.style.display='none'" loading="lazy" decoding="async">
+    <span id="nav-logo" class="nav-link-strong text-[15px] font-semibold tracking-tight cursor-pointer leading-none whitespace-nowrap">OPEN AIR</span>
   </span>
 
   <div id="nav-menu" class="nav-menu" hidden>
@@ -2775,15 +2769,17 @@
 
 // ============== スマホのナビゲーションメニュー ==============
 (function(){
-  const btn = document.getElementById('nav-menu-btn');
+  const brand = document.getElementById('nav-brand');
   const menu = document.getElementById('nav-menu');
-  if (!btn || !menu) return;
+  if (!brand || !menu) return;
+
+  const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
 
   let open = false;
   function setOpen(next){
     if (next === open) return;
     open = next;
-    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    brand.setAttribute('aria-expanded', open ? 'true' : 'false');
     if (open){
       menu.hidden = false;
       // hidden を外した直後だと transition が効かないので1フレーム待つ
@@ -2794,14 +2790,41 @@
     }
   }
 
-  btn.addEventListener('click', (e) => { e.stopPropagation(); setOpen(!open); });
+  // ロゴのマークでも「OPEN AIR」の文字でも開く
+  brand.addEventListener('click', (e) => {
+    if (!isMobile()) return;          // PCはリンクが並んでいるので開かない
+    e.stopPropagation();
+    setOpen(!open);
+  });
+  brand.addEventListener('keydown', (e) => {
+    if (!isMobile()) return;
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setOpen(!open); }
+  });
+
   menu.addEventListener('click', (e) => { if (e.target.closest('a')) setOpen(false); });
   document.addEventListener('click', (e) => {
-    if (open && !menu.contains(e.target) && e.target !== btn) setOpen(false);
+    if (open && !menu.contains(e.target) && !brand.contains(e.target)) setOpen(false);
   });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
   // 画面が広がってリンクがナビに戻ったら閉じる
-  window.addEventListener('resize', () => { if (window.innerWidth > 768) setOpen(false); }, { passive: true });
+  window.addEventListener('resize', () => { if (!isMobile()) setOpen(false); }, { passive: true });
+
+  // スマホのときだけ「押せるもの」として案内する（PCでは読み上げに出さない）
+  function syncRole(){
+    if (isMobile()){
+      brand.setAttribute('role', 'button');
+      brand.setAttribute('tabindex', '0');
+      brand.setAttribute('aria-expanded', open ? 'true' : 'false');
+      brand.setAttribute('aria-label', 'メニュー');
+    } else {
+      brand.removeAttribute('role');
+      brand.removeAttribute('tabindex');
+      brand.removeAttribute('aria-expanded');
+      brand.removeAttribute('aria-label');
+    }
+  }
+  syncRole();
+  window.addEventListener('resize', syncRole, { passive: true });
 })();
 
 // ============== 価格セクション（通常購入 / 定期便の切り替え） ==============
@@ -3094,9 +3117,11 @@ document.addEventListener('click', (e) => {
   const logo = document.getElementById('nav-logo');
   if (!logo) return;
   const scrollTop = () => smoothScrollTo(0, 1400);
-  logo.addEventListener('click', scrollTop);
+  // スマホではロゴがメニューの開閉に変わるので、ここでは何もしない
+  const onTop = () => { if (!window.matchMedia('(max-width: 768px)').matches) scrollTop(); };
+  logo.addEventListener('click', onTop);
   logo.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); scrollTop(); }
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onTop(); }
   });
 })();
 
@@ -3313,7 +3338,6 @@ const translations = {
   "buy_plan3_price": { ja: "¥8,980", en: "$59", es: "€69", pt: "R$ 295" },
   "buy_plan2_discount": { ja: "¥1,000 OFF", en: "$6 OFF",  es: "€6 OFF",  pt: "R$ 30 OFF" },
   "buy_plan3_discount": { ja: "¥2,900 OFF", en: "$19 OFF", es: "€21 OFF", pt: "R$ 95 OFF" },
-  "nav_menu_label": { ja: "メニューを開く", en: "Open menu", es: "Abrir menú", pt: "Abrir menu" },
   "buy_btn_add":    { ja: "カートに追加", en: "Add to bag",       es: "Agregar al carrito",                pt: "Adicionar à sacola" },
   "buy_btn_sub":    { ja: "定期便をはじめる", en: "Start subscription", es: "Empezar suscripción", pt: "Iniciar assinatura" },
   "buy_tab_once":   { ja: "1回のみ", en: "One-time", es: "Compra única", pt: "Compra única" },

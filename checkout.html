@@ -45,9 +45,24 @@
   .field{
     width:100%; padding:14px 16px; border-radius:14px;
     background:rgba(255,255,255,.85); border:1px solid rgba(0,0,0,.08);
-    font-size:15px; color:#0a0a0a; transition: border .2s, box-shadow .2s, background .2s;
+    font-size:15px; line-height:1.35; color:#0a0a0a;
+    transition: border .2s, box-shadow .2s, background .2s;
   }
   .field:focus{ outline:none; border-color:rgba(10,10,10,.6); background:#fff; box-shadow:0 0 0 4px rgba(10,10,10,.06); }
+
+  /* Safari は select に padding や line-height をほぼ効かせないので、
+     隣の入力欄より背が低くなってしまう。標準の見た目を外し、
+     矢印を自前で描いて、他の欄と同じ高さに揃える。 */
+  select.field{
+    -webkit-appearance:none; -moz-appearance:none; appearance:none;
+    padding-right:42px;
+    background-color:rgba(255,255,255,.85);
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%2371717a' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-repeat:no-repeat;
+    background-position:right 16px center;
+    background-size:12px 8px;
+  }
+  select.field:focus{ background-color:#fff; }
   .field-label{ font-size:12px; color:#52525b; margin-bottom:6px; display:block; letter-spacing:.02em; font-weight:500; }
   /* 対応しているお支払い方法の表示。選択式ではないので、押せそうな見た目にはしない */
   .pay-card{
