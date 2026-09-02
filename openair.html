@@ -1029,6 +1029,11 @@
     background:linear-gradient(to bottom, rgba(0,0,0,0.550) 0.0%, rgba(0,0,0,0.531) 4.7%, rgba(0,0,0,0.481) 9.3%, rgba(0,0,0,0.407) 14.0%, rgba(0,0,0,0.321) 18.7%, rgba(0,0,0,0.229) 23.3%, rgba(0,0,0,0.143) 28.0%, rgba(0,0,0,0.069) 32.7%, rgba(0,0,0,0.019) 37.3%, rgba(0,0,0,0.000) 42.0%, rgba(0,0,0,0.024) 60.9%, rgba(0,0,0,0.088) 65.8%, rgba(0,0,0,0.181) 70.7%, rgba(0,0,0,0.292) 75.6%, rgba(0,0,0,0.408) 80.4%, rgba(0,0,0,0.519) 85.3%, rgba(0,0,0,0.612) 90.2%, rgba(0,0,0,0.676) 95.1%, rgba(0,0,0,0.700) 100.0%);
   }
   #cinematic .grain{ z-index:2; }
+  /* スマホは縦動画が画面いっぱいに出るので、上下を暗くする覆いは不要。
+     グラデーションは横線（マッハバンド）に見えることがあるため出さない。 */
+  @media (max-width:900px){
+    #oa-hero-vig, #oa-film .oa-vig{ display:none !important; }
+  }
   #cinematic .stage-caption, #cinematic #hero-headline{ z-index:3; }
 
   /* --- イントロ中：映像だけにする --- */
@@ -3335,9 +3340,6 @@ applyLang(getLang());
     if (!v || !c) return;
     var ctx = c.getContext('2d', { alpha: false });
     var poster = new Image(); var posterOK = false; var drewVideo = false;
-    // 映像の端の平均色を読むための 1x1 キャンバス（縮めて描けば平均色になる）
-    var sampC = document.createElement('canvas'); sampC.width = 1; sampC.height = 1;
-    var sampCtx = sampC.getContext('2d', { willReadFrequently: true });
     poster.onload = function () { posterOK = true; };
     poster.src = v.getAttribute('poster') || posterUrl;  // スマホ切替後の縦posterに追従
 
@@ -3353,90 +3355,22 @@ applyLang(getLang());
     // EDGE_EXTEND: 余白は「映像の端の列をそのまま引き伸ばす」ことで埋める。
     // 継ぎ目の色が映像の端の色と完全に一致するため、境界線が原理的に出ない。
     // さらに外側へ向けてわずかに沈め、ページの黒背景に溶かす。
-    // EDGE_COLOR: 余白は、その瞬間の映像の端の色で塗る。
-    // 映像が進めば余白の色も一緒に変わるので、常に地続きに見える。
-    // 端が黒い場面では黒のままになる。
-    // 端の帯を 1x1 に縮めて描くと、その平均色が得られる。
-    // 実測で、これが継ぎ目で隣り合う実際の色とほぼ完全に一致する
-    // （ヒーロー t=2.5 実際[40,49,54] / 平均[40,49,54] など）。
-    function edgeColor(src, sx, sy, sw2, sh2) {
-      try {
-        sampCtx.drawImage(src, sx, sy, sw2, sh2, 0, 0, 1, 1);
-        var d = sampCtx.getImageData(0, 0, 1, 1).data;
-        // 保険：余白が明るくなりすぎないよう輝度に上限をかける。
-        // 実測した端の輝度は最大57なので通常は素通りし、異常時だけ効く。
-        var L = d[0] * 0.299 + d[1] * 0.587 + d[2] * 0.114, MAXL = 80;
-        if (L > MAXL) { var k = MAXL / L; return [d[0] * k, d[1] * k, d[2] * k]; }
-        return [d[0], d[1], d[2]];
-      } catch (e) { return [0, 0, 0]; }
-    }
-    function rgb(v, k) {
-      return 'rgb(' + Math.round(v[0] * k) + ',' + Math.round(v[1] * k) + ',' + Math.round(v[2] * k) + ')';
-    }
-    // 継ぎ目側は端の色そのまま、画面の外側へ向けて少しだけ沈める
-    var OUT = 0.45;
-
-    function paint(src, sw, sh, useEdgeColor) {
+    // COVER_ONLY: スマホ用は縦動画、PC用は横動画と、画面に合った素材を
+    // 用意しているので、常に画面いっぱいに広げるだけでよい。
+    // （横動画を縦画面に収めるための余白処理は不要になったので削除した）
+    function paint(src, sw, sh) {
       if (!sw || !sh) return;
-      var cover = Math.max(c.width / sw, c.height / sh);
-      var contain = Math.min(c.width / sw, c.height / sh);
-
-      // 切り落としが 25% 未満なら画面いっぱいに広げる。
-      // 縦動画×縦画面はここに入る（約18%）。横動画×縦画面は約74%なので入らない。
-      if (contain / cover > 0.75) {
-        var d0 = rect(sw, sh, cover);
-        ctx.drawImage(src, d0[0], d0[1], d0[2], d0[3]);
-        return;
-      }
-
-      var f = rect(sw, sh, contain);
-      var fx = Math.round(f[0]), fy = Math.round(f[1]);
-      var fw = Math.round(f[2]), fh = Math.round(f[3]);
-
-      ctx.fillStyle = '#000';
-      ctx.fillRect(0, 0, c.width, c.height);
-
-      var topGap = fy, botGap = c.height - (fy + fh);
-      var lftGap = fx, rgtGap = c.width - (fx + fw);
-      var EH = Math.max(2, Math.round(sh * 0.02));
-      var EW = Math.max(2, Math.round(sw * 0.02));
-      var g, col;
-
-      if (topGap > 0) {
-        col = useEdgeColor ? edgeColor(src, 0, 0, sw, EH) : [0,0,0];
-        g = ctx.createLinearGradient(0, fy, 0, 0);
-        g.addColorStop(0, rgb(col, 1)); g.addColorStop(1, rgb(col, OUT));
-        ctx.fillStyle = g; ctx.fillRect(0, 0, c.width, topGap);
-      }
-      if (botGap > 0) {
-        col = useEdgeColor ? edgeColor(src, 0, sh - EH, sw, EH) : [0,0,0];
-        g = ctx.createLinearGradient(0, fy + fh, 0, c.height);
-        g.addColorStop(0, rgb(col, 1)); g.addColorStop(1, rgb(col, OUT));
-        ctx.fillStyle = g; ctx.fillRect(0, fy + fh, c.width, botGap);
-      }
-      if (lftGap > 0) {
-        col = useEdgeColor ? edgeColor(src, 0, 0, EW, sh) : [0,0,0];
-        g = ctx.createLinearGradient(fx, 0, 0, 0);
-        g.addColorStop(0, rgb(col, 1)); g.addColorStop(1, rgb(col, OUT));
-        ctx.fillStyle = g; ctx.fillRect(0, 0, lftGap, c.height);
-      }
-      if (rgtGap > 0) {
-        col = useEdgeColor ? edgeColor(src, sw - EW, 0, EW, sh) : [0,0,0];
-        g = ctx.createLinearGradient(fx + fw, 0, c.width, 0);
-        g.addColorStop(0, rgb(col, 1)); g.addColorStop(1, rgb(col, OUT));
-        ctx.fillStyle = g; ctx.fillRect(fx + fw, 0, rgtGap, c.height);
-      }
-
-      ctx.drawImage(src, fx, fy, fw, fh);
+      var k = Math.max(c.width / sw, c.height / sh);
+      ctx.drawImage(src, (c.width - sw * k) / 2, (c.height - sh * k) / 2, sw * k, sh * k);
     }
     function draw() {
       resize();
       if (v.readyState >= 2 && v.videoWidth) {
-        try { paint(v, v.videoWidth, v.videoHeight, true); drewVideo = true; } catch (e) {}
+        try { paint(v, v.videoWidth, v.videoHeight); drewVideo = true; } catch (e) {}
       } else if (!drewVideo && posterOK) {
         // まだ映像が読めていない間は poster を出す。
         // poster の端の色は使わない（明るいカットだと余白が白っぽく光るため）
-        try { paint(poster, poster.naturalWidth, poster.naturalHeight, false); } catch (e) {}
+        try { paint(poster, poster.naturalWidth, poster.naturalHeight); } catch (e) {}
       }
       requestAnimationFrame(draw);
     }
