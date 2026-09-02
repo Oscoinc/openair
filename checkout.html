@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>購入手続き — OPEN AIR</title>
-<link rel="icon" href="./assets/favicon.ico?v=1" sizes="any">
-<link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32.png?v=1">
-<link rel="icon" type="image/png" sizes="192x192" href="./assets/favicon-192.png?v=1">
-<link rel="apple-touch-icon" href="./assets/apple-touch-icon.png?v=1">
+<link rel="icon" href="/favicon.ico?v=2" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=2">
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon-192.png?v=2">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
 <meta name="theme-color" content="#fafafa">
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
@@ -375,6 +375,9 @@
       </div>
 
       <button type="submit" class="btn-dark w-full mt-6" id="place-order-btn" data-i18n="co_place_order">注文を確定する</button>
+        <div id="region-block" class="hidden mt-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-[13px] text-amber-900 leading-relaxed" data-i18n="co_region_block">
+          申し訳ありません。現在この地域へはお届けしていません。日本とヨーロッパへは配送できます。
+        </div>
       <a href="./cart.html" class="block text-center text-[13px] text-zinc-500 hover:text-zinc-900 mt-4 transition" data-i18n="co_back_cart">カートに戻る</a>
 
       <p class="mt-5 text-[11px] text-zinc-400 leading-relaxed" data-i18n="co_consent">
@@ -482,6 +485,12 @@ const translations = {
   "co_email":      { ja: "メールアドレス",                       en: "Email address",                    es: "Correo electrónico",               pt: "E-mail" },
   "co_pay_lead": { ja: "お好きな方法を選んでください。次の画面で確認できます。", en: "Pick one to continue. You'll confirm on the next screen.", es: "Elige uno para continuar. Lo confirmarás en la siguiente pantalla.", pt: "Escolha um para continuar. Você confirmará na próxima tela." },
   "co_pay_wallet_sub": { ja: "対応端末ならワンタッチ", en: "One touch on supported devices", es: "Un toque en dispositivos compatibles", pt: "Um toque em dispositivos compatíveis" },
+  "co_region_block": {
+    ja: "申し訳ありません。現在この地域へはお届けしていません。日本とヨーロッパへは配送できます。",
+    en: "Sorry — we don't ship to this region yet. We currently deliver to Japan and Europe.",
+    es: "Lo sentimos, todavía no enviamos a esta región. Actualmente entregamos en Japón y Europa.",
+    pt: "Desculpe, ainda não enviamos para esta região. Atualmente entregamos no Japão e na Europa."
+  },
   "co_zip_looking": { ja: "住所を調べています…", en: "Looking up address…", es: "Buscando la dirección…", pt: "Buscando o endereço…" },
   "co_zip_filled":  { ja: "住所を入力しました。番地を続けて入力してください。", en: "Address filled in. Add your street number.", es: "Dirección rellenada. Añade el número.", pt: "Endereço preenchido. Adicione o número." },
   "co_news_optin": {
@@ -787,6 +796,27 @@ function render(){
     panel.classList.add('is-busy');
   });
 })();
+
+// ---------------------------------------------------------------------------
+// 配送できない地域が選ばれていたら、入力させる前に伝えて注文ボタンを止める。
+// ★ ここは api/_products.js の REGIONS と必ず一致させること。
+//   増やすときは両方直さないと、最後の最後でエラーになる。
+// ---------------------------------------------------------------------------
+const SHIPPABLE_LANGS = ['ja', 'es'];
+function syncRegionAvailability(){
+  const ok = SHIPPABLE_LANGS.includes(getLang());
+  const btn = document.getElementById('place-order-btn');
+  const note = document.getElementById('region-block');
+  const panel = document.getElementById('pay-panel');
+  if (btn){ btn.disabled = !ok; btn.style.opacity = ok ? '' : '.45'; btn.style.pointerEvents = ok ? '' : 'none'; }
+  if (note) note.classList.toggle('hidden', ok);
+  if (panel) panel.style.display = ok ? '' : 'none';
+}
+syncRegionAvailability();
+document.addEventListener('click', (e) => {
+  // 言語（配送先）を切り替えたあとに効かせる
+  if (e.target.closest('#lang-switcher, .region-option')) setTimeout(syncRegionAvailability, 60);
+});
 
 // ---------------------------------------------------------------------------
 // 郵便番号から住所を自動で入れる（日本のみ）
