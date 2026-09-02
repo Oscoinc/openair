@@ -4,10 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OPEN AIR — 呼吸を、整える。</title>
-<link rel="icon" href="/favicon.ico?v=2" sizes="any">
-<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=2">
-<link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon-192.png?v=2">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
+<link rel="icon" href="/favicon.ico" sizes="48x48 32x32 16x16">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="apple-touch-icon-precomposed" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
 <meta name="theme-color" content="#0a0a0a">
 <!-- ====== SEO / SNS共有プレビュー ====== -->
 <meta name="description" content="呼吸を、整える。意識しなくても、整う。ただ、それだけ。OPEN AIR は、貼っていることを忘れる透明の鼻用テープです。">
@@ -3131,24 +3133,27 @@ function animateCounter(el, opts){
 })();
 
 // ============== Custom smooth scroll (Apple-like easing) ==============
+// 距離に比例した時間をかけると、このページの長さでは最大5秒待たされる。
+// 明示的に duration を渡された場合（ロゴでトップに戻るなど）だけ長くし、
+// それ以外は 0.6 秒までに収める。
 function smoothScrollTo(targetY, duration){
   const startY = window.scrollY || window.pageYOffset;
   const distance = targetY - startY;
-  // Longer duration for long cinematic scrolls; cap at 5s
-  const dur = duration || Math.min(5000, Math.max(1200, Math.abs(distance) * 0.85));
+  const dur = duration || Math.min(600, Math.max(320, Math.abs(distance) * 0.5));
   const startT = performance.now();
   function step(now){
     const elapsed = now - startT;
     const t = Math.min(elapsed / dur, 1);
     // easeInOutSine — gentler than easeInOutQuad, no aggressive mid-acceleration
     const eased = -(Math.cos(Math.PI * t) - 1) / 2;
-    window.scrollTo(0, startY + distance * eased);
+    window.scrollTo({ top: startY + distance * eased, behavior: 'auto' });
     if (t < 1) requestAnimationFrame(step);
   }
   requestAnimationFrame(step);
 }
 
-// Intercept all in-page hash anchor clicks for smooth scroll
+// ページ内リンクは自前で送る。
+// 画面4つ分より遠いときは、動かしても内容が見えないだけなので一気に飛ぶ。
 document.addEventListener('click', (e) => {
   const link = e.target.closest('a[href^="#"]');
   if (!link) return;
@@ -3157,8 +3162,12 @@ document.addEventListener('click', (e) => {
   const target = document.querySelector(href);
   if (!target) return;
   e.preventDefault();
-  const top = target.getBoundingClientRect().top + window.scrollY;
-  smoothScrollTo(top);
+  const top = Math.max(0, target.getBoundingClientRect().top + window.scrollY);
+  const far = Math.abs(top - window.scrollY) > window.innerHeight * 4;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (far || reduce) window.scrollTo({ top: top, behavior: 'auto' });
+  else smoothScrollTo(top);
+  try { history.replaceState(null, '', href); } catch(err){}
 });
 
 // ============== Logo click → scroll to top ==============

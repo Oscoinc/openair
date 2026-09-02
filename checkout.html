@@ -4,10 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>購入手続き — OPEN AIR</title>
-<link rel="icon" href="/favicon.ico?v=2" sizes="any">
-<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=2">
-<link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon-192.png?v=2">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
+<link rel="icon" href="/favicon.ico" sizes="48x48 32x32 16x16">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="apple-touch-icon-precomposed" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
 <meta name="theme-color" content="#fafafa">
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
@@ -104,11 +106,14 @@
   @keyframes paySpin{ to{ transform:rotate(360deg); } }
 
   .step-num{ width:22px; height:22px; border-radius:50%; background:#0a0a0a; color:#fff; display:grid; place-items:center; font-size:11px; font-weight:600; flex-shrink:0; }
+  /* 「今ここ」の囲みは、角が立つと強すぎるので丸みと薄い影でやわらげる */
+  .step-pill{ border-radius:14px; padding:6px 12px; transition:background .18s ease, box-shadow .18s ease; }
+  .step-pill.is-here{ background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.06), 0 0 0 1px rgba(0,0,0,.05); }
   /* 文字が途中で折り返すと読みにくいので、絶対に折り返させない */
   .step-pill > span:last-child{ white-space:nowrap; }
   @media (max-width: 560px){
     .step-row{ gap:4px !important; }
-    .step-pill{ font-size:11px; padding:6px 10px 6px 6px; gap:6px; }
+    .step-pill{ font-size:11px; padding:6px 10px; gap:6px; border-radius:12px; }
     .step-num{ width:18px; height:18px; font-size:10px; }
   }
 
@@ -173,7 +178,7 @@
     <div class="step-row mt-6 flex justify-center items-center gap-2">
       <a href="./cart.html" class="step-pill"><span class="step-num">1</span><span data-i18n="co_step1">カート</span></a>
       <span class="text-zinc-300">›</span>
-      <span class="step-pill" style="background:#fff;border-color:#0a0a0a"><span class="step-num">2</span><span data-i18n="co_step2">お届け先・支払い</span></span>
+      <span class="step-pill is-here"><span class="step-num">2</span><span data-i18n="co_step2">お届け先・支払い</span></span>
       <span class="text-zinc-300">›</span>
       <span class="step-pill"><span class="step-num" style="background:#d4d4d8">3</span><span data-i18n="co_step3">完了</span></span>
     </div>
@@ -227,23 +232,9 @@
           <!-- Country selector (EU only — visible when lang is es) -->
           <div class="md:col-span-2 hidden" id="ship-country-wrap">
             <label class="field-label" data-i18n="co_country">País</label>
+            <!-- 中身は JS で作る（表示言語に合わせた国名・api/_products.js と同じ27カ国）-->
             <select required class="field" name="country" id="ship-country">
-              <option value="">Selecciona un país</option>
-              <option value="ES">España</option>
-              <option value="PT">Portugal</option>
-              <option value="FR">Francia</option>
-              <option value="IT">Italia</option>
-              <option value="DE">Alemania</option>
-              <option value="NL">Países Bajos</option>
-              <option value="BE">Bélgica</option>
-              <option value="AT">Austria</option>
-              <option value="IE">Irlanda</option>
-              <option value="GR">Grecia</option>
-              <option value="PL">Polonia</option>
-              <option value="SE">Suecia</option>
-              <option value="DK">Dinamarca</option>
-              <option value="FI">Finlandia</option>
-              <option value="LU">Luxemburgo</option>
+              <option value="" data-i18n="co_pref_placeholder">選択してください</option>
             </select>
           </div>
 
@@ -608,6 +599,100 @@ const translations = {
   "footer_support": { ja: "サポート",     en: "Support", es: "Soporte",    pt: "Suporte" }
 };
 
+// 住所の記入例（ヨーロッパ以外）
+const PH_BY_REGION = {
+  ja: { lastName:'山田',  firstName:'太郎',  zip:'100-0001',  addr1:'千代田区千代田 1-1',           addr2:'OPEN AIRビル 101',      phone:'090-1234-5678' },
+  en: { lastName:'Smith', firstName:'Alex',  zip:'10001',     addr1:'350 5th Ave',                  addr2:'Suite 1801',            phone:'(212) 555-1234' },
+  es: { lastName:'García',firstName:'María', zip:'28001',     addr1:'Calle Mayor 12, Madrid',       addr2:'Edificio OPEN AIR, 1A', phone:'+34 612 34 56 78' },
+  pt: { lastName:'Silva', firstName:'Ana',   zip:'01310-100', addr1:'Av. Paulista 1234, São Paulo', addr2:'Apto 502, Bloco B',     phone:'(11) 91234-5678' }
+};
+
+// ---------------------------------------------------------------------------
+// ヨーロッパのお届け先
+//
+// ★ 国の一覧は api/_products.js の REGIONS.es.countries と必ず同じにすること。
+//   ここに無い国を選べてしまうと、決済の直前で弾かれる。
+// 国名は Intl.DisplayNames で表示言語に合わせて出すので、対訳表は持たない。
+// ---------------------------------------------------------------------------
+const EU_COUNTRIES = [
+  'ES','PT','FR','IT','DE','NL','BE','AT','IE','LU','FI','GR','PL','CZ','SK','SI','HR',
+  'EE','LV','LT','DK','SE','HU','RO','BG','CY','MT',
+];
+// 記入例。選んだ国の書き方に合わせて出す（実在の住所ではない）
+const EU_SAMPLES = {
+  ES:{ln:'García',      fn:'María',   zip:'28001',     prov:'Madrid',          a1:'Calle Mayor 12, Madrid',            a2:'Edificio OPEN AIR, 1A',  tel:'+34 612 34 56 78'},
+  PT:{ln:'Silva',       fn:'Ana',     zip:'1000-001',  prov:'Lisboa',          a1:'Rua Augusta 100, Lisboa',           a2:'Edifício OPEN AIR, 1.º', tel:'+351 912 345 678'},
+  FR:{ln:'Martin',      fn:'Camille', zip:'75001',     prov:'Île-de-France',   a1:'12 Rue de Rivoli, Paris',           a2:'Bâtiment OPEN AIR, App. 5', tel:'+33 6 12 34 56 78'},
+  IT:{ln:'Rossi',       fn:'Giulia',  zip:'00184',     prov:'Roma',            a1:'Via del Corso 12, Roma',            a2:'Palazzo OPEN AIR, Int. 5', tel:'+39 340 123 4567'},
+  DE:{ln:'Müller',      fn:'Lena',    zip:'10115',     prov:'Berlin',          a1:'Friedrichstraße 12, Berlin',        a2:'OPEN AIR Haus, 3. OG',   tel:'+49 151 2345 6789'},
+  NL:{ln:'de Vries',    fn:'Sanne',   zip:'1012 AB',   prov:'Noord-Holland',   a1:'Damstraat 12, Amsterdam',           a2:'OPEN AIR gebouw, 2-hoog', tel:'+31 6 1234 5678'},
+  BE:{ln:'Peeters',     fn:'Emma',    zip:'1000',      prov:'Bruxelles',       a1:'Grote Markt 12, Brussel',           a2:'OPEN AIR, bus 5',        tel:'+32 470 12 34 56'},
+  AT:{ln:'Gruber',      fn:'Anna',    zip:'1010',      prov:'Wien',            a1:'Kärntner Straße 12, Wien',          a2:'OPEN AIR Haus, Top 5',   tel:'+43 664 123 4567'},
+  IE:{ln:'Murphy',      fn:'Aoife',   zip:'D02 XY45',  prov:'Dublin',          a1:'12 Grafton Street, Dublin',         a2:'OPEN AIR House, Apt 5',  tel:'+353 85 123 4567'},
+  LU:{ln:'Weber',       fn:'Léa',     zip:'L-1111',    prov:'Luxembourg',      a1:'12 Grand-Rue, Luxembourg',          a2:'Résidence OPEN AIR, 1A', tel:'+352 621 123 456'},
+  FI:{ln:'Virtanen',    fn:'Aino',    zip:'00100',     prov:'Uusimaa',         a1:'Mannerheimintie 12, Helsinki',      a2:'OPEN AIR-talo, as. 5',   tel:'+358 40 123 4567'},
+  GR:{ln:'Papadopoulos',fn:'Maria',   zip:'105 57',    prov:'Attiki',          a1:'Ermou 12, Athina',                  a2:'OPEN AIR, 1os orofos',   tel:'+30 691 234 5678'},
+  PL:{ln:'Kowalski',    fn:'Zofia',   zip:'00-001',    prov:'Mazowieckie',     a1:'ul. Marszałkowska 12, Warszawa',    a2:'OPEN AIR, m. 5',         tel:'+48 512 345 678'},
+  CZ:{ln:'Novák',       fn:'Eliška',  zip:'110 00',    prov:'Praha',           a1:'Václavské náměstí 12, Praha',       a2:'OPEN AIR, byt 5',        tel:'+420 601 123 456'},
+  SK:{ln:'Horváth',     fn:'Nina',    zip:'811 01',    prov:'Bratislava',      a1:'Hlavné námestie 12, Bratislava',    a2:'OPEN AIR, byt 5',        tel:'+421 901 123 456'},
+  SI:{ln:'Novak',       fn:'Eva',     zip:'1000',      prov:'Ljubljana',       a1:'Slovenska cesta 12, Ljubljana',     a2:'OPEN AIR, st. 5',        tel:'+386 41 123 456'},
+  HR:{ln:'Horvat',      fn:'Ana',     zip:'10000',     prov:'Zagreb',          a1:'Ilica 12, Zagreb',                  a2:'OPEN AIR, stan 5',       tel:'+385 91 123 4567'},
+  EE:{ln:'Tamm',        fn:'Maria',   zip:'10111',     prov:'Harjumaa',        a1:'Viru 12, Tallinn',                  a2:'OPEN AIR, korter 5',     tel:'+372 5123 4567'},
+  LV:{ln:'Bērziņš',     fn:'Anna',    zip:'LV-1050',   prov:'Rīga',            a1:'Brīvības iela 12, Rīga',            a2:'OPEN AIR, dz. 5',        tel:'+371 21 234 567'},
+  LT:{ln:'Kazlauskas',  fn:'Ieva',    zip:'LT-01100',  prov:'Vilnius',         a1:'Gedimino pr. 12, Vilnius',          a2:'OPEN AIR, but. 5',       tel:'+370 612 34567'},
+  DK:{ln:'Nielsen',     fn:'Freja',   zip:'1050',      prov:'Hovedstaden',     a1:'Strøget 12, København',             a2:'OPEN AIR, 2. sal',       tel:'+45 20 12 34 56'},
+  SE:{ln:'Andersson',   fn:'Elsa',    zip:'111 22',    prov:'Stockholm',       a1:'Drottninggatan 12, Stockholm',      a2:'OPEN AIR, lgh 1201',     tel:'+46 70 123 45 67'},
+  HU:{ln:'Nagy',        fn:'Anna',    zip:'1051',      prov:'Budapest',        a1:'Váci utca 12, Budapest',            a2:'OPEN AIR, 5. em.',       tel:'+36 20 123 4567'},
+  RO:{ln:'Popescu',     fn:'Maria',   zip:'010101',    prov:'București',       a1:'Calea Victoriei 12, București',     a2:'OPEN AIR, ap. 5',        tel:'+40 721 234 567'},
+  BG:{ln:'Ivanov',      fn:'Maria',   zip:'1000',      prov:'Sofia',           a1:'bul. Vitosha 12, Sofia',            a2:'OPEN AIR, ap. 5',        tel:'+359 87 123 4567'},
+  CY:{ln:'Georgiou',    fn:'Elena',   zip:'1010',      prov:'Lefkosia',        a1:'Makariou Avenue 12, Lefkosia',      a2:'OPEN AIR, Flat 5',       tel:'+357 96 123 456'},
+  MT:{ln:'Borg',        fn:'Maria',   zip:'VLT 1111',  prov:'Valletta',        a1:'Republic Street 12, Valletta',      a2:'OPEN AIR, Flat 5',       tel:'+356 7712 3456'},
+};
+function euCountry(){
+  const sel = document.getElementById('ship-country');
+  const c = (sel && sel.value) || 'ES';
+  return EU_SAMPLES[c] ? c : 'ES';
+}
+// 国の選択肢を、表示言語の国名で作り直す（並び順もその言語の五十音／アルファベット順）
+function buildCountryOptions(lang){
+  const sel = document.getElementById('ship-country');
+  if (!sel) return;
+  const cur = sel.value;
+  let nameOf = (c) => c;
+  try {
+    const dn = new Intl.DisplayNames([lang], { type: 'region' });
+    nameOf = (c) => dn.of(c) || c;
+  } catch(e){}
+  const list = EU_COUNTRIES.map(c => ({ c, n: nameOf(c) }));
+  try { list.sort((a, b) => a.n.localeCompare(b.n, lang)); }
+  catch(e){ list.sort((a, b) => (a.n < b.n ? -1 : 1)); }
+  let ph = '選択してください';
+  try { ph = translations.co_pref_placeholder[lang] || ph; } catch(e){}
+  sel.innerHTML = '<option value="">' + ph + '</option>' +
+    list.map(x => '<option value="' + x.c + '">' + x.n + '</option>').join('');
+  if (EU_COUNTRIES.includes(cur)) sel.value = cur;
+}
+// 記入例をお届け先（ヨーロッパなら選んだ国）に合わせる
+function applyAddressPlaceholders(region, lang){
+  const setPh = (id, val) => { const el = document.getElementById(id); if (el) el.placeholder = val; };
+  if (region === 'es'){
+    const s = EU_SAMPLES[euCountry()];
+    setPh('ship-lastname', s.ln); setPh('ship-firstname', s.fn);
+    setPh('ship-zip', s.zip);     setPh('ship-province', s.prov);
+    setPh('ship-addr1', s.a1);    setPh('ship-addr2', s.a2);
+    setPh('ship-phone', s.tel);
+    return;
+  }
+  const ph = PH_BY_REGION[region] || PH_BY_REGION.ja;
+  setPh('ship-lastname', ph.lastName); setPh('ship-firstname', ph.firstName);
+  setPh('ship-zip', ph.zip);           setPh('ship-addr1', ph.addr1);
+  setPh('ship-addr2', ph.addr2);       setPh('ship-phone', ph.phone);
+  setPh('ship-province', region === 'en' ? 'New York' : (region === 'pt' ? 'São Paulo' : 'Madrid'));
+}
+document.addEventListener('change', function(e){
+  if (e.target && e.target.id === 'ship-country') applyAddressPlaceholders(getRegion(), getLang());
+});
+
 const I18N_KEY = 'openair_lang';
 const SUPPORTED_LANGS = ['ja','en','es','pt'];
 const LANG_LABEL = { ja: '日本語', en: 'English', es: 'Español', pt: 'Português' };
@@ -688,20 +773,7 @@ function applyLang(lang){
   if (tokusho) tokusho.style.display = (region === 'ja') ? '' : 'none';
 
   // Address form: per-region placeholders & country selector behavior
-  const PH = {
-    ja: { lastName:'山田',     firstName:'太郎',   zip:'100-0001',  addr1:'千代田区千代田 1-1',  addr2:'OPEN AIRビル 101',     phone:'090-1234-5678' },
-    en: { lastName:'Smith',     firstName:'Alex',   zip:'10001',     addr1:'350 5th Ave',          addr2:'Suite 1801',           phone:'(212) 555-1234' },
-    es: { lastName:'García',    firstName:'María',  zip:'28001',     addr1:'Calle Mayor 12, Madrid', addr2:'Edificio OPEN AIR, 1A', phone:'+34 612 34 56 78' },
-    pt: { lastName:'Silva',     firstName:'Ana',    zip:'01310-100', addr1:'Av. Paulista 1234, São Paulo', addr2:'Apto 502, Bloco B', phone:'(11) 91234-5678' }
-  };
-  const ph = PH[region] || PH.ja;
-  const setPh = (id, val) => { const el = document.getElementById(id); if (el) el.placeholder = val; };
-  setPh('ship-lastname', ph.lastName);
-  setPh('ship-firstname', ph.firstName);
-  setPh('ship-zip', ph.zip);
-  setPh('ship-addr1', ph.addr1);
-  setPh('ship-addr2', ph.addr2);
-  setPh('ship-phone', ph.phone);
+  buildCountryOptions(lang);
 
   const isJP = region === 'ja';
 
@@ -732,10 +804,9 @@ function applyLang(lang){
       prefSel.required = false;
       provInput.classList.remove('hidden');
       provInput.required = true;
-      const provPh = region === 'en' ? 'New York' : (region === 'pt' ? 'São Paulo' : 'Madrid');
-      provInput.placeholder = provPh;
     }
   }
+  applyAddressPlaceholders(region, lang);
 
   if (typeof render === 'function') render();
 }
