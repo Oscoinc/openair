@@ -3161,8 +3161,8 @@ applyLang(getLang());
   if (window.innerWidth < 900 || conn.saveData === true || /2g|slow-2g/.test(conn.effectiveType || '')) {
     // MOBILE_V2: スマホは縦動画1本（OPENAIRE１+2 を連結）。
     // 冒頭はその前半、「使い方」の直前は後半を使うので、同じ絵が2回出ない。
-    SRC.src = './assets/openair-mhero5.mp4?v=5';
-    V.poster = './assets/openair-mhero5-poster.jpg?v=5';
+    SRC.src = './assets/openair-mhero7.mp4?v=7';
+    V.poster = './assets/openair-mhero7-poster.jpg?v=7';
     SEG_END = 0;            // 動画の最後まで使う
     V.load();
   }
@@ -3259,8 +3259,8 @@ applyLang(getLang());
     // 軽い方を読む条件（スマホ / 省データ / 低速回線）
     var conn = navigator.connection || {};
     if (window.innerWidth < 900 || conn.saveData === true || /2g|slow-2g/.test(conn.effectiveType || '')) {
-      src.src = './assets/openair-mfilm.mp4?v=3';
-      video.poster = './assets/openair-mfilm-poster.jpg?v=3';
+      src.src = './assets/openair-mfilm2.mp4?v=7';
+      video.poster = './assets/openair-mfilm2-poster.jpg?v=7';
       segStart = 0;
       video.load();
     }
