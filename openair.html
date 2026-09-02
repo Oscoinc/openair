@@ -1816,8 +1816,8 @@
 <section id="oa-film">
   <div class="oa-pin">
     <video id="oa-film-video" class="oa-video" muted playsinline webkit-playsinline preload="auto"
-           autoplay loop disablepictureinpicture data-poster="./assets/openair-film-poster.jpg">
-      <source id="oa-film-src" data-src="./assets/openair-film.mp4" type="video/mp4">
+           autoplay loop disablepictureinpicture data-poster="./assets/openair-film2-poster.jpg?v=8">
+      <source id="oa-film-src" data-src="./assets/openair-film2.mp4?v=8" type="video/mp4">
     </video>
 <canvas id="oa-film-canvas" class="oa-canvas" aria-hidden="true"></canvas>
     <div class="oa-vig"></div>
@@ -3307,8 +3307,8 @@ applyLang(getLang());
     if (window.OA_IMG_HERO) return;
 
     if (window.OA_MOBILE) {
-      src.src = './assets/openair-mfilm2.mp4?v=7';
-      video.poster = './assets/openair-mfilm2-poster.jpg?v=7';
+      src.src = './assets/openair-mfilm3.mp4?v=8';
+      video.poster = './assets/openair-mfilm3-poster.jpg?v=8';
     } else {
       src.src = src.getAttribute('data-src');
       video.poster = video.getAttribute('data-poster') || '';
@@ -3433,7 +3433,7 @@ applyLang(getLang());
   }
   if (!window.OA_IMG_HERO) {
     mirror('oa-hero-video', 'oa-hero-canvas', './assets/openair-intro-poster.jpg');
-    mirror('oa-film-video', 'oa-film-canvas', './assets/openair-film-poster.jpg');
+    mirror('oa-film-video', 'oa-film-canvas', './assets/openair-film2-poster.jpg?v=8');
   }
 })();
 </script>
