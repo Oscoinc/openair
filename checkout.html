@@ -44,28 +44,14 @@
   }
   .field:focus{ outline:none; border-color:rgba(10,10,10,.6); background:#fff; box-shadow:0 0 0 4px rgba(10,10,10,.06); }
   .field-label{ font-size:12px; color:#52525b; margin-bottom:6px; display:block; letter-spacing:.02em; font-weight:500; }
-  .pay-option{ position:relative; cursor:pointer; }
-  .pay-option input{ position:absolute; opacity:0; pointer-events:none; }
-  .pay-card{
-    border:1px solid rgba(0,0,0,.08); border-radius:18px; padding:16px 18px;
-    display:flex; align-items:center; gap:14px;
-    background:rgba(255,255,255,.6); transition:border .2s, background .2s, box-shadow .2s;
+  .pay-chip{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:9px 14px; border-radius:14px;
+    background:rgba(255,255,255,.7); border:1px solid rgba(0,0,0,.07);
+    font-size:13px; font-weight:500; color:#18181b;
   }
-  .pay-option input:checked + .pay-card{
-    border-color:#0a0a0a;
-    background:#fff;
-    box-shadow:0 0 0 3px rgba(10,10,10,.08);
-  }
-  .reveal{ opacity:0; transform:translateY(16px); animation:rise .6s cubic-bezier(.2,.8,.2,1) forwards; }
-  .reveal.delay-1{ animation-delay:.05s; }
-  .reveal.delay-2{ animation-delay:.10s; }
-  .reveal.delay-3{ animation-delay:.15s; }
-  @keyframes rise{ to{ opacity:1; transform:translateY(0); } }
-  .step-pill{
-    display:inline-flex; align-items:center; gap:10px;
-    padding:8px 14px 8px 8px; background:rgba(255,255,255,.6); border:1px solid rgba(0,0,0,.06);
-    border-radius:999px; font-size:12px; color:#52525b;
-  }
+  .pay-chip .gpay{ font-weight:600; letter-spacing:-.01em; }
+
   .step-num{ width:22px; height:22px; border-radius:50%; background:#0a0a0a; color:#fff; display:grid; place-items:center; font-size:11px; font-weight:600; flex-shrink:0; }
   /* 文字が途中で折り返すと読みにくいので、絶対に折り返させない */
   .step-pill > span:last-child{ white-space:nowrap; }
@@ -240,52 +226,21 @@
       <section class="glass rounded-[28px] p-7 reveal delay-3">
         <div class="text-[11px] tracking-[0.28em] uppercase text-zinc-500 mb-5">03 — Payment</div>
         <h2 class="text-xl font-semibold tracking-tight text-zinc-900 mb-5" data-i18n="co_pay_h2">お支払い方法</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <label class="pay-option">
-            <input type="radio" name="payment" value="card" checked>
-            <div class="pay-card">
-              <div class="w-10 h-10 rounded-xl bg-zinc-100 border border-zinc-200 grid place-items-center shrink-0">
-                <img src="./assets/pay-card.png" alt="" width="223" height="160" class="w-6 h-auto" style="width:24px;height:auto" loading="lazy">
-              </div>
-              <div>
-                <div class="text-[14px] font-semibold tracking-tight" data-i18n="co_pay_card">クレジットカード</div>
-                <div class="text-[12px] text-zinc-500">Visa / Master / JCB / AMEX</div>
-              </div>
-            </div>
-          </label>
-          <label class="pay-option">
-            <input type="radio" name="payment" value="apple">
-            <div class="pay-card">
-              <div class="h-10 grid place-items-center shrink-0">
-                <img src="./assets/pay-applepay.png" alt="Apple Pay" width="250" height="160" class="h-7 w-auto" style="height:28px;width:auto" loading="lazy">
-              </div>
-              <div>
-                <div class="text-[14px] font-semibold tracking-tight">Apple Pay</div>
-                <div class="text-[12px] text-zinc-500" data-i18n="co_pay_apple_sub">対応端末なら次の画面でワンタッチ</div>
-              </div>
-            </div>
-          </label>
-          <label class="pay-option" data-jp-only>
-            <input type="radio" name="payment" value="convenience">
-            <div class="pay-card">
-              <div class="w-10 h-10 rounded-xl bg-zinc-100 text-zinc-900 grid place-items-center text-[10px] font-bold border border-zinc-200" data-i18n="co_pay_conv_badge">コンビニ</div>
-              <div>
-                <div class="text-[14px] font-semibold tracking-tight" data-i18n="co_pay_conv">コンビニ払い</div>
-                <div class="text-[12px] text-zinc-500">セブン / ローソン / ファミマ</div>
-              </div>
-            </div>
-          </label>
-          <label class="pay-option" data-jp-only>
-            <input type="radio" name="payment" value="paypay">
-            <div class="pay-card">
-              <div class="w-10 h-10 rounded-xl bg-red-500 text-white grid place-items-center text-[10px] font-bold tracking-wide">Pay</div>
-              <div>
-                <div class="text-[14px] font-semibold tracking-tight">PayPay</div>
-                <div class="text-[12px] text-zinc-500" data-i18n="co_pay_paypay_sub">残高 / 後払い</div>
-              </div>
-            </div>
-          </label>
+        <!-- 決済手段はこのページでは選ばせない。
+             Apple Pay / Google Pay は「カードの出し方」であって別の決済手段ではなく、
+             実際にどれを使うかは次の Stripe の画面で端末に応じて選ぶことになる。
+             ここで選ばせても次の画面の内容は変わらないので、対応ブランドの表示だけにしている。 -->
+        <div class="flex flex-wrap items-center gap-2.5">
+          <span class="pay-chip">
+            <img src="./assets/pay-card.png" alt="" width="223" height="160" style="width:22px;height:auto" loading="lazy">
+            <span data-i18n="co_pay_card">クレジットカード</span>
+          </span>
+          <span class="pay-chip">
+            <img src="./assets/pay-applepay.png" alt="Apple Pay" width="250" height="160" style="height:20px;width:auto" loading="lazy">
+          </span>
+          <span class="pay-chip"><span class="gpay">Google&nbsp;Pay</span></span>
         </div>
+        <p class="mt-3 text-[12px] text-zinc-500">Visa / Mastercard / American Express / JCB / Diners / Discover</p>
 
         <!-- カード情報はこのページでは受け取らない（PCI DSS 回避）。Stripe の決済ページへ委譲する -->
         <div id="card-fields" class="mt-6">
@@ -466,9 +421,6 @@ const translations = {
   "co_pay_h2":          { ja: "お支払い方法",     en: "Payment method",      es: "Método de pago",       pt: "Método de pagamento" },
   "co_pay_card":        { ja: "クレジットカード", en: "Credit card",         es: "Tarjeta de crédito",   pt: "Cartão de crédito" },
   "co_pay_apple_sub":   { ja: "対応端末なら次の画面でワンタッチ", en: "One touch on supported devices", es: "Un toque en dispositivos compatibles", pt: "Um toque em dispositivos compatíveis" },
-  "co_pay_conv_badge":  { ja: "コンビニ",         en: "Store",               es: "Tienda",               pt: "Loja" },
-  "co_pay_conv":        { ja: "コンビニ払い",     en: "Pay in store",        es: "Pago en tienda",       pt: "Pagar na loja" },
-  "co_pay_paypay_sub":  { ja: "残高 / 後払い",    en: "Wallet / pay later",  es: "Saldo / pago después", pt: "Saldo / pagar depois" },
   "co_pay_secure_note": {
     ja: "どのお支払い方法でも、カード情報などをこのページで入力することはありません。「注文を確定する」を押すと Stripe の安全な決済ページに移動し、そこでお支払いが完了します。",
     en: "Whichever method you pick, no card details are entered on this page. Tap “Place order” and you'll be taken to Stripe's secure payment page to finish.",
@@ -567,22 +519,7 @@ function applyLang(lang){
   setPh('ship-addr2', ph.addr2);
   setPh('ship-phone', ph.phone);
 
-  // JP-only payment options (convenience-store / PayPay) — only show in JP
   const isJP = lang === 'ja';
-  document.querySelectorAll('[data-jp-only]').forEach(el => {
-    el.style.display = isJP ? '' : 'none';
-    if (!isJP) {
-      const radio = el.querySelector('input[type="radio"]');
-      if (radio && radio.checked) {
-        const cardRadio = document.querySelector('input[name="payment"][value="card"]');
-        if (cardRadio) {
-          cardRadio.checked = true;
-          const cardFields = document.getElementById('card-fields');
-          if (cardFields) cardFields.style.display = '';
-        }
-      }
-    }
-  });
 
   // Country selector visibility: shown for EU (es) only. EN uses US states inline, PT uses BR states.
   // For non-JP, prefecture <select> hidden, province text input visible (with locale-appropriate placeholder).
@@ -742,16 +679,6 @@ function render(){
   document.getElementById('sum-total').textContent = fmtPrice(subtotal, lang);
 }
 
-// 決済手段の説明文の出し分け。
-// カード情報欄は廃止したので、#card-fields は「Stripe に移動します」の案内。
-// カード/Apple Pay のときだけ出す（コンビニ・PayPay には無関係な文言のため）。
-document.addEventListener('change', (e) => {
-  if (e.target.name === 'payment'){
-    const showNote = (e.target.value === 'card' || e.target.value === 'apple');
-    document.getElementById('card-fields').style.display = showNote ? '' : 'none';
-  }
-});
-
 // ---------------------------------------------------------------------------
 // Submit handler — Stripe Checkout セッションを作って決済ページへ送る
 //
@@ -760,10 +687,6 @@ document.addEventListener('change', (e) => {
 // カートを空にするのも「支払い完了後」（complete.html）に移した。
 // ここで空にすると、決済をキャンセルした人のカートまで消えてしまうため。
 // ---------------------------------------------------------------------------
-
-// 日本以外では konbini / paypay を選べないので card 扱いにフォールバック
-const JP_ONLY_METHODS = ['convenience', 'paypay'];
-const METHOD_TO_STRIPE = { convenience: 'konbini', paypay: 'paypay' };
 
 document.getElementById('checkout-form').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -789,16 +712,11 @@ document.getElementById('checkout-form').addEventListener('submit', async (e) =>
   btn.textContent = t('co_placing_order');
 
   const fd = new FormData(e.target);
-  const rawMethod = fd.get('payment');
-  const paymentMethod = (lang === 'ja' && JP_ONLY_METHODS.includes(rawMethod))
-    ? METHOD_TO_STRIPE[rawMethod]
-    : null; // null = Stripe に自動判定させる（カード / Apple Pay など）
 
   const newsOptIn = !!(document.getElementById('opt-news') || {}).checked;
 
   const payload = {
     lang,
-    paymentMethod,
     newsletter: newsOptIn,
     items: ids.map(id => ({ id, qty: cart[id] })),
     customer: {

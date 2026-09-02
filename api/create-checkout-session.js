@@ -26,7 +26,7 @@ export default async function handler(req, res) {
 
   try {
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
-    const { items, lang, customer, paymentMethod, newsletter } = body;
+    const { items, lang, customer, newsletter } = body;
 
     // --- 地域 / 通貨 ------------------------------------------------------
     const region = REGIONS[lang];
@@ -96,13 +96,10 @@ export default async function handler(req, res) {
     }
 
     // --- 決済手段 ---------------------------------------------------------
-    // 日本アカウントのみ konbini / paypay が使える。使えない手段を明示指定すると
-    // Stripe がエラーを返すので、指定できなかった場合は自動選択に落とす。
-    // 定期課金はコンビニ / PayPay では継続課金できないので、指定されても自動選択に落とす
-    let methodParams = { automatic_payment_methods: { enabled: true } };
-    if (!hasSubscription && lang === 'ja' && ['konbini', 'paypay'].includes(paymentMethod)) {
-      methodParams = { payment_method_types: [paymentMethod] };
-    }
+    // 世界共通で使えるものだけにする。automatic_payment_methods を有効にすると、
+    // Stripe の決済画面がカード / Apple Pay / Google Pay を端末に応じて出し分ける。
+    // （コンビニ払いと PayPay は日本専用で、定期課金にも使えないため扱わない）
+    const methodParams = { automatic_payment_methods: { enabled: true } };
 
     // --- 送料 -------------------------------------------------------------
     const shippingOptions = region.shipping > 0
@@ -169,27 +166,9 @@ export default async function handler(req, res) {
       base.subscription_data = { metadata, description: `OPEN AIR ${orderRef}` };
     } else {
       base.payment_intent_data = { shipping, metadata, description: `OPEN AIR ${orderRef}` };
-      // コンビニ決済は入金までタイムラグがあるので有効期限を長めに
-      base.expires_at = Math.floor(Date.now() / 1000) + 60 * 60 * 23;
     }
 
-    let session;
-    try {
-      session = await getStripe().checkout.sessions.create({ ...base, ...methodParams });
-    } catch (err) {
-      // コンビニ / PayPay は Stripe 側で有効化していないと弾かれる。
-      // その場合はお客様を行き止まりにせず、通常の決済手段で進めてもらう。
-      const notActivated = methodParams.payment_method_types &&
-        /payment method|not activated|invalid|unsupported/i.test(err?.message || '');
-      if (!notActivated) throw err;
-      console.warn('[create-checkout-session] %s が使えないので自動選択に切り替えます: %s',
-        methodParams.payment_method_types.join(','), err.message);
-      session = await getStripe().checkout.sessions.create({
-        ...base,
-        automatic_payment_methods: { enabled: true },
-      });
-      return res.status(200).json({ url: session.url, orderRef, fellBackToDefault: true });
-    }
+    const session = await getStripe().checkout.sessions.create({ ...base, ...methodParams });
 
     return res.status(200).json({ url: session.url, orderRef, mode: base.mode });
   } catch (err) {

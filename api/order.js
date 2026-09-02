@@ -25,7 +25,8 @@ export default async function handler(req, res) {
       expand: ['line_items', 'payment_intent'],
     });
 
-    // paid = カード決済完了 / unpaid + konbini = 支払い番号発行済み（入金待ち）
+    // paid = 決済完了。unpaid のまま complete になるのは後払い系だけで、今は扱っていないが、
+    // 将来また増やしたときに完了画面が壊れないよう受け口だけ残してある。
     const isPaid = session.payment_status === 'paid';
     const isPending = session.payment_status === 'unpaid' && session.status === 'complete';
     if (!isPaid && !isPending) {
