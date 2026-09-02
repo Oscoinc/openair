@@ -372,6 +372,38 @@ const PRODUCTS = {
     image:'./assets/part_package.webp?v=7',
     discount:{ ja:'¥2,900 OFF', en:'$19 OFF', es:'€21 OFF', pt:'R$ 95 OFF' } }
 };
+// ---------------------------------------------------------------------------
+// 定期便（サブスクリプション）を PRODUCTS に足す。
+// 中身は同じ商品で、10%引き・自動でお届けが続くだけ。キーは "three.sub"。
+// こうしておくと、この先の処理は通常商品と1文字も変えずに動く。
+// ★ 数字は openair.html / api/_products.js とも揃っていること。
+// ---------------------------------------------------------------------------
+const SUB_RATE = 0.9;
+const SUB_MONTHS = { single: 1, three: 3, six: 6 };
+const SUB_INTERVAL = {
+  1: { ja:'毎月お届け',      en:'Delivered monthly',        es:'Entrega mensual',          pt:'Entrega mensal' },
+  3: { ja:'3ヶ月ごとお届け', en:'Delivered every 3 months', es:'Entrega cada 3 meses',     pt:'Entrega a cada 3 meses' },
+  6: { ja:'6ヶ月ごとお届け', en:'Delivered every 6 months', es:'Entrega cada 6 meses',     pt:'Entrega a cada 6 meses' },
+};
+Object.keys(SUB_MONTHS).forEach(function(id){
+  const base = PRODUCTS[id];
+  if (!base) return;
+  const m = SUB_MONTHS[id];
+  const price = {}, desc = {};
+  Object.keys(base.price).forEach(function(l){
+    const v = base.price[l] * SUB_RATE;
+    price[l] = (l === 'ja') ? Math.round(v) : Math.round(v * 100) / 100;
+  });
+  Object.keys(base.desc).forEach(function(l){
+    desc[l] = base.desc[l] + ' · ' + (SUB_INTERVAL[m][l] || SUB_INTERVAL[m].ja);
+  });
+  PRODUCTS[id + '.sub'] = {
+    id: id + '.sub', name: base.name, image: base.image,
+    isSub: true, months: m, price: price, desc: desc,
+    discount: { ja:'10% OFF', en:'10% OFF', es:'10% OFF', pt:'10% OFF' },
+  };
+});
+
 const STORAGE_KEY = 'openair_cart';
 function readCart(){
   try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }

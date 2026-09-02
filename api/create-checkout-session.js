@@ -10,7 +10,7 @@
 // ---------------------------------------------------------------------------
 
 import Stripe from 'stripe';
-import { PRODUCTS, REGIONS, MAX_QTY_PER_ITEM } from './_products.js';
+import { PRODUCTS, REGIONS, MAX_QTY_PER_ITEM, SUB_MONTHS, parseItemId, subUnitAmount } from './_products.js';
 
 // キー未設定でも import 時に落ちないよう遅延初期化する
 let _stripe;
@@ -36,27 +36,36 @@ export default async function handler(req, res) {
     if (!Array.isArray(items) || items.length === 0) return bad(res, 400, 'Cart is empty');
 
     const line_items = [];
+    let hasSubscription = false;
+
     for (const raw of items) {
-      const product = PRODUCTS[raw?.id];
+      const { productId, isSub } = parseItemId(raw?.id);
+      const product = PRODUCTS[productId];
       if (!product) return bad(res, 400, `Unknown product: ${raw?.id}`);
+      if (isSub && !SUB_MONTHS[productId]) return bad(res, 400, `No subscription plan for ${productId}`);
 
       const qty = Number(raw.qty);
       if (!Number.isInteger(qty) || qty < 1 || qty > MAX_QTY_PER_ITEM) {
         return bad(res, 400, `Invalid quantity for ${raw.id}`);
       }
 
-      line_items.push({
-        quantity: qty,
-        price_data: {
-          currency: region.currency,
-          unit_amount: product.unitAmount[region.currency],
-          tax_behavior: region.taxBehavior,
-          product_data: {
-            name: product.name,
-            description: product.description[lang] || product.description.ja,
-          },
+      const price_data = {
+        currency: region.currency,
+        unit_amount: isSub ? subUnitAmount(product, region.currency) : product.unitAmount[region.currency],
+        tax_behavior: region.taxBehavior,
+        product_data: {
+          name: isSub ? `${product.name}（定期便）` : product.name,
+          description: product.description[lang] || product.description.ja,
         },
-      });
+      };
+
+      if (isSub) {
+        hasSubscription = true;
+        // 容量に合わせた間隔で自動的にお届けする
+        price_data.recurring = { interval: 'month', interval_count: SUB_MONTHS[productId] };
+      }
+
+      line_items.push({ quantity: qty, price_data });
     }
 
     // --- お届け先（自社フォームで収集済み）--------------------------------
@@ -89,8 +98,9 @@ export default async function handler(req, res) {
     // --- 決済手段 ---------------------------------------------------------
     // 日本アカウントのみ konbini / paypay が使える。使えない手段を明示指定すると
     // Stripe がエラーを返すので、指定できなかった場合は自動選択に落とす。
+    // 定期課金はコンビニ / PayPay では継続課金できないので、指定されても自動選択に落とす
     let methodParams = { automatic_payment_methods: { enabled: true } };
-    if (lang === 'ja' && ['konbini', 'paypay'].includes(paymentMethod)) {
+    if (!hasSubscription && lang === 'ja' && ['konbini', 'paypay'].includes(paymentMethod)) {
       methodParams = { payment_method_types: [paymentMethod] };
     }
 
@@ -112,11 +122,22 @@ export default async function handler(req, res) {
 
     // --- 注文メモ（発注作業で使う情報を metadata に残す）------------------
     const orderRef = 'OA-' + Date.now().toString(36).toUpperCase().slice(-6);
+    // 定期便（subscription モード）では payment_intent_data.shipping が使えないので、
+    // 宛名ラベルに必要な住所は metadata に項目ごとに残しておく。
+    // 通常購入でも同じものを入れておけば、読み出し側の処理を1本にできる。
     const metadata = {
       order_ref: orderRef,
       lang,
       items: items.map((i) => `${i.id}x${i.qty}`).join(','),
-      // AliExpress 発注時にそのまま貼れる形で持っておく
+      plan: hasSubscription ? 'subscription' : 'once',
+      ship_name: shipping.name || '',
+      ship_zip: shipping.address.postal_code || '',
+      ship_state: shipping.address.state || '',
+      ship_city: shipping.address.city || '',
+      ship_line1: shipping.address.line1 || '',
+      ship_line2: shipping.address.line2 || '',
+      ship_country: shipping.address.country || '',
+      // 発注時にそのまま貼れる1行版
       ship_to: [
         shipping.name,
         shipping.address.line1,
@@ -130,23 +151,25 @@ export default async function handler(req, res) {
     };
 
     const base = {
-      mode: 'payment',
+      mode: hasSubscription ? 'subscription' : 'payment',
       line_items,
       customer_email: c.email,
       locale: region.locale,
       client_reference_id: orderRef,
       metadata,
-      payment_intent_data: {
-        shipping,
-        metadata,
-        description: `OPEN AIR ${orderRef}`,
-      },
       shipping_options: shippingOptions,
-      // コンビニ決済は入金までタイムラグがあるので有効期限を長めに
-      expires_at: Math.floor(Date.now() / 1000) + 60 * 60 * 23,
       success_url: `${origin}/complete.html?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/checkout.html`,
     };
+
+    if (hasSubscription) {
+      // subscription モードでは payment_intent_data / expires_at は使えない
+      base.subscription_data = { metadata, description: `OPEN AIR ${orderRef}` };
+    } else {
+      base.payment_intent_data = { shipping, metadata, description: `OPEN AIR ${orderRef}` };
+      // コンビニ決済は入金までタイムラグがあるので有効期限を長めに
+      base.expires_at = Math.floor(Date.now() / 1000) + 60 * 60 * 23;
+    }
 
     let session;
     try {
@@ -166,7 +189,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ url: session.url, orderRef, fellBackToDefault: true });
     }
 
-    return res.status(200).json({ url: session.url, orderRef });
+    return res.status(200).json({ url: session.url, orderRef, mode: base.mode });
   } catch (err) {
     console.error('[create-checkout-session]', err);
     return bad(res, 500, err?.message || 'Failed to create checkout session');

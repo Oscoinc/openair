@@ -210,6 +210,25 @@
   .btn-light{ background:rgba(255,255,255,.7); color:#0a0a0a; padding:13px 27px; border-radius:999px; font-weight:500; font-size:15px; border:1px solid rgba(0,0,0,.06); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); transition:background .25s ease,transform .25s ease; }
   .btn-light:hover{ transform:translateY(-1px); background:#fff; }
 
+  /* 通常購入 / 定期便 の切り替えタブ */
+  .plan-tab{
+    display:inline-flex; align-items:center; gap:7px;
+    padding:9px 20px; border-radius:999px; border:0; cursor:pointer;
+    font-size:14px; font-weight:500; color:#52525b; background:transparent;
+    transition:background .2s ease, color .2s ease, box-shadow .2s ease;
+  }
+  .plan-tab:hover{ color:#18181b; }
+  .plan-tab.is-active{
+    background:#fff; color:#18181b;
+    box-shadow:0 1px 2px rgba(0,0,0,.06), 0 4px 12px rgba(0,0,0,.06);
+  }
+  .plan-tab-badge{
+    font-size:11px; font-weight:600; letter-spacing:.02em;
+    padding:2px 7px; border-radius:999px;
+    background:#e4f5ea; color:#186b3a;
+  }
+  .plan-tab.is-active .plan-tab-badge{ background:#186b3a; color:#fff; }
+
   /* === Cinematic stage === */
   .stage-pin{ position:sticky; top:0; height:100vh; overflow:hidden; }
   .stage-img{
@@ -2001,41 +2020,70 @@
 
   <!-- ============== PRICING ============== -->
   <section id="buy" class="py-32 px-6 max-w-6xl mx-auto">
-    <div class="text-center mb-14 reveal" data-reveal>
+    <div class="text-center mb-10 reveal" data-reveal>
       <div class="text-[12px] tracking-[0.32em] uppercase text-zinc-500 mb-4">Pricing</div>
       <h2 class="text-4xl md:text-5xl font-semibold tracking-tight text-gradient leading-[1.15]" data-i18n="buy_h2">あなたのペースで、<br/>続けられる。</h2>
       <p class="mt-5 text-zinc-500" data-i18n="buy_sub">送料無料 · 30 日返品保証</p>
+
+      <!-- 冒頭が映像になり、パッケージの実物がカートまで見えなくなったので、ここで一度見せる -->
+      <img src="./assets/part_package.webp?v=7" alt="OPEN AIR のパッケージ"
+           width="800" height="800" loading="lazy" decoding="async"
+           class="mx-auto mt-9 h-[132px] md:h-[168px] w-auto object-contain drop-shadow-[0_18px_36px_rgba(0,0,0,0.10)]">
+
+      <!-- 通常購入 / 定期便の切り替え -->
+      <div id="plan-toggle" class="mt-9 inline-flex p-1 rounded-full bg-zinc-100 border border-black/5" role="tablist" aria-label="購入方法">
+        <button type="button" class="plan-tab is-active" data-plan="once" role="tab" aria-selected="true">
+          <span data-i18n="buy_tab_once">1回のみ</span>
+        </button>
+        <button type="button" class="plan-tab" data-plan="sub" role="tab" aria-selected="false">
+          <span data-i18n="buy_tab_sub">定期便</span>
+          <span class="plan-tab-badge">−10%</span>
+        </button>
+      </div>
     </div>
+
     <div class="grid grid-cols-1 md:grid-cols-3 gap-5 reveal mobile-h-scroll" data-reveal>
-      <div class="rounded-[28px] glass p-8 transition-all duration-300 hover:-translate-y-1">
+      <div class="rounded-[28px] glass p-8 transition-all duration-300 hover:-translate-y-1" data-plan-card="single">
         <div class="text-[12px] tracking-[0.18em] uppercase text-zinc-500">Single</div>
-        <div class="mt-6 text-4xl font-semibold tracking-tight" data-i18n="buy_plan1_price">¥1,980</div>
+        <div class="mt-6 flex items-baseline gap-2 flex-wrap">
+          <div class="text-4xl font-semibold tracking-tight" data-price>¥1,980</div>
+          <div class="text-xs px-2 py-1 rounded-full bg-zinc-100 text-zinc-700 hidden" data-off></div>
+        </div>
         <div class="mt-1 text-zinc-500 text-sm" data-i18n="buy_plan1_desc">30 枚 · 1ヶ月分</div>
-        <button data-add-to-cart="single" class="mt-8 w-full py-3 rounded-full bg-zinc-900 text-white text-sm font-medium hover:bg-black transition" data-i18n="buy_btn_add">カートに追加</button>
+        <div class="mt-1 text-[13px] text-zinc-500 hidden" data-interval></div>
+        <button data-add-to-cart="single" class="mt-8 w-full py-3 rounded-full bg-zinc-900 text-white text-sm font-medium hover:bg-black transition" data-buy-btn>カートに追加</button>
         <ul class="mt-6 space-y-2 text-sm text-zinc-600"><li data-i18n="buy_feat_ship">✓ 送料無料</li><li data-i18n="buy_feat_pack">✓ 個包装で清潔</li><li data-i18n="buy_feat_return">✓ 30日返品保証</li></ul>
       </div>
-      <div class="relative rounded-[28px] bg-zinc-900 text-white p-8 shadow-2xl transition-all duration-300 hover:-translate-y-1">
+
+      <div class="relative rounded-[28px] bg-zinc-900 text-white p-8 shadow-2xl transition-all duration-300 hover:-translate-y-1" data-plan-card="three">
         <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-white text-zinc-900 text-[11px] font-semibold tracking-[0.18em] uppercase px-3 py-1 rounded-full shadow">Best Value</div>
         <div class="text-[12px] tracking-[0.18em] uppercase text-zinc-400">Three</div>
         <div class="mt-6 flex items-baseline gap-2 flex-wrap">
-          <div class="text-4xl font-semibold tracking-tight" data-i18n="buy_plan2_price">¥4,980</div>
-          <div class="text-xs px-2 py-1 rounded-full bg-white/15 text-white" data-i18n="buy_plan2_discount">¥1,000 OFF</div>
+          <div class="text-4xl font-semibold tracking-tight" data-price>¥4,980</div>
+          <div class="text-xs px-2 py-1 rounded-full bg-white/15 text-white" data-off>¥1,000 OFF</div>
         </div>
         <div class="mt-1 text-zinc-400 text-sm" data-i18n="buy_plan2_desc">90 枚 · 3ヶ月分</div>
-        <button data-add-to-cart="three" class="mt-8 w-full py-3 rounded-full bg-white text-zinc-900 text-sm font-medium hover:bg-zinc-100 transition" data-i18n="buy_btn_add">カートに追加</button>
+        <div class="mt-1 text-[13px] text-zinc-400 hidden" data-interval></div>
+        <button data-add-to-cart="three" class="mt-8 w-full py-3 rounded-full bg-white text-zinc-900 text-sm font-medium hover:bg-zinc-100 transition" data-buy-btn>カートに追加</button>
         <ul class="mt-6 space-y-2 text-sm text-zinc-300"><li data-i18n="buy_feat_ship">✓ 送料無料</li><li data-i18n="buy_feat_pack">✓ 個包装で清潔</li><li data-i18n="buy_feat_return">✓ 30日返品保証</li></ul>
       </div>
-      <div class="rounded-[28px] glass p-8 transition-all duration-300 hover:-translate-y-1">
+
+      <div class="rounded-[28px] glass p-8 transition-all duration-300 hover:-translate-y-1" data-plan-card="six">
         <div class="text-[12px] tracking-[0.18em] uppercase text-zinc-500">Six</div>
         <div class="mt-6 flex items-baseline gap-2 flex-wrap">
-          <div class="text-4xl font-semibold tracking-tight" data-i18n="buy_plan3_price">¥8,980</div>
-          <div class="text-xs px-2 py-1 rounded-full bg-zinc-100 text-zinc-700" data-i18n="buy_plan3_discount">¥2,900 OFF</div>
+          <div class="text-4xl font-semibold tracking-tight" data-price>¥8,980</div>
+          <div class="text-xs px-2 py-1 rounded-full bg-zinc-100 text-zinc-700" data-off>¥2,900 OFF</div>
         </div>
         <div class="mt-1 text-zinc-500 text-sm" data-i18n="buy_plan3_desc">180 枚 · 6ヶ月分</div>
-        <button data-add-to-cart="six" class="mt-8 w-full py-3 rounded-full bg-zinc-900 text-white text-sm font-medium hover:bg-black transition" data-i18n="buy_btn_add">カートに追加</button>
+        <div class="mt-1 text-[13px] text-zinc-500 hidden" data-interval></div>
+        <button data-add-to-cart="six" class="mt-8 w-full py-3 rounded-full bg-zinc-900 text-white text-sm font-medium hover:bg-black transition" data-buy-btn>カートに追加</button>
         <ul class="mt-6 space-y-2 text-sm text-zinc-600"><li data-i18n="buy_feat_ship">✓ 送料無料</li><li data-i18n="buy_feat_pack">✓ 個包装で清潔</li><li data-i18n="buy_feat_return">✓ 30日返品保証</li></ul>
       </div>
     </div>
+
+    <p id="plan-note" class="mt-7 text-center text-[13px] text-zinc-500 hidden" data-i18n="buy_sub_note">
+      次回お届けの3日前まで、いつでも解約・スキップできます。解約手数料はかかりません。
+    </p>
   </section>
 
   <!-- ============== CLOSING MANIFESTO ============== -->
@@ -2643,6 +2691,114 @@
   window.addEventListener('focus', updateBadge);
 })();
 
+// ============== 価格セクション（通常購入 / 定期便の切り替え） ==============
+// 価格は data-i18n ではなくこの表が正。定期便は10%off。
+// サーバー側の api/_products.js と数字を必ず揃えること。
+(function(){
+  const RATE = 0.9;                      // 定期便の割引後の掛け率
+  const CUR = {
+    ja: { sym: '¥',   dec: 0, loc: 'ja-JP' },
+    en: { sym: '$',   dec: 2, loc: 'en-US' },
+    es: { sym: '€',   dec: 2, loc: 'es-ES' },
+    pt: { sym: 'R$ ', dec: 2, loc: 'pt-BR' },
+  };
+  const PRICING = {
+    single: { months: 1, price: { ja: 1980, en: 13, es: 15, pt: 65  }, off: null },
+    three:  { months: 3, price: { ja: 4980, en: 33, es: 39, pt: 165 }, off: { ja: 1000, en: 6,  es: 6,  pt: 30 } },
+    six:    { months: 6, price: { ja: 8980, en: 59, es: 69, pt: 295 }, off: { ja: 2900, en: 19, es: 21, pt: 95 } },
+  };
+
+  // この節は翻訳表（translations）より前に実行されるので、
+  // まだ読めない場合に備えて必ず日本語の既定値へ落とす。
+  // const は宣言前に typeof でも参照できない（TDZ）ため try/catch で受ける。
+  const FALLBACK = {
+    buy_btn_add: 'カートに追加', buy_btn_sub: '定期便をはじめる',
+    buy_off_pct: '10% OFF', buy_permonth: '月あたり',
+    buy_int_1: '毎月お届け', buy_int_3: '3ヶ月ごとお届け', buy_int_6: '6ヶ月ごとお届け',
+  };
+  function lang(){
+    try { return getLang(); } catch (e) { return 'ja'; }
+  }
+  function tr(key){
+    try {
+      const t = translations[key];
+      if (t) return t[lang()] || t.ja;
+    } catch (e) {}
+    return FALLBACK[key] || '';
+  }
+  function fmt(n, l){
+    const c = CUR[l] || CUR.ja;
+    const v = c.dec === 0 ? Math.round(n) : Math.round(n * 100) / 100;
+    return c.sym + v.toLocaleString(c.loc, { minimumFractionDigits: c.dec, maximumFractionDigits: c.dec });
+  }
+
+  let plan = 'once';
+
+  function render(){
+    const l = lang();
+    document.querySelectorAll('[data-plan-card]').forEach(card => {
+      const id = card.getAttribute('data-plan-card');
+      const cfg = PRICING[id];
+      if (!cfg) return;
+      const base = cfg.price[l] != null ? cfg.price[l] : cfg.price.ja;
+      const priceEl = card.querySelector('[data-price]');
+      const offEl   = card.querySelector('[data-off]');
+      const intEl   = card.querySelector('[data-interval]');
+      const btn     = card.querySelector('[data-buy-btn]');
+
+      if (plan === 'sub'){
+        const p = base * RATE;
+        priceEl.textContent = fmt(p, l);
+        offEl.textContent = tr('buy_off_pct');
+        offEl.classList.remove('hidden');
+        intEl.textContent = tr('buy_int_' + cfg.months) +
+          (cfg.months > 1 ? ' · ' + tr('buy_permonth') + ' ' + fmt(p / cfg.months, l) : '');
+        intEl.classList.remove('hidden');
+        btn.textContent = tr('buy_btn_sub');
+      } else {
+        priceEl.textContent = fmt(base, l);
+        if (cfg.off){
+          const o = cfg.off[l] != null ? cfg.off[l] : cfg.off.ja;
+          offEl.textContent = fmt(o, l) + ' OFF';
+          offEl.classList.remove('hidden');
+        } else {
+          offEl.textContent = '';
+          offEl.classList.add('hidden');
+        }
+        intEl.textContent = '';
+        intEl.classList.add('hidden');
+        btn.textContent = tr('buy_btn_add');
+      }
+      // カートに入れるときの品目キー。定期便は "single.sub" のように印を付ける
+      btn.setAttribute('data-add-to-cart', plan === 'sub' ? id + '.sub' : id);
+    });
+
+    const note = document.getElementById('plan-note');
+    if (note) note.classList.toggle('hidden', plan !== 'sub');
+
+    document.querySelectorAll('#plan-toggle .plan-tab').forEach(tab => {
+      const on = tab.getAttribute('data-plan') === plan;
+      tab.classList.toggle('is-active', on);
+      tab.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+  }
+
+  const toggle = document.getElementById('plan-toggle');
+  if (toggle){
+    toggle.addEventListener('click', (e) => {
+      const tab = e.target.closest('.plan-tab');
+      if (!tab) return;
+      const next = tab.getAttribute('data-plan');
+      if (next === plan) return;
+      plan = next;
+      render();
+    });
+  }
+
+  window.renderPricing = render;
+  render();
+})();
+
 // ============== Flip cards (Why) — with counter animation on flip ==============
 document.querySelectorAll('.flip-card').forEach(card => {
   card.addEventListener('click', () => {
@@ -3045,6 +3201,20 @@ const translations = {
   "buy_plan2_discount": { ja: "¥1,000 OFF", en: "$6 OFF",  es: "€6 OFF",  pt: "R$ 30 OFF" },
   "buy_plan3_discount": { ja: "¥2,900 OFF", en: "$19 OFF", es: "€21 OFF", pt: "R$ 95 OFF" },
   "buy_btn_add":    { ja: "カートに追加", en: "Add to bag",       es: "Agregar al carrito",                pt: "Adicionar à sacola" },
+  "buy_btn_sub":    { ja: "定期便をはじめる", en: "Start subscription", es: "Empezar suscripción", pt: "Iniciar assinatura" },
+  "buy_tab_once":   { ja: "1回のみ", en: "One-time", es: "Compra única", pt: "Compra única" },
+  "buy_tab_sub":    { ja: "定期便", en: "Subscribe", es: "Suscripción", pt: "Assinatura" },
+  "buy_off_pct":    { ja: "10% OFF", en: "10% OFF", es: "10% OFF", pt: "10% OFF" },
+  "buy_int_1":      { ja: "毎月お届け", en: "Delivered monthly", es: "Entrega mensual", pt: "Entrega mensal" },
+  "buy_int_3":      { ja: "3ヶ月ごとお届け", en: "Delivered every 3 months", es: "Entrega cada 3 meses", pt: "Entrega a cada 3 meses" },
+  "buy_int_6":      { ja: "6ヶ月ごとお届け", en: "Delivered every 6 months", es: "Entrega cada 6 meses", pt: "Entrega a cada 6 meses" },
+  "buy_permonth":   { ja: "月あたり", en: "per month", es: "al mes", pt: "por mês" },
+  "buy_sub_note":   {
+    ja: "次回お届けの3日前まで、いつでも解約・スキップできます。解約手数料はかかりません。",
+    en: "Skip or cancel any time up to 3 days before your next delivery. No cancellation fee.",
+    es: "Puedes saltar o cancelar hasta 3 días antes del próximo envío. Sin penalización.",
+    pt: "Você pode pular ou cancelar até 3 dias antes da próxima entrega. Sem multa."
+  },
   "buy_feat_ship":  { ja: "✓ 送料無料",    en: "✓ Free shipping",  es: "✓ Envío gratis",                    pt: "✓ Frete grátis" },
   "buy_feat_pack":  { ja: "✓ 個包装で清潔", en: "✓ Individually wrapped", es: "✓ Empaque individual e higiénico", pt: "✓ Embalagem individual e higiênica" },
   "buy_feat_return":{ ja: "✓ 30日返品保証", en: "✓ 30-day returns", es: "✓ 30 días para devolverlo",         pt: "✓ 30 dias para devolução" },
@@ -3116,6 +3286,8 @@ function applyLang(lang){
   // Update language switcher label
   const langLabel = document.getElementById('lang-current');
   if (langLabel) langLabel.textContent = LANG_LABEL[lang] || '日本語';
+  // 価格まわりは data-i18n ではなくJSが組み立てているので、言語が変わったら描き直す
+  if (window.renderPricing) window.renderPricing();
 }
 function setLang(lang){
   if (!SUPPORTED_LANGS.includes(lang)) lang = 'ja';

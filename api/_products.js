@@ -67,3 +67,32 @@ export const REGIONS = {
 
 // 数量の上限（転売・カード試行対策）
 export const MAX_QTY_PER_ITEM = 10;
+
+// ---------------------------------------------------------------------------
+// 定期便（サブスクリプション）
+//
+// 中身は通常商品とまったく同じで、10%引き・自動でお届けが続く、という違いだけ。
+// カートのキーは "three.sub" のように .sub を付けて区別する。
+// お届け間隔は容量に合わせる（1ヶ月分なら毎月、3ヶ月分なら3ヶ月ごと）。
+//
+// ★ 表示価格は openair.html / cart.html / checkout.html にも同じ数字がある。
+//   変えるときは4箇所すべて揃えること（ズレると決済金額と表示が食い違う）。
+// ---------------------------------------------------------------------------
+export const SUB_RATE = 0.9;
+
+export const SUB_MONTHS = { single: 1, three: 3, six: 6 };
+
+// "three.sub" → { productId:'three', isSub:true } のように分解する
+export function parseItemId(raw) {
+  const id = String(raw || '');
+  if (id.endsWith('.sub')) return { productId: id.slice(0, -4), isSub: true };
+  return { productId: id, isSub: false };
+}
+
+// 定期便の1回あたりの金額（最小通貨単位）
+export function subUnitAmount(product, currency) {
+  const base = product.unitAmount[currency];
+  if (base == null) return null;
+  // JPY は 0 桁通貨なので整数に、EUR は 2 桁通貨なのでセント単位で丸める
+  return Math.round(base * SUB_RATE);
+}
