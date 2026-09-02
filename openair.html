@@ -1268,7 +1268,7 @@
       </p>
       <div class="mt-7 flex items-center justify-center gap-3">
         <a href="#buy" class="btn-primary" data-i18n="hero_btn_buy">今すぐ購入</a>
-        <a href="#concept" class="btn-secondary" data-i18n="hero_btn_scroll">スクロールで見る</a>
+        <a href="#concept" class="btn-secondary" data-scroll-slow data-i18n="hero_btn_scroll">スクロールで見る</a>
       </div>
     </div>
 
@@ -3137,12 +3137,19 @@ function animateCounter(el, opts){
 // 距離に比例した時間をかけると、このページの長さでは最大5秒待たされる。
 // 明示的に duration を渡された場合（ロゴでトップに戻るなど）だけ長くし、
 // それ以外は 0.6 秒までに収める。
+let oaScrollRun = 0;
+// 自動スクロール中に自分で動かしたら、その場で主導権を返す
+['wheel','touchstart','keydown','pointerdown'].forEach(function(ev){
+  window.addEventListener(ev, function(){ oaScrollRun++; }, { passive: true });
+});
 function smoothScrollTo(targetY, duration){
   const startY = window.scrollY || window.pageYOffset;
   const distance = targetY - startY;
   const dur = duration || Math.min(600, Math.max(320, Math.abs(distance) * 0.5));
   const startT = performance.now();
+  const mine = ++oaScrollRun;
   function step(now){
+    if (mine !== oaScrollRun) return;   // 自分で動かされたので降りる
     const elapsed = now - startT;
     const t = Math.min(elapsed / dur, 1);
     // easeInOutSine — gentler than easeInOutQuad, no aggressive mid-acceleration
@@ -3164,10 +3171,20 @@ document.addEventListener('click', (e) => {
   if (!target) return;
   e.preventDefault();
   const top = Math.max(0, target.getBoundingClientRect().top + window.scrollY);
-  const far = Math.abs(top - window.scrollY) > window.innerHeight * 4;
+  const dist = Math.abs(top - window.scrollY);
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (far || reduce) window.scrollTo({ top: top, behavior: 'auto' });
-  else smoothScrollTo(top);
+  if (reduce){
+    window.scrollTo({ top: top, behavior: 'auto' });
+  } else if (link.hasAttribute('data-scroll-slow')){
+    // 「スクロールで見る」——道中の映像を見せるのが目的なので、
+    // 目的地に着くことより、ゆっくり通り抜けることを優先する。
+    smoothScrollTo(top, Math.min(6000, Math.max(3000, dist * 0.8)));
+  } else if (dist > window.innerHeight * 4){
+    // 遠いところへの移動は、動かしても中身が見えないだけなので一気に飛ぶ
+    window.scrollTo({ top: top, behavior: 'auto' });
+  } else {
+    smoothScrollTo(top);
+  }
   try { history.replaceState(null, '', href); } catch(err){}
 });
 
