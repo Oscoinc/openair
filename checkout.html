@@ -657,9 +657,12 @@ function render(){
     const unitPrice = getPrice(p, lang);
     return `
       <div class="flex gap-3 items-center">
-        <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-zinc-50 to-zinc-100 grid place-items-center shrink-0 overflow-hidden relative">
-          <img src="${p.image}" alt="" class="max-w-[80%] max-h-[80%] object-contain" onerror="this.style.display='none'" loading="lazy" decoding="async">
-          ${q > 1 ? `<span class="absolute -top-1 -right-1 w-5 h-5 grid place-items-center bg-zinc-900 text-white text-[10px] font-semibold rounded-full">${q}</span>` : ''}
+        <!-- 個数バッジは overflow-hidden の外に出す。中に置くと角丸クリップで欠ける -->
+        <div class="relative shrink-0">
+          <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-zinc-50 to-zinc-100 grid place-items-center overflow-hidden">
+            <img src="${p.image}" alt="" class="max-w-[80%] max-h-[80%] object-contain" onerror="this.style.display='none'" loading="lazy" decoding="async">
+          </div>
+          ${q > 1 ? `<span class="absolute -top-1.5 -right-1.5 min-w-[20px] h-5 px-1 grid place-items-center bg-zinc-900 text-white text-[10px] font-semibold rounded-full ring-2 ring-white">${q}</span>` : ''}
         </div>
         <div class="flex-1 min-w-0">
           <div class="text-[13px] font-semibold tracking-tight">${t('co_item_brand_prefix')} ${p.name}</div>
