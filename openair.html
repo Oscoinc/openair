@@ -290,6 +290,55 @@
   /* OSCO logo: light-gray on dark hero, full red on light sections — syncs with nav theme */
   #nav-osco{ transition: filter .5s ease, opacity .5s ease; }
   /* dark theme: brightness(0)→all-black, invert(1)→all-white, opacity .72 → light gray */
+  /* --- スマホ用のメニュー --- */
+  .nav-menu-btn{
+    display: none; place-items: center;
+    width: 22px; height: 22px; margin-left: -2px;
+    border: 0; background: transparent; cursor: pointer; padding: 0;
+    color: inherit; opacity: .6; transition: opacity .2s ease, transform .25s ease;
+  }
+  .nav-menu-btn:hover{ opacity: 1; }
+  .nav-menu-btn[aria-expanded="true"]{ opacity: 1; transform: rotate(180deg); }
+  #nav[data-theme="dark"]  .nav-menu-btn{ color: #fff; }
+  #nav[data-theme="light"] .nav-menu-btn{ color: #0a0a0a; }
+
+  .nav-menu{
+    position: absolute; top: calc(100% + 10px); left: 50%;
+    transform: translateX(-50%) translateY(-6px);
+    width: min(300px, calc(100vw - 32px));
+    border-radius: 22px; padding: 8px;
+    display: flex; flex-direction: column;
+    opacity: 0; pointer-events: none;
+    transition: opacity .22s ease, transform .22s ease;
+    z-index: 60;
+  }
+  .nav-menu.is-open{ opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+  .nav-menu a{
+    padding: 13px 16px; border-radius: 14px; font-size: 15px; text-decoration: none;
+    transition: background .18s ease;
+  }
+  .nav-menu-sep{ height: 1px; margin: 6px 12px; }
+
+  #nav[data-theme="dark"] .nav-menu{
+    background: rgba(24,24,26,.82);
+    backdrop-filter: blur(24px) saturate(160%); -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border: 1px solid rgba(255,255,255,.10);
+    box-shadow: 0 12px 40px rgba(0,0,0,.45);
+  }
+  #nav[data-theme="dark"] .nav-menu a{ color: rgba(255,255,255,.86); }
+  #nav[data-theme="dark"] .nav-menu a:active{ background: rgba(255,255,255,.10); }
+  #nav[data-theme="dark"] .nav-menu-sep{ background: rgba(255,255,255,.10); }
+
+  #nav[data-theme="light"] .nav-menu{
+    background: rgba(255,255,255,.88);
+    backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(0,0,0,.07);
+    box-shadow: 0 12px 40px rgba(0,0,0,.14);
+  }
+  #nav[data-theme="light"] .nav-menu a{ color: #18181b; }
+  #nav[data-theme="light"] .nav-menu a:active{ background: rgba(0,0,0,.05); }
+  #nav[data-theme="light"] .nav-menu-sep{ background: rgba(0,0,0,.08); }
+
   #nav[data-theme="dark"]  #nav-osco{ filter: brightness(0) invert(1); opacity:.72; }
   #nav[data-theme="light"] #nav-osco{ filter: none; opacity: 1; }
   /* === Instagram-style ガラス枠カード === */
@@ -507,6 +556,20 @@
   #nav[data-theme="light"] #nav-cart        { background:#0a0a0a; color:#fff; }
   #nav[data-theme="light"] #nav-cart:hover  { background:#000; }
 
+  /* --- フッター：スマホでは中央寄せの折り返しにする。
+         元の両端揃えだと項目が縦に潰れて読めなくなるため --- */
+  @media (max-width: 640px){
+    footer .max-w-7xl{
+      flex-direction: column; align-items: center; text-align: center; gap: 16px;
+    }
+    footer .max-w-7xl > div{
+      display: flex; flex-wrap: wrap; justify-content: center;
+      gap: 10px 18px; row-gap: 12px;
+    }
+    footer .max-w-7xl a,
+    footer #lang-switcher{ white-space: nowrap; font-size: 12.5px; }
+  }
+
   /* ====================================================== */
   /* === MOBILE RESPONSIVE FIXES (iPhone / narrow screens) === */
   /* ====================================================== */
@@ -515,6 +578,7 @@
     #nav{ gap: 12px; padding-left: 14px; padding-right: 6px; }
     #nav .nav-divider{ border-right: none; padding-right: 0; }
     #nav a.nav-link{ display: none; }
+    #nav-menu-btn{ display: grid; }
 
     /* --- Hero on mobile --- */
     #hero-headline h1{ font-size: 38px !important; line-height: 1.1; padding: 0 8px; }
@@ -1031,7 +1095,20 @@
   <span class="nav-divider pr-3 border-r border-white/10 flex items-center flex-shrink-0" style="gap:10px; white-space:nowrap;">
     <img id="nav-osco" src="./assets/osco_logo.webp?v=1" alt="OSCO" class="block flex-shrink-0" style="height:18px; width:auto; transform:translateY(0.5px);" onerror="this.style.display='none'" loading="lazy" decoding="async">
     <span id="nav-logo" class="nav-link-strong text-[15px] font-semibold tracking-tight cursor-pointer leading-none whitespace-nowrap" role="button" tabindex="0" aria-label="ページ上部へ戻る / Volver arriba">OPEN AIR</span>
+    <!-- スマホでは中央のリンクが入らないので、ここを押すと下にメニューが開く -->
+    <button id="nav-menu-btn" type="button" class="nav-menu-btn" aria-expanded="false" aria-controls="nav-menu" data-i18n-aria="nav_menu_label" aria-label="メニュー">
+      <svg viewBox="0 0 12 8" width="11" height="8" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
   </span>
+
+  <div id="nav-menu" class="nav-menu" hidden>
+    <a href="#concept"  data-i18n="nav_concept">コンセプト</a>
+    <a href="#features" data-i18n="nav_features">特徴</a>
+    <a href="#scenes"   data-i18n="nav_scenes">シーン</a>
+    <a href="#buy"      data-i18n="nav_buy">購入</a>
+    <span class="nav-menu-sep"></span>
+    <a href="./support.html" data-i18n="footer_support">サポート</a>
+  </div>
   <a href="#concept"  class="nav-link text-[13px] transition" data-i18n="nav_concept">コンセプト</a>
   <a href="#features" class="nav-link text-[13px] transition" data-i18n="nav_features">特徴</a>
   <a href="#scenes"   class="nav-link text-[13px] transition" data-i18n="nav_scenes">シーン</a>
@@ -2691,6 +2768,37 @@
   window.addEventListener('focus', updateBadge);
 })();
 
+// ============== スマホのナビゲーションメニュー ==============
+(function(){
+  const btn = document.getElementById('nav-menu-btn');
+  const menu = document.getElementById('nav-menu');
+  if (!btn || !menu) return;
+
+  let open = false;
+  function setOpen(next){
+    if (next === open) return;
+    open = next;
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (open){
+      menu.hidden = false;
+      // hidden を外した直後だと transition が効かないので1フレーム待つ
+      requestAnimationFrame(() => menu.classList.add('is-open'));
+    } else {
+      menu.classList.remove('is-open');
+      setTimeout(() => { if (!open) menu.hidden = true; }, 240);
+    }
+  }
+
+  btn.addEventListener('click', (e) => { e.stopPropagation(); setOpen(!open); });
+  menu.addEventListener('click', (e) => { if (e.target.closest('a')) setOpen(false); });
+  document.addEventListener('click', (e) => {
+    if (open && !menu.contains(e.target) && e.target !== btn) setOpen(false);
+  });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
+  // 画面が広がってリンクがナビに戻ったら閉じる
+  window.addEventListener('resize', () => { if (window.innerWidth > 768) setOpen(false); }, { passive: true });
+})();
+
 // ============== 価格セクション（通常購入 / 定期便の切り替え） ==============
 // 価格は data-i18n ではなくこの表が正。定期便は10%off。
 // サーバー側の api/_products.js と数字を必ず揃えること。
@@ -3200,6 +3308,7 @@ const translations = {
   "buy_plan3_price": { ja: "¥8,980", en: "$59", es: "€69", pt: "R$ 295" },
   "buy_plan2_discount": { ja: "¥1,000 OFF", en: "$6 OFF",  es: "€6 OFF",  pt: "R$ 30 OFF" },
   "buy_plan3_discount": { ja: "¥2,900 OFF", en: "$19 OFF", es: "€21 OFF", pt: "R$ 95 OFF" },
+  "nav_menu_label": { ja: "メニューを開く", en: "Open menu", es: "Abrir menú", pt: "Abrir menu" },
   "buy_btn_add":    { ja: "カートに追加", en: "Add to bag",       es: "Agregar al carrito",                pt: "Adicionar à sacola" },
   "buy_btn_sub":    { ja: "定期便をはじめる", en: "Start subscription", es: "Empezar suscripción", pt: "Iniciar assinatura" },
   "buy_tab_once":   { ja: "1回のみ", en: "One-time", es: "Compra única", pt: "Compra única" },

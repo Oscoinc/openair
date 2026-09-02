@@ -44,13 +44,19 @@
   }
   .field:focus{ outline:none; border-color:rgba(10,10,10,.6); background:#fff; box-shadow:0 0 0 4px rgba(10,10,10,.06); }
   .field-label{ font-size:12px; color:#52525b; margin-bottom:6px; display:block; letter-spacing:.02em; font-weight:500; }
-  .pay-chip{
-    display:inline-flex; align-items:center; gap:8px;
-    padding:9px 14px; border-radius:14px;
-    background:rgba(255,255,255,.7); border:1px solid rgba(0,0,0,.07);
-    font-size:13px; font-weight:500; color:#18181b;
+  /* 対応しているお支払い方法の表示。選択式ではないので、押せそうな見た目にはしない */
+  .pay-card{
+    border:1px solid rgba(0,0,0,.08); border-radius:18px; padding:16px 18px;
+    display:flex; align-items:center; gap:14px;
+    background:rgba(255,255,255,.6);
   }
-  .pay-chip .gpay{ font-weight:600; letter-spacing:-.01em; }
+  .pay-card .pay-icon{
+    width:40px; height:40px; border-radius:12px; flex-shrink:0;
+    display:grid; place-items:center;
+    background:#f4f4f5; border:1px solid rgba(0,0,0,.06);
+  }
+  .pay-card .pay-name{ font-size:14px; font-weight:600; letter-spacing:-.01em; color:#18181b; }
+  .pay-card .pay-sub{ font-size:12px; color:#71717a; margin-top:2px; }
 
   .step-num{ width:22px; height:22px; border-radius:50%; background:#0a0a0a; color:#fff; display:grid; place-items:center; font-size:11px; font-weight:600; flex-shrink:0; }
   /* 文字が途中で折り返すと読みにくいので、絶対に折り返させない */
@@ -81,6 +87,20 @@
   }
   @supports (padding: max(0px)){
     nav{ top: max(16px, env(safe-area-inset-top)); }
+  }
+
+  /* --- フッター：スマホでは中央寄せの折り返しにする。
+         元の両端揃えだと項目が縦に潰れて読めなくなるため --- */
+  @media (max-width: 640px){
+    footer .max-w-7xl{
+      flex-direction: column; align-items: center; text-align: center; gap: 16px;
+    }
+    footer .max-w-7xl > div{
+      display: flex; flex-wrap: wrap; justify-content: center;
+      gap: 10px 18px; row-gap: 12px;
+    }
+    footer .max-w-7xl a,
+    footer #lang-switcher{ white-space: nowrap; font-size: 12.5px; }
   }
 
 </style>
@@ -184,7 +204,9 @@
 
           <div>
             <label class="field-label" data-i18n="co_zip">郵便番号</label>
-            <input type="text" required class="field" name="zip" placeholder="100-0001" maxlength="10" id="ship-zip">
+            <input type="text" required class="field" name="zip" placeholder="100-0001" maxlength="10" id="ship-zip"
+                   inputmode="numeric" autocomplete="postal-code">
+            <div id="zip-hint" class="mt-1.5 text-[12px] text-zinc-500 hidden"></div>
           </div>
           <div>
             <label class="field-label" data-i18n="co_pref">都道府県</label>
@@ -209,11 +231,11 @@
           </div>
           <div class="md:col-span-2">
             <label class="field-label" data-i18n="co_addr1">市区町村・番地</label>
-            <input type="text" required class="field" name="address1" placeholder="千代田区千代田 1-1" id="ship-addr1">
+            <input type="text" required class="field" name="address1" placeholder="千代田区千代田 1-1" id="ship-addr1" autocomplete="address-line1">
           </div>
           <div class="md:col-span-2">
             <label class="field-label" data-i18n="co_addr2">建物名・部屋番号（任意）</label>
-            <input type="text" class="field" name="address2" placeholder="OPEN AIRビル 101" id="ship-addr2">
+            <input type="text" class="field" name="address2" placeholder="OPEN AIRビル 101" id="ship-addr2" autocomplete="address-line2">
           </div>
           <div class="md:col-span-2">
             <label class="field-label" data-i18n="co_phone">電話番号</label>
@@ -227,20 +249,36 @@
         <div class="text-[11px] tracking-[0.28em] uppercase text-zinc-500 mb-5">03 — Payment</div>
         <h2 class="text-xl font-semibold tracking-tight text-zinc-900 mb-5" data-i18n="co_pay_h2">お支払い方法</h2>
         <!-- 決済手段はこのページでは選ばせない。
-             Apple Pay / Google Pay は「カードの出し方」であって別の決済手段ではなく、
-             実際にどれを使うかは次の Stripe の画面で端末に応じて選ぶことになる。
-             ここで選ばせても次の画面の内容は変わらないので、対応ブランドの表示だけにしている。 -->
-        <div class="flex flex-wrap items-center gap-2.5">
-          <span class="pay-chip">
-            <img src="./assets/pay-card.png" alt="" width="223" height="160" style="width:22px;height:auto" loading="lazy">
-            <span data-i18n="co_pay_card">クレジットカード</span>
-          </span>
-          <span class="pay-chip">
-            <img src="./assets/pay-applepay.png" alt="Apple Pay" width="250" height="160" style="height:20px;width:auto" loading="lazy">
-          </span>
-          <span class="pay-chip"><span class="gpay">Google&nbsp;Pay</span></span>
+             Apple Pay / Google Pay は「登録済みカードの出し方」であって別の決済手段ではなく、
+             実際にどれを使うかは次の Stripe の画面で端末に応じて決まる。
+             ここで選ばせても次の画面の内容は変わらないため、対応している方法の一覧として見せている。 -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="pay-card">
+            <span class="pay-icon">
+              <img src="./assets/pay-card.png" alt="" width="223" height="160" style="width:22px;height:auto" loading="lazy">
+            </span>
+            <span>
+              <span class="pay-name" data-i18n="co_pay_card">クレジットカード</span>
+              <span class="pay-sub block">Visa / Mastercard / JCB / AMEX</span>
+            </span>
+          </div>
+          <div class="pay-card">
+            <span class="pay-icon" style="background:transparent;border:0">
+              <img src="./assets/pay-applepay.png" alt="Apple Pay" width="250" height="160" style="height:26px;width:auto" loading="lazy">
+            </span>
+            <span>
+              <span class="pay-name">Apple Pay</span>
+              <span class="pay-sub block" data-i18n="co_pay_wallet_sub">対応端末ならワンタッチ</span>
+            </span>
+          </div>
+          <div class="pay-card">
+            <span class="pay-icon"><span style="font-size:15px;font-weight:700;letter-spacing:-.02em">G</span></span>
+            <span>
+              <span class="pay-name">Google&nbsp;Pay</span>
+              <span class="pay-sub block" data-i18n="co_pay_wallet_sub">対応端末ならワンタッチ</span>
+            </span>
+          </div>
         </div>
-        <p class="mt-3 text-[12px] text-zinc-500">Visa / Mastercard / American Express / JCB / Diners / Discover</p>
 
         <!-- カード情報はこのページでは受け取らない（PCI DSS 回避）。Stripe の決済ページへ委譲する -->
         <div id="card-fields" class="mt-6">
@@ -249,7 +287,7 @@
               <rect x="4" y="10" width="16" height="10" rx="2.5"/><path d="M8 10V7.5a4 4 0 0 1 8 0V10"/>
             </svg>
             <p class="text-[13px] leading-relaxed text-zinc-600" data-i18n="co_pay_secure_note">
-              どのお支払い方法でも、カード情報などをこのページで入力することはありません。「注文を確定する」を押すと Stripe の安全な決済ページに移動し、そこでお支払いが完了します。
+              カード情報はこのページでは入力しません。Stripe の安全な決済ページに移動します。
             </p>
           </div>
         </div>
@@ -392,6 +430,9 @@ const translations = {
   // Contact
   "co_contact_h2": { ja: "連絡先",                              en: "Contact",                          es: "Datos de contacto",                pt: "Contato" },
   "co_email":      { ja: "メールアドレス",                       en: "Email address",                    es: "Correo electrónico",               pt: "E-mail" },
+  "co_pay_wallet_sub": { ja: "対応端末ならワンタッチ", en: "One touch on supported devices", es: "Un toque en dispositivos compatibles", pt: "Um toque em dispositivos compatíveis" },
+  "co_zip_looking": { ja: "住所を調べています…", en: "Looking up address…", es: "Buscando la dirección…", pt: "Buscando o endereço…" },
+  "co_zip_filled":  { ja: "住所を入力しました。番地を続けて入力してください。", en: "Address filled in. Add your street number.", es: "Dirección rellenada. Añade el número.", pt: "Endereço preenchido. Adicione o número." },
   "co_news_optin": {
     ja: "Osco Corporation からのご案内を受け取る",
     en: "Receive invitations from Osco Corporation",
@@ -422,10 +463,10 @@ const translations = {
   "co_pay_card":        { ja: "クレジットカード", en: "Credit card",         es: "Tarjeta de crédito",   pt: "Cartão de crédito" },
   "co_pay_apple_sub":   { ja: "対応端末なら次の画面でワンタッチ", en: "One touch on supported devices", es: "Un toque en dispositivos compatibles", pt: "Um toque em dispositivos compatíveis" },
   "co_pay_secure_note": {
-    ja: "どのお支払い方法でも、カード情報などをこのページで入力することはありません。「注文を確定する」を押すと Stripe の安全な決済ページに移動し、そこでお支払いが完了します。",
-    en: "Whichever method you pick, no card details are entered on this page. Tap “Place order” and you'll be taken to Stripe's secure payment page to finish.",
-    es: "Elijas el método que elijas, no se introducen datos de tarjeta en esta página. Al pulsar «Confirmar pedido» irás a la página de pago segura de Stripe.",
-    pt: "Qualquer que seja o método, os dados do cartão não são inseridos nesta página. Ao confirmar, você irá para a página de pagamento segura da Stripe."
+    ja: "カード情報はこのページでは入力しません。Stripe の安全な決済ページに移動します。",
+    en: "No card details are entered here. You'll continue on Stripe's secure payment page.",
+    es: "Aquí no se introducen datos de tarjeta. Continuarás en la página de pago segura de Stripe.",
+    pt: "Os dados do cartão não são inseridos aqui. Você continuará na página de pagamento segura da Stripe."
   },
   "co_pay_error": {
     ja: "決済ページに接続できませんでした。時間をおいて再度お試しください。",
@@ -678,6 +719,70 @@ function render(){
   }
   document.getElementById('sum-total').textContent = fmtPrice(subtotal, lang);
 }
+
+// ---------------------------------------------------------------------------
+// 郵便番号から住所を自動で入れる（日本のみ）
+//
+// 7桁そろった時点で /api/zip を引き、都道府県を選択して「市区町村・番地」の
+// 先頭に市区町村＋町域を入れる。番地はそのまま続けて打てるようカーソルを末尾に置く。
+//
+// 方針: 引けなくても何も言わない。手入力で問題なく進めるので、
+//       ここでエラーを出すと不安にさせるだけになる。
+//       すでに入力済みの住所は勝手に消さない（打ち直しの手間になるため）。
+// ---------------------------------------------------------------------------
+(function(){
+  const zipEl  = document.getElementById('ship-zip');
+  const prefEl = document.getElementById('ship-prefecture');
+  const addrEl = document.getElementById('ship-addr1');
+  const hintEl = document.getElementById('zip-hint');
+  if (!zipEl || !prefEl || !addrEl) return;
+
+  let lastLookup = '';
+  let inflight = null;
+
+  const setHint = (msg) => {
+    if (!hintEl) return;
+    hintEl.textContent = msg || '';
+    hintEl.classList.toggle('hidden', !msg);
+  };
+
+  async function lookup(){
+    if (getLang() !== 'ja') return;                 // 日本の郵便番号だけ
+    const code = zipEl.value.replace(/[^0-9]/g, '');
+    if (code.length !== 7 || code === lastLookup) return;
+    lastLookup = code;
+
+    if (inflight) inflight.abort();
+    inflight = new AbortController();
+    setHint(t('co_zip_looking'));
+
+    try {
+      const r = await fetch('/api/zip?code=' + code, { signal: inflight.signal });
+      const d = await r.json();
+      if (!d.ok){ setHint(''); return; }
+
+      // 都道府県：選択肢に同じ表記があるときだけ入れる
+      const opt = [...prefEl.options].find(o => o.value === d.prefecture || o.text === d.prefecture);
+      if (opt) prefEl.value = opt.value;
+
+      // 市区町村・番地：空のときだけ入れる。入力済みなら触らない
+      if (!addrEl.value.trim() && d.address){
+        addrEl.value = d.address;
+        addrEl.focus();
+        const end = addrEl.value.length;
+        try { addrEl.setSelectionRange(end, end); } catch (e) {}
+        setHint(t('co_zip_filled'));
+      } else {
+        setHint('');
+      }
+    } catch (err) {
+      if (err.name !== 'AbortError') setHint('');
+    }
+  }
+
+  zipEl.addEventListener('input', lookup);
+  zipEl.addEventListener('blur', lookup);
+})();
 
 // ---------------------------------------------------------------------------
 // Submit handler — Stripe Checkout セッションを作って決済ページへ送る

@@ -91,6 +91,20 @@
     nav{ top: max(16px, env(safe-area-inset-top)); }
   }
 
+  /* --- フッター：スマホでは中央寄せの折り返しにする。
+         元の両端揃えだと項目が縦に潰れて読めなくなるため --- */
+  @media (max-width: 640px){
+    footer .max-w-7xl{
+      flex-direction: column; align-items: center; text-align: center; gap: 16px;
+    }
+    footer .max-w-7xl > div{
+      display: flex; flex-wrap: wrap; justify-content: center;
+      gap: 10px 18px; row-gap: 12px;
+    }
+    footer .max-w-7xl a,
+    footer #lang-switcher{ white-space: nowrap; font-size: 12.5px; }
+  }
+
 </style>
 </head>
 <body>
