@@ -455,11 +455,20 @@ async function loadOrder(){
 }
 
 function renderOrder(){
+  const card = document.getElementById('order-card');
+  const noOrder = document.getElementById('no-order');
   if (!order){
-    document.getElementById('order-card').style.display = 'none';
-    document.getElementById('no-order').classList.remove('hidden');
+    card.style.display = 'none';
+    noOrder.classList.remove('hidden');
     return;
   }
+  // 【重要】注文が見つかったときは、必ず「見つかりません」の状態を解除する。
+  //  renderOrder は言語切替でも呼ばれるので、
+  //  「まだ取得できていない → 見つかりません」を出したあとに
+  //  取得成功で呼び直されることがある。ここで戻さないと、
+  //  中身は正しく入っているのに「見つかりません」が出たままになる。
+  noOrder.classList.add('hidden');
+  card.style.display = '';
   const lang = getLang();
   // 金額は「決済した通貨」で表示する。表示言語を切り替えても支払額は変わらないため、
   // 言語に合わせて通貨記号だけ変えると実際と食い違う。
