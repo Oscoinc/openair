@@ -74,7 +74,9 @@ export default async function handler(req, res) {
       address: {
         line1: c.address1 || '',
         line2: c.address2 || undefined,
-        city: c.city || c.prefecture || c.province || '',
+        // 日本のフォームは「市区町村・番地」をまとめて address1 に入れてもらう作りなので、
+        // city は空でよい。ここに都道府県を入れると宛名で「東京都 東京都」と二重になる。
+        city: c.city || '',
         state: c.prefecture || c.province || undefined,
         postal_code: c.zip || '',
         country,

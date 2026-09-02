@@ -39,7 +39,8 @@ const money = (o) =>
 function addressText(o) {
   const a = o.address || {};
   if ((a.country || 'JP').toUpperCase() === 'JP') {
-    return [a.postal_code ? `〒${a.postal_code}` : '', a.state, a.city, a.line1, a.line2]
+    return [a.postal_code ? `〒${a.postal_code}` : '', a.state,
+            a.city === a.state ? '' : a.city, a.line1, a.line2]
       .filter(Boolean).join(' ');
   }
   return [a.line1, a.line2, a.city, a.state, a.postal_code, a.country].filter(Boolean).join(', ');

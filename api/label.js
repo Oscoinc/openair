@@ -27,7 +27,7 @@ function addressLines(o) {
   if ((a.country || 'JP').toUpperCase() === 'JP') {
     return [
       a.postal_code ? `〒${a.postal_code}` : '',
-      [a.state, a.city].filter(Boolean).join(' '),
+      [a.state, a.city === a.state ? '' : a.city].filter(Boolean).join(' '),
       [a.line1, a.line2].filter(Boolean).join(' '),
     ].filter(Boolean);
   }
