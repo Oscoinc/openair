@@ -993,10 +993,15 @@
 /* IMG_HERO: スマホでは映像をやめ、以前の画像アニメーション（パッケージ版）に戻す。
    PCは従来どおり映像。ここで <html> にクラスを付けるので、CSSもJSもこの1箇所で切り替わる。 */
 (function(){
+  /* スマホのヒーローの出し方。'video' = 映像、'image' = 元の画像アニメーション。
+     戻したくなったら、この1行を 'image' に変えるだけでいい。 */
+  window.OA_HERO_MODE = 'video';
+
   var c = navigator.connection || {};
-  var m = window.innerWidth < 900 || c.saveData === true || /2g|slow-2g/.test(c.effectiveType || '');
-  window.OA_IMG_HERO = !!m;
-  if (m) document.documentElement.classList.add('oa-img-hero');
+  window.OA_MOBILE = window.innerWidth < 900 || c.saveData === true ||
+                     /2g|slow-2g/.test(c.effectiveType || '');
+  window.OA_IMG_HERO = window.OA_MOBILE && window.OA_HERO_MODE === 'image';
+  if (window.OA_IMG_HERO) document.documentElement.classList.add('oa-img-hero');
 })();
 </script>
 </head>
@@ -3199,9 +3204,14 @@ applyLang(getLang());
     return;
   }
 
-  // PCはここで初めて映像を読み込む
-  SRC.src = SRC.getAttribute('data-src');
-  V.poster = V.getAttribute('data-poster') || '';
+  // ここで初めて映像を読み込む。スマホは縦向きの高画質版を使う
+  if (window.OA_MOBILE) {
+    SRC.src  = './assets/openair-mhero7.mp4?v=7';
+    V.poster = './assets/openair-mhero7-poster.jpg?v=7';
+  } else {
+    SRC.src  = SRC.getAttribute('data-src');
+    V.poster = V.getAttribute('data-poster') || '';
+  }
   V.load();
 
   SEC.classList.add('oa-intro');
@@ -3293,11 +3303,16 @@ applyLang(getLang());
 
     var segStart = 0;   // 連結動画のどこから使うか（PCは0）
 
-    // IMG_HERO: スマホではこのセクションごと出さないので、何も読み込まない
+    // 画像モードのときはこのセクションごと出さないので、何も読み込まない
     if (window.OA_IMG_HERO) return;
 
-    src.src = src.getAttribute('data-src');
-    video.poster = video.getAttribute('data-poster') || '';
+    if (window.OA_MOBILE) {
+      src.src = './assets/openair-mfilm2.mp4?v=7';
+      video.poster = './assets/openair-mfilm2-poster.jpg?v=7';
+    } else {
+      src.src = src.getAttribute('data-src');
+      video.poster = video.getAttribute('data-poster') || '';
+    }
     video.load();
 
     // 動きを減らす設定の人は、スクラブせず通常ループ再生のまま
