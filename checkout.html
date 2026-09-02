@@ -234,7 +234,9 @@
           <label class="pay-option">
             <input type="radio" name="payment" value="card" checked>
             <div class="pay-card">
-              <div class="w-10 h-10 rounded-xl bg-zinc-900 text-white grid place-items-center text-[12px] font-bold tracking-tight">CARD</div>
+              <div class="w-10 h-10 rounded-xl bg-zinc-100 border border-zinc-200 grid place-items-center shrink-0">
+                <img src="./assets/pay-card.png" alt="" width="223" height="160" class="w-6 h-auto" style="width:24px;height:auto" loading="lazy">
+              </div>
               <div>
                 <div class="text-[14px] font-semibold tracking-tight" data-i18n="co_pay_card">クレジットカード</div>
                 <div class="text-[12px] text-zinc-500">Visa / Master / JCB / AMEX</div>
@@ -244,10 +246,12 @@
           <label class="pay-option">
             <input type="radio" name="payment" value="apple">
             <div class="pay-card">
-              <div class="w-10 h-10 rounded-xl bg-zinc-900 text-white grid place-items-center text-[18px]"></div>
+              <div class="h-10 grid place-items-center shrink-0">
+                <img src="./assets/pay-applepay.png" alt="Apple Pay" width="250" height="160" class="h-7 w-auto" style="height:28px;width:auto" loading="lazy">
+              </div>
               <div>
                 <div class="text-[14px] font-semibold tracking-tight">Apple Pay</div>
-                <div class="text-[12px] text-zinc-500" data-i18n="co_pay_apple_sub">ワンタッチで決済</div>
+                <div class="text-[12px] text-zinc-500" data-i18n="co_pay_apple_sub">対応端末なら次の画面でワンタッチ</div>
               </div>
             </div>
           </label>
@@ -276,11 +280,11 @@
         <!-- カード情報はこのページでは受け取らない（PCI DSS 回避）。Stripe の決済ページへ委譲する -->
         <div id="card-fields" class="mt-6">
           <div class="flex items-start gap-3 rounded-2xl border border-black/10 bg-white/60 px-4 py-4">
-            <svg class="w-5 h-5 shrink-0 mt-0.5 text-zinc-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+            <svg class="w-5 h-5 shrink-0 mt-0.5 text-zinc-700" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
               <rect x="4" y="10" width="16" height="10" rx="2.5"/><path d="M8 10V7.5a4 4 0 0 1 8 0V10"/>
             </svg>
             <p class="text-[13px] leading-relaxed text-zinc-600" data-i18n="co_pay_secure_note">
-              カード情報はこのページでは入力しません。「注文を確定する」を押すと、Stripe の安全な決済ページに移動します。
+              どのお支払い方法でも、カード情報などをこのページで入力することはありません。「注文を確定する」を押すと Stripe の安全な決済ページに移動し、そこでお支払いが完了します。
             </p>
           </div>
         </div>
@@ -440,15 +444,15 @@ const translations = {
   // Payment
   "co_pay_h2":          { ja: "お支払い方法",     en: "Payment method",      es: "Método de pago",       pt: "Método de pagamento" },
   "co_pay_card":        { ja: "クレジットカード", en: "Credit card",         es: "Tarjeta de crédito",   pt: "Cartão de crédito" },
-  "co_pay_apple_sub":   { ja: "ワンタッチで決済", en: "Pay with one touch",  es: "Paga con un toque",    pt: "Pague com um toque" },
+  "co_pay_apple_sub":   { ja: "対応端末なら次の画面でワンタッチ", en: "One touch on supported devices", es: "Un toque en dispositivos compatibles", pt: "Um toque em dispositivos compatíveis" },
   "co_pay_conv_badge":  { ja: "コンビニ",         en: "Store",               es: "Tienda",               pt: "Loja" },
   "co_pay_conv":        { ja: "コンビニ払い",     en: "Pay in store",        es: "Pago en tienda",       pt: "Pagar na loja" },
   "co_pay_paypay_sub":  { ja: "残高 / 後払い",    en: "Wallet / pay later",  es: "Saldo / pago después", pt: "Saldo / pagar depois" },
   "co_pay_secure_note": {
-    ja: "カード情報はこのページでは入力しません。「注文を確定する」を押すと、Stripe の安全な決済ページに移動します。",
-    en: "Card details are never entered on this page. Tap “Place order” and you'll be taken to Stripe's secure payment page.",
-    es: "Los datos de tu tarjeta no se introducen en esta página. Al pulsar «Confirmar pedido» irás a la página de pago segura de Stripe.",
-    pt: "Os dados do cartão não são inseridos nesta página. Ao confirmar, você irá para a página de pagamento segura da Stripe."
+    ja: "どのお支払い方法でも、カード情報などをこのページで入力することはありません。「注文を確定する」を押すと Stripe の安全な決済ページに移動し、そこでお支払いが完了します。",
+    en: "Whichever method you pick, no card details are entered on this page. Tap “Place order” and you'll be taken to Stripe's secure payment page to finish.",
+    es: "Elijas el método que elijas, no se introducen datos de tarjeta en esta página. Al pulsar «Confirmar pedido» irás a la página de pago segura de Stripe.",
+    pt: "Qualquer que seja o método, os dados do cartão não são inseridos nesta página. Ao confirmar, você irá para a página de pagamento segura da Stripe."
   },
   "co_pay_error": {
     ja: "決済ページに接続できませんでした。時間をおいて再度お試しください。",
