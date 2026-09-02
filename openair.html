@@ -998,13 +998,10 @@
     <img id="nav-osco" src="./assets/osco_logo.webp?v=1" alt="OSCO" class="block flex-shrink-0" style="height:18px; width:auto; transform:translateY(0.5px);" onerror="this.style.display='none'" loading="lazy" decoding="async">
     <span id="nav-logo" class="nav-link-strong text-[15px] font-semibold tracking-tight cursor-pointer leading-none whitespace-nowrap" role="button" tabindex="0" aria-label="ページ上部へ戻る / Volver arriba">OPEN AIR</span>
   </span>
-  <a href="#concept"     class="nav-link text-[13px] transition" data-i18n="nav_concept">コンセプト</a>
-  <a href="#why"         class="nav-link text-[13px] transition" data-i18n="nav_why">課題</a>
-  <a href="#benefits"    class="nav-link text-[13px] transition" data-i18n="nav_benefits">効果</a>
-  <a href="#design-anim" class="nav-link text-[13px] transition" data-i18n="nav_design">デザイン</a>
-  <a href="#features"    class="nav-link text-[13px] transition" data-i18n="nav_features">特徴</a>
-  <a href="#wear"        class="nav-link text-[13px] transition" data-i18n="nav_howto">使い方</a>
-  <a href="#buy"         class="nav-link text-[13px] transition" data-i18n="nav_buy">購入</a>
+  <a href="#concept"  class="nav-link text-[13px] transition" data-i18n="nav_concept">コンセプト</a>
+  <a href="#features" class="nav-link text-[13px] transition" data-i18n="nav_features">特徴</a>
+  <a href="#scenes"   class="nav-link text-[13px] transition" data-i18n="nav_scenes">シーン</a>
+  <a href="#buy"      class="nav-link text-[13px] transition" data-i18n="nav_buy">購入</a>
   <a href="./cart.html" id="nav-cart" class="ml-1 px-4 py-1.5 rounded-full text-[13px] font-medium transition relative whitespace-nowrap flex-shrink-0"><span data-i18n="nav_cart">カート</span><span id="nav-cart-badge" class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] grid place-items-center bg-red-500 text-white text-[10px] font-bold rounded-full px-1">0</span></a>
 </nav>
 
@@ -3164,8 +3161,8 @@ applyLang(getLang());
   if (window.innerWidth < 900 || conn.saveData === true || /2g|slow-2g/.test(conn.effectiveType || '')) {
     // MOBILE_V2: スマホは縦動画1本（OPENAIRE１+2 を連結）。
     // 冒頭はその前半、「使い方」の直前は後半を使うので、同じ絵が2回出ない。
-    SRC.src = './assets/openair-mhero2.mp4?v=4';
-    V.poster = './assets/openair-mhero2-poster.jpg?v=4';
+    SRC.src = './assets/openair-mhero5.mp4?v=5';
+    V.poster = './assets/openair-mhero5-poster.jpg?v=5';
     SEG_END = 0;            // 動画の最後まで使う
     V.load();
   }
