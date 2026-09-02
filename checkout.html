@@ -66,7 +66,14 @@
     padding:8px 14px 8px 8px; background:rgba(255,255,255,.6); border:1px solid rgba(0,0,0,.06);
     border-radius:999px; font-size:12px; color:#52525b;
   }
-  .step-num{ width:22px; height:22px; border-radius:50%; background:#0a0a0a; color:#fff; display:grid; place-items:center; font-size:11px; font-weight:600; }
+  .step-num{ width:22px; height:22px; border-radius:50%; background:#0a0a0a; color:#fff; display:grid; place-items:center; font-size:11px; font-weight:600; flex-shrink:0; }
+  /* 文字が途中で折り返すと読みにくいので、絶対に折り返させない */
+  .step-pill > span:last-child{ white-space:nowrap; }
+  @media (max-width: 560px){
+    .step-row{ gap:4px !important; }
+    .step-pill{ font-size:11px; padding:6px 10px 6px 6px; gap:6px; }
+    .step-num{ width:18px; height:18px; font-size:10px; }
+  }
 
   /* === Mobile responsive === */
   @media (max-width: 768px){
@@ -112,10 +119,10 @@
   <header class="text-center mb-10 reveal">
     <div class="text-[12px] tracking-[0.32em] uppercase text-zinc-500 mb-4">Checkout</div>
     <h1 class="text-4xl md:text-5xl font-semibold tracking-tight text-gradient leading-[1.15]" data-i18n="co_h1">購入手続き</h1>
-    <div class="mt-6 flex justify-center items-center gap-2">
+    <div class="step-row mt-6 flex justify-center items-center gap-2">
       <a href="./cart.html" class="step-pill"><span class="step-num">1</span><span data-i18n="co_step1">カート</span></a>
       <span class="text-zinc-300">›</span>
-      <span class="step-pill" style="background:#fff;border-color:#0a0a0a"><span class="step-num">2</span><span data-i18n="co_step2">お届け先 / 支払い</span></span>
+      <span class="step-pill" style="background:#fff;border-color:#0a0a0a"><span class="step-num">2</span><span data-i18n="co_step2">お届け先・支払い</span></span>
       <span class="text-zinc-300">›</span>
       <span class="step-pill"><span class="step-num" style="background:#d4d4d8">3</span><span data-i18n="co_step3">完了</span></span>
     </div>
@@ -143,8 +150,11 @@
             <input type="email" required class="field" placeholder="you@example.com" name="email">
           </div>
           <label class="flex items-start gap-3 text-[13px] text-zinc-600">
-            <input type="checkbox" class="mt-1" checked>
-            <span data-i18n="co_news_optin">新商品やお得な情報を受け取る（任意）</span>
+            <input type="checkbox" class="mt-1" name="newsletter" id="opt-news">
+            <span>
+              <span class="block text-zinc-800" data-i18n="co_news_optin">Osco Corporation からのご案内を受け取る</span>
+              <span class="block mt-0.5 text-[12px] text-zinc-500 leading-relaxed" data-i18n="co_news_note">新作の先行公開やイベントのご招待を、不定期でお送りします。人数を限るご案内もあり、対象の方にのみお届けします。</span>
+            </span>
           </label>
         </div>
       </section>
@@ -416,7 +426,7 @@ const translations = {
   // Header / steps
   "co_h1":     { ja: "購入手続き",          en: "Check out",                es: "Finalizar compra",   pt: "Finalizar compra" },
   "co_step1":  { ja: "カート",              en: "Bag",                       es: "Carrito",            pt: "Sacola" },
-  "co_step2":  { ja: "お届け先 / 支払い",    en: "Shipping / Payment",       es: "Envío / Pago",       pt: "Envio / Pagamento" },
+  "co_step2":  { ja: "お届け先・支払い",    en: "Shipping / Payment",       es: "Envío / Pago",       pt: "Envio / Pagamento" },
   "co_step3":  { ja: "完了",                en: "Done",                      es: "Listo",              pt: "Concluído" },
 
   // Empty
@@ -427,7 +437,18 @@ const translations = {
   // Contact
   "co_contact_h2": { ja: "連絡先",                              en: "Contact",                          es: "Datos de contacto",                pt: "Contato" },
   "co_email":      { ja: "メールアドレス",                       en: "Email address",                    es: "Correo electrónico",               pt: "E-mail" },
-  "co_news_optin": { ja: "新商品やお得な情報を受け取る（任意）",   en: "Receive news and offers (optional)", es: "Recibe novedades y ofertas (opcional)", pt: "Receba novidades e ofertas (opcional)" },
+  "co_news_optin": {
+    ja: "Osco Corporation からのご案内を受け取る",
+    en: "Receive invitations from Osco Corporation",
+    es: "Recibir invitaciones de Osco Corporation",
+    pt: "Receber convites da Osco Corporation"
+  },
+  "co_news_note": {
+    ja: "新作の先行公開やイベントのご招待を、不定期でお送りします。人数を限るご案内もあり、対象の方にのみお届けします。",
+    en: "Occasional early access and event invitations. Some are limited and only go to selected recipients.",
+    es: "De vez en cuando, acceso anticipado e invitaciones a eventos. Algunas son limitadas y solo llegan a personas seleccionadas.",
+    pt: "Ocasionalmente, acesso antecipado e convites para eventos. Alguns são limitados e vão apenas para pessoas selecionadas."
+  },
 
   // Shipping
   "co_ship_h2":         { ja: "お届け先",                  en: "Shipping address",          es: "Dirección de envío",        pt: "Endereço de entrega" },
@@ -773,9 +794,12 @@ document.getElementById('checkout-form').addEventListener('submit', async (e) =>
     ? METHOD_TO_STRIPE[rawMethod]
     : null; // null = Stripe に自動判定させる（カード / Apple Pay など）
 
+  const newsOptIn = !!(document.getElementById('opt-news') || {}).checked;
+
   const payload = {
     lang,
     paymentMethod,
+    newsletter: newsOptIn,
     items: ids.map(id => ({ id, qty: cart[id] })),
     customer: {
       email:      fd.get('email'),

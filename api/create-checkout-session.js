@@ -26,7 +26,7 @@ export default async function handler(req, res) {
 
   try {
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
-    const { items, lang, customer, paymentMethod } = body;
+    const { items, lang, customer, paymentMethod, newsletter } = body;
 
     // --- 地域 / 通貨 ------------------------------------------------------
     const region = REGIONS[lang];
@@ -130,6 +130,8 @@ export default async function handler(req, res) {
       lang,
       items: items.map((i) => `${i.id}x${i.qty}`).join(','),
       plan: hasSubscription ? 'subscription' : 'once',
+      // 案内メールを送っていい相手かどうか。既定は「送らない」
+      newsletter: newsletter === true ? 'yes' : 'no',
       ship_name: shipping.name || '',
       ship_zip: shipping.address.postal_code || '',
       ship_state: shipping.address.state || '',
