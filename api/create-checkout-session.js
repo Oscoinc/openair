@@ -96,10 +96,11 @@ export default async function handler(req, res) {
     }
 
     // --- 決済手段 ---------------------------------------------------------
-    // 世界共通で使えるものだけにする。automatic_payment_methods を有効にすると、
-    // Stripe の決済画面がカード / Apple Pay / Google Pay を端末に応じて出し分ける。
-    // （コンビニ払いと PayPay は日本専用で、定期課金にも使えないため扱わない）
-    const methodParams = { automatic_payment_methods: { enabled: true } };
+    // 【重要】automatic_payment_methods は PaymentIntent 用のパラメータで、
+    // Checkout Session に渡すと "Received unknown parameter" で失敗する。
+    // Checkout Session では payment_method_types を「指定しない」のが正解で、
+    // その場合 Stripe ダッシュボードで有効にした決済手段（カード / Apple Pay /
+    // Google Pay など）が端末に応じて自動で出る。
 
     // --- 送料 -------------------------------------------------------------
     const shippingOptions = region.shipping > 0
@@ -168,7 +169,7 @@ export default async function handler(req, res) {
       base.payment_intent_data = { shipping, metadata, description: `OPEN AIR ${orderRef}` };
     }
 
-    const session = await getStripe().checkout.sessions.create({ ...base, ...methodParams });
+    const session = await getStripe().checkout.sessions.create(base);
 
     return res.status(200).json({ url: session.url, orderRef, mode: base.mode });
   } catch (err) {
