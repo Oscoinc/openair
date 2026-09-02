@@ -1084,9 +1084,18 @@
   /* 見出しが製品の真上に来るので、文字の後ろだけ柔らかく落とす（製品は消さない） */
   #cinematic #hero-headline{ position:absolute; isolation:isolate; }
   #cinematic #hero-headline::before{
-    content:''; position:absolute; inset:-14% -18%; z-index:-1; pointer-events:none;
+    content:''; position:absolute; inset:-45% -60%; z-index:-1; pointer-events:none;
+    /* 箱の縁に届く前に完全な透明にしておくこと。透明になりきる前に箱で切られると、
+       そこに真っ直ぐな横線が出る（実際にスマホで四角い枠に見えていた原因）。 */
     background:radial-gradient(ellipse at center,
-      rgba(0,0,0,.62) 0%, rgba(0,0,0,.42) 42%, rgba(0,0,0,.12) 66%, rgba(0,0,0,0) 78%);
+      rgba(0,0,0,.62) 0%, rgba(0,0,0,.42) 20%, rgba(0,0,0,.12) 34%, rgba(0,0,0,0) 48%);
+  }
+  /* スマホでは背後のグラデーションを敷かない。真っ黒な背景の上だと、
+     グラデーションの外周が階段状に割れて「四角い枠」に見えてしまうため。
+     （文字は text-shadow だけで十分読める） */
+  @media (max-width:900px){
+    #cinematic #hero-headline::before{ display:none !important; }
+    #cinematic #hero-headline{ isolation:auto; }
   }
   @media (max-width:600px){
     #cinematic .stage-caption[style*="bottom"]{ bottom:26% !important; }
