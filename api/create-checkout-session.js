@@ -129,7 +129,7 @@ export default async function handler(req, res) {
       phone: shipping.phone || '',
     };
 
-    const session = await getStripe().checkout.sessions.create({
+    const base = {
       mode: 'payment',
       line_items,
       customer_email: c.email,
@@ -146,8 +146,25 @@ export default async function handler(req, res) {
       expires_at: Math.floor(Date.now() / 1000) + 60 * 60 * 23,
       success_url: `${origin}/complete.html?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/checkout.html`,
-      ...methodParams,
-    });
+    };
+
+    let session;
+    try {
+      session = await getStripe().checkout.sessions.create({ ...base, ...methodParams });
+    } catch (err) {
+      // コンビニ / PayPay は Stripe 側で有効化していないと弾かれる。
+      // その場合はお客様を行き止まりにせず、通常の決済手段で進めてもらう。
+      const notActivated = methodParams.payment_method_types &&
+        /payment method|not activated|invalid|unsupported/i.test(err?.message || '');
+      if (!notActivated) throw err;
+      console.warn('[create-checkout-session] %s が使えないので自動選択に切り替えます: %s',
+        methodParams.payment_method_types.join(','), err.message);
+      session = await getStripe().checkout.sessions.create({
+        ...base,
+        automatic_payment_methods: { enabled: true },
+      });
+      return res.status(200).json({ url: session.url, orderRef, fellBackToDefault: true });
+    }
 
     return res.status(200).json({ url: session.url, orderRef });
   } catch (err) {
