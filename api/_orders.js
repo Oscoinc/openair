@@ -75,6 +75,9 @@ export function normalize(session) {
     paymentIntentId: typeof session.payment_intent === 'string' ? session.payment_intent : pi?.id || null,
     date: new Date((session.created || 0) * 1000).toISOString(),
     status: session.payment_status === 'paid' ? 'paid' : 'awaiting_payment',
+    // 調査用。Stripe が持っている生の状態も残す
+    rawStatus: session.status || null,
+    rawPaymentStatus: session.payment_status || null,
     lang: md.lang || 'ja',
     currency,
     email: session.customer_details?.email || session.customer_email || '',
@@ -106,12 +109,14 @@ export function normalize(session) {
 }
 
 // --- 支払い済みの注文を新しい順に取ってくる --------------------------------
-export async function listOrders({ limit = 50, since = null } = {}) {
+// includeAll を立てると、支払いが終わっていないものも返す。
+// 「決済ページまで行ったのに完了しなかった」を調べるときに使う。
+export async function listOrders({ limit = 50, since = null, includeAll = false } = {}) {
   const params = { limit: Math.min(Number(limit) || 50, 100), expand: ['data.payment_intent'] };
   if (since) params.created = { gte: Math.floor(new Date(since).getTime() / 1000) };
 
   const sessions = await getStripe().checkout.sessions.list(params);
-  const paid = sessions.data.filter((s) => s.payment_status === 'paid');
+  const paid = includeAll ? sessions.data : sessions.data.filter((s) => s.payment_status === 'paid');
 
   // line_items は list では返ってこないので、必要な分だけ個別に取る
   const out = [];

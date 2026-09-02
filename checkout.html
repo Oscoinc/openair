@@ -64,19 +64,24 @@
   }
   select.field:focus{ background-color:#fff; }
   .field-label{ font-size:12px; color:#52525b; margin-bottom:6px; display:block; letter-spacing:.02em; font-weight:500; }
-  /* 対応しているお支払い方法の「一覧」。選ぶものではないので、
-     1枚のパネルの中に行を並べる。個別に枠を付けるとボタンに見えて、
-     押しても反応しない、という体験になってしまう。 */
+  /* お支払い方法。押すとそのまま Stripe の決済ページへ進む。
+     実際にどれで払うかは次の画面で選ぶが、押した手応えは返す。 */
   .pay-panel{
     border:1px solid rgba(0,0,0,.08); border-radius:18px;
     background:rgba(255,255,255,.6); overflow:hidden;
-    cursor:default; user-select:none;
   }
   .pay-row{
+    width:100%; text-align:left; font:inherit; color:inherit;
     display:flex; align-items:center; gap:14px; padding:15px 18px;
-    border-top:1px solid rgba(0,0,0,.06);
+    border:0; border-top:1px solid rgba(0,0,0,.06);
+    background:transparent; cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+    transition:background .18s ease, transform .12s ease;
   }
   .pay-row:first-child{ border-top:0; }
+  .pay-row:hover{ background:rgba(0,0,0,.025); }
+  .pay-row:active{ background:rgba(0,0,0,.05); transform:scale(.995); }
+  .pay-row:focus-visible{ outline:2px solid #0a0a0a; outline-offset:-2px; }
   .pay-row .pay-icon{
     width:40px; height:40px; border-radius:12px; flex-shrink:0;
     display:grid; place-items:center;
@@ -84,6 +89,19 @@
   }
   .pay-row .pay-name{ font-size:14px; font-weight:600; letter-spacing:-.01em; color:#18181b; }
   .pay-row .pay-sub{ font-size:12px; color:#71717a; margin-top:2px; }
+  .pay-row .pay-go{ margin-left:auto; color:#a1a1aa; flex-shrink:0; transition:transform .18s ease; }
+  .pay-row:hover .pay-go{ transform:translateX(2px); color:#52525b; }
+
+  /* 送信中：押した行だけを残して他を沈める */
+  .pay-panel.is-busy .pay-row{ pointer-events:none; }
+  .pay-panel.is-busy .pay-row:not(.is-busy){ opacity:.4; }
+  .pay-row.is-busy .pay-go{ opacity:0; }
+  .pay-row.is-busy::after{
+    content:''; margin-left:auto; width:16px; height:16px; flex-shrink:0;
+    border:2px solid rgba(0,0,0,.15); border-top-color:#0a0a0a; border-radius:50%;
+    animation:paySpin .7s linear infinite;
+  }
+  @keyframes paySpin{ to{ transform:rotate(360deg); } }
 
   .step-num{ width:22px; height:22px; border-radius:50%; background:#0a0a0a; color:#fff; display:grid; place-items:center; font-size:11px; font-weight:600; flex-shrink:0; }
   /* 文字が途中で折り返すと読みにくいので、絶対に折り返させない */
@@ -275,14 +293,14 @@
       <section class="glass rounded-[28px] p-7 reveal delay-3">
         <div class="text-[11px] tracking-[0.28em] uppercase text-zinc-500 mb-5">03 — Payment</div>
         <h2 class="text-xl font-semibold tracking-tight text-zinc-900 mb-5" data-i18n="co_pay_h2">お支払い方法</h2>
-        <!-- ここは「選ぶ場所」ではなく「使えるものの一覧」。
+        <!-- 3つとも押すと同じところ（Stripe の決済ページ）へ進む。
              Apple Pay / Google Pay は登録済みカードの出し方であって別の決済手段ではなく、
-             どれを使うかは次の Stripe の画面で端末に応じて決まる。
-             カード型に分けると押せそうに見えてしまうので、1枚のパネルにまとめている。 -->
-        <p class="text-[13px] text-zinc-500 -mt-3 mb-5" data-i18n="co_pay_lead">次の画面で、お使いの端末に合わせてお選びいただけます。</p>
+             実際にどれを使うかは次の画面で端末に応じて決まるため。
+             ただ「押しても何も起きない」のは体験として最悪なので、押せるようにしてある。 -->
+        <p class="text-[13px] text-zinc-500 -mt-3 mb-5" data-i18n="co_pay_lead">お好きな方法を選んでください。次の画面で確認できます。</p>
 
-        <div class="pay-panel">
-          <div class="pay-row">
+        <div class="pay-panel" id="pay-panel">
+          <button type="submit" class="pay-row" data-pay="card">
             <span class="pay-icon">
               <img src="./assets/pay-card.png" alt="" width="223" height="160" style="width:22px;height:auto" loading="lazy">
             </span>
@@ -290,8 +308,9 @@
               <span class="pay-name" data-i18n="co_pay_card">クレジットカード</span>
               <span class="pay-sub block">Visa / Mastercard / JCB / AMEX</span>
             </span>
-          </div>
-          <div class="pay-row">
+            <svg class="pay-go" width="7" height="12" viewBox="0 0 7 12" fill="none" aria-hidden="true"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button type="submit" class="pay-row" data-pay="apple">
             <span class="pay-icon" style="background:transparent;border:0">
               <img src="./assets/pay-applepay.png" alt="Apple Pay" width="250" height="160" style="height:26px;width:auto" loading="lazy">
             </span>
@@ -299,14 +318,16 @@
               <span class="pay-name">Apple Pay</span>
               <span class="pay-sub block" data-i18n="co_pay_wallet_sub">対応端末ならワンタッチ</span>
             </span>
-          </div>
-          <div class="pay-row">
+            <svg class="pay-go" width="7" height="12" viewBox="0 0 7 12" fill="none" aria-hidden="true"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button type="submit" class="pay-row" data-pay="google">
             <span class="pay-icon"><span style="font-size:15px;font-weight:700;letter-spacing:-.02em">G</span></span>
             <span>
               <span class="pay-name">Google&nbsp;Pay</span>
               <span class="pay-sub block" data-i18n="co_pay_wallet_sub">対応端末ならワンタッチ</span>
             </span>
-          </div>
+            <svg class="pay-go" width="7" height="12" viewBox="0 0 7 12" fill="none" aria-hidden="true"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
         </div>
 
         <!-- カード情報はこのページでは受け取らない（PCI DSS 回避）。Stripe の決済ページへ委譲する -->
@@ -316,7 +337,7 @@
               <rect x="4" y="10" width="16" height="10" rx="2.5"/><path d="M8 10V7.5a4 4 0 0 1 8 0V10"/>
             </svg>
             <p class="text-[13px] leading-relaxed text-zinc-600" data-i18n="co_pay_secure_note">
-              カード情報はこのページでは入力しません。Stripe の安全な決済ページに移動します。
+              決済は <b>Stripe</b> が行います。世界中の企業が使っている決済サービスで、カード情報が当社に渡ることはありません。
             </p>
           </div>
         </div>
@@ -459,7 +480,7 @@ const translations = {
   // Contact
   "co_contact_h2": { ja: "連絡先",                              en: "Contact",                          es: "Datos de contacto",                pt: "Contato" },
   "co_email":      { ja: "メールアドレス",                       en: "Email address",                    es: "Correo electrónico",               pt: "E-mail" },
-  "co_pay_lead": { ja: "次の画面で、お使いの端末に合わせてお選びいただけます。", en: "You'll choose on the next screen, based on your device.", es: "Podrás elegir en la siguiente pantalla, según tu dispositivo.", pt: "Você escolherá na próxima tela, conforme seu dispositivo." },
+  "co_pay_lead": { ja: "お好きな方法を選んでください。次の画面で確認できます。", en: "Pick one to continue. You'll confirm on the next screen.", es: "Elige uno para continuar. Lo confirmarás en la siguiente pantalla.", pt: "Escolha um para continuar. Você confirmará na próxima tela." },
   "co_pay_wallet_sub": { ja: "対応端末ならワンタッチ", en: "One touch on supported devices", es: "Un toque en dispositivos compatibles", pt: "Um toque em dispositivos compatíveis" },
   "co_zip_looking": { ja: "住所を調べています…", en: "Looking up address…", es: "Buscando la dirección…", pt: "Buscando o endereço…" },
   "co_zip_filled":  { ja: "住所を入力しました。番地を続けて入力してください。", en: "Address filled in. Add your street number.", es: "Dirección rellenada. Añade el número.", pt: "Endereço preenchido. Adicione o número." },
@@ -493,10 +514,10 @@ const translations = {
   "co_pay_card":        { ja: "クレジットカード", en: "Credit card",         es: "Tarjeta de crédito",   pt: "Cartão de crédito" },
   "co_pay_apple_sub":   { ja: "対応端末なら次の画面でワンタッチ", en: "One touch on supported devices", es: "Un toque en dispositivos compatibles", pt: "Um toque em dispositivos compatíveis" },
   "co_pay_secure_note": {
-    ja: "カード情報はこのページでは入力しません。Stripe の安全な決済ページに移動します。",
-    en: "No card details are entered here. You'll continue on Stripe's secure payment page.",
-    es: "Aquí no se introducen datos de tarjeta. Continuarás en la página de pago segura de Stripe.",
-    pt: "Os dados do cartão não são inseridos aqui. Você continuará na página de pagamento segura da Stripe."
+    ja: "決済は <b>Stripe</b> が行います。世界中の企業が使っている決済サービスで、カード情報が当社に渡ることはありません。",
+    en: "Payments are handled by <b>Stripe</b>, used by companies worldwide. Your card details never reach us.",
+    es: "El pago lo gestiona <b>Stripe</b>, usado por empresas de todo el mundo. Los datos de tu tarjeta nunca llegan a nosotros.",
+    pt: "O pagamento é processado pela <b>Stripe</b>, usada por empresas no mundo todo. Os dados do seu cartão nunca chegam até nós."
   },
   "co_pay_error": {
     ja: "決済ページに接続できませんでした。時間をおいて再度お試しください。",
@@ -750,6 +771,23 @@ function render(){
   document.getElementById('sum-total').textContent = fmtPrice(subtotal, lang);
 }
 
+// お支払い方法の行を押したときに「押した」手応えを返す。
+// 送信そのものは type="submit" がやるので、ここでは見た目だけを担当する。
+// （入力に不備があればブラウザが送信を止めるので、そのときは元に戻す）
+(function(){
+  const panel = document.getElementById('pay-panel');
+  const form = document.getElementById('checkout-form');
+  if (!panel || !form) return;
+  panel.addEventListener('click', (e) => {
+    const row = e.target.closest('.pay-row');
+    if (!row) return;
+    if (!form.checkValidity()) return;   // 未入力があるときは何も演出しない
+    panel.querySelectorAll('.pay-row').forEach(r => r.classList.remove('is-busy'));
+    row.classList.add('is-busy');
+    panel.classList.add('is-busy');
+  });
+})();
+
 // ---------------------------------------------------------------------------
 // 郵便番号から住所を自動で入れる（日本のみ）
 //
@@ -835,11 +873,18 @@ document.getElementById('checkout-form').addEventListener('submit', async (e) =>
   const err  = document.getElementById('pay-error');
   const originalLabel = btn.textContent;
 
+  const panel = document.getElementById('pay-panel');
+  const clearBusy = () => {
+    if (!panel) return;
+    panel.classList.remove('is-busy');
+    panel.querySelectorAll('.pay-row').forEach(r => r.classList.remove('is-busy'));
+  };
   const showError = (msg) => {
     err.textContent = msg;
     err.classList.remove('hidden');
     btn.disabled = false;
     btn.textContent = originalLabel;
+    clearBusy();
   };
 
   err.classList.add('hidden');

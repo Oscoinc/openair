@@ -32,7 +32,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    let orders = await listOrders({ limit: q.limit, since: q.since });
+    let orders = await listOrders({ limit: q.limit, since: q.since, includeAll: q.include === 'all' });
     if (q.unprinted === '1') orders = orders.filter((o) => !o.printedAt);
     if (q.format === 'text') return asText(orders);
     return res.status(200).json({ demo: false, configured: true, orders });
