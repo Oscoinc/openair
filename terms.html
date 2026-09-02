@@ -290,7 +290,7 @@
     <div class="flex gap-6 items-center">
       <a href="./privacy.html" class="hover:text-zinc-900" data-i18n="footer_privacy">プライバシー</a>
       <a href="./terms.html" class="hover:text-zinc-900 text-zinc-900 font-medium" data-i18n="footer_terms">利用規約</a>
-      <a href="./tokushoho.html" class="hover:text-zinc-900">特定商取引法に基づく表記</a>
+      <a href="./tokushoho.html" id="footer-tokushoho" class="hover:text-zinc-900">特定商取引法に基づく表記</a>
       <a href="./support.html" class="hover:text-zinc-900" data-i18n="footer_support">サポート</a>
       <button id="lang-switcher" type="button" class="text-zinc-500 hover:text-zinc-900 transition flex items-center gap-1.5 cursor-pointer" aria-label="お届け先の国・地域を変更" title="お届け先の国・地域を変更">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
@@ -308,6 +308,12 @@
   .ship-soon{background:#f4f4f5;color:#a1a1aa}
   #region-modal [data-shipping="soon"]{opacity:.72}
   #lang-switcher{white-space:nowrap}
+  .lang-option.is-current{ background:#f4f4f5; font-weight:500; color:#18181b }
+  #region-modal .region-option.is-current{ background:#fafafa }
+  /* 画面の小さい端末でも、段が増えたパネルが収まるように */
+  #region-modal > div{ max-height:86vh; overflow-y:auto; -webkit-overflow-scrolling:touch }
+  .lang-option{ border:1px solid #e4e4e7 }
+  .lang-option.is-current{ border-color:#d4d4d8 }
 </style>
 <div id="region-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/40 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="region-modal-title">
   <div class="bg-white rounded-3xl p-7 max-w-sm w-full shadow-2xl" onclick="event.stopPropagation()">
@@ -368,6 +374,27 @@
         </button>
       </li>
     </ul>
+    <div class="mt-5 pt-4 border-t border-zinc-200/70">
+      <div class="text-[11px] tracking-[0.3em] uppercase text-zinc-500 mb-2">Language</div>
+      <div class="grid grid-cols-2 gap-1.5">
+        <button data-lang="ja" class="lang-option flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl text-[13px] text-zinc-700 hover:bg-zinc-50 transition text-left">
+          <span>日本語</span>
+          <span class="lang-check text-zinc-900 hidden text-[15px]">✓</span>
+        </button>
+        <button data-lang="en" class="lang-option flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl text-[13px] text-zinc-700 hover:bg-zinc-50 transition text-left">
+          <span>English</span>
+          <span class="lang-check text-zinc-900 hidden text-[15px]">✓</span>
+        </button>
+        <button data-lang="es" class="lang-option flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl text-[13px] text-zinc-700 hover:bg-zinc-50 transition text-left">
+          <span>Español</span>
+          <span class="lang-check text-zinc-900 hidden text-[15px]">✓</span>
+        </button>
+        <button data-lang="pt" class="lang-option flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl text-[13px] text-zinc-700 hover:bg-zinc-50 transition text-left">
+          <span>Português</span>
+          <span class="lang-check text-zinc-900 hidden text-[15px]">✓</span>
+        </button>
+      </div>
+    </div>
     <button id="region-close" type="button" class="mt-5 w-full text-center text-[13px] text-zinc-500 hover:text-zinc-900 transition py-2">閉じる</button>
   </div>
 </div>
@@ -604,18 +631,58 @@ function applyLang(lang){
   const titleEntry = translations['page_title'];
   if (titleEntry) document.title = (titleEntry[lang] && titleEntry[lang] !== '') ? titleEntry[lang] : titleEntry.ja;
   const langLabel = document.getElementById('lang-current');
-  if (langLabel) langLabel.textContent = regionLabelFor(lang, lang);
+  const region = getRegion();
+  if (langLabel) langLabel.textContent = regionLabelFor(region, lang) + ' · ' + (LANG_LABEL[lang] || '日本語');
   const langBtn = document.getElementById('lang-switcher');
   if (langBtn){
     const l = SHIP_SWITCHER_LABEL[lang] || SHIP_SWITCHER_LABEL.ja;
     langBtn.setAttribute('aria-label', l);
     langBtn.setAttribute('title', l);
   }
+  // 特定商取引法の表記は日本向けの決まりなので、お届け先が日本のときだけ出す
+  const tokusho = document.getElementById('footer-tokushoho');
+  if (tokusho) tokusho.style.display = (region === 'ja') ? '' : 'none';
 }
 function setLang(lang){
   if (!SUPPORTED_LANGS.includes(lang)) lang = 'ja';
-  localStorage.setItem(I18N_KEY, lang);
+  try {
+    localStorage.setItem(I18N_KEY, lang);
+    // 自分で言語を選んだ人には、以降お届け先を変えても言語を勝手に変えない
+    localStorage.setItem(LANG_PICKED_KEY, '1');
+  } catch(e){}
   applyLang(lang);
+  if (window.onLocaleChange) window.onLocaleChange();
+}
+
+// ---------------------------------------------------------------------------
+// お届け先（地域）は表示言語とは別に持つ。
+//   地域 … 通貨・配送できるかどうか・住所の書式
+//   言語 … 画面に出る文字
+// 初回は言語の判定と同じ地域から始め、どちらかを選んだ時点でその選択を覚える。
+// ---------------------------------------------------------------------------
+const REGION_KEY = 'openair_region';
+const LANG_PICKED_KEY = 'openair_lang_picked';
+const SUPPORTED_REGIONS = ['ja','en','es','pt'];
+function getRegion(){
+  try {
+    const u = new URLSearchParams(location.search).get('region');
+    if (SUPPORTED_REGIONS.includes(u)) { localStorage.setItem(REGION_KEY, u); return u; }
+  } catch(e){}
+  try {
+    const saved = localStorage.getItem(REGION_KEY);
+    if (SUPPORTED_REGIONS.includes(saved)) return saved;
+  } catch(e){}
+  return getLang();
+}
+function setRegion(region){
+  if (!SUPPORTED_REGIONS.includes(region)) region = 'ja';
+  try {
+    localStorage.setItem(REGION_KEY, region);
+    // まだ言語を自分で選んでいない人には、その地域でよく使われる言語を当てる
+    if (localStorage.getItem(LANG_PICKED_KEY) !== '1') localStorage.setItem(I18N_KEY, region);
+  } catch(e){}
+  applyLang(getLang());
+  if (window.onLocaleChange) window.onLocaleChange();
 }
 applyLang(getLang());
 
@@ -629,10 +696,10 @@ applyLang(getLang());
   switcher.parentNode.replaceChild(newSwitcher, switcher);
 
   const MODAL_TEXT = {
-    ja: { title: 'お届け先の国・地域', sub: '選ぶと、言語と通貨がその地域に切り替わります。', close: '閉じる' },
-    en: { title: 'Shipping destination', sub: 'Language and currency follow the destination you pick.', close: 'Close' },
-    es: { title: 'Destino de envío',     sub: 'El idioma y la moneda siguen al destino que elijas.',     close: 'Cerrar' },
-    pt: { title: 'Destino de entrega',   sub: 'O idioma e a moeda seguem o destino escolhido.',          close: 'Fechar' }
+    ja: { title: 'お届け先の国・地域', sub: '通貨と配送はここで決まります。言語は下で別に選べます。', close: '閉じる' },
+    en: { title: 'Shipping destination', sub: 'Sets currency and delivery. Pick the language separately below.', close: 'Close' },
+    es: { title: 'Destino de envío',     sub: 'Define la moneda y el envío. El idioma se elige abajo.',          close: 'Cerrar' },
+    pt: { title: 'Destino de entrega',   sub: 'Define a moeda e a entrega. O idioma é escolhido abaixo.',        close: 'Fechar' }
   };
 
   function openModal(){
@@ -668,11 +735,19 @@ applyLang(getLang());
   }
   function closeModal(){ modal.classList.add('hidden'); }
   function updateChecks(){
+    const region = getRegion();
     const lang = getLang();
     modal.querySelectorAll('.region-option').forEach(btn => {
       const check = btn.querySelector('.region-check');
       if (!check) return;
-      check.classList.toggle('hidden', btn.dataset.region !== lang);
+      check.classList.toggle('hidden', btn.dataset.region !== region);
+      btn.classList.toggle('is-current', btn.dataset.region === region);
+    });
+    modal.querySelectorAll('.lang-option').forEach(btn => {
+      const check = btn.querySelector('.lang-check');
+      if (!check) return;
+      check.classList.toggle('hidden', btn.dataset.lang !== lang);
+      btn.classList.toggle('is-current', btn.dataset.lang === lang);
     });
   }
 
@@ -681,13 +756,40 @@ applyLang(getLang());
   document.getElementById('region-close')?.addEventListener('click', closeModal);
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal(); });
 
+  // お届け先を選ぶ。言語も選べるようにパネルは開いたままにする。
   modal.querySelectorAll('.region-option').forEach(btn => {
     btn.addEventListener('click', () => {
       const region = btn.dataset.region;
-      if (SUPPORTED_LANGS.includes(region)) {
-        setLang(region);
-        closeModal();
-      }
+      if (!SUPPORTED_REGIONS.includes(region)) return;
+      setRegion(region);
+      const lang = getLang();
+      const t = MODAL_TEXT[lang] || MODAL_TEXT.ja;
+      const title = modal.querySelector('#region-modal-title');
+      const sub = modal.querySelector('#region-modal-sub');
+      const close = modal.querySelector('#region-close');
+      if (title) title.textContent = t.title;
+      if (sub) sub.textContent = t.sub;
+      if (close) close.textContent = t.close;
+      paintRows(lang);
+      updateChecks();
+    });
+  });
+
+  // 表示言語を選ぶ。お届け先はそのまま。
+  modal.querySelectorAll('.lang-option').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const lang = btn.dataset.lang;
+      if (!SUPPORTED_LANGS.includes(lang)) return;
+      setLang(lang);
+      const t = MODAL_TEXT[lang] || MODAL_TEXT.ja;
+      const title = modal.querySelector('#region-modal-title');
+      const sub = modal.querySelector('#region-modal-sub');
+      const close = modal.querySelector('#region-close');
+      if (title) title.textContent = t.title;
+      if (sub) sub.textContent = t.sub;
+      if (close) close.textContent = t.close;
+      paintRows(lang);
+      updateChecks();
     });
   });
 })();

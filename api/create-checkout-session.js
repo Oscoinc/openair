@@ -29,8 +29,13 @@ export default async function handler(req, res) {
     const { items, lang, customer, newsletter } = body;
 
     // --- 地域 / 通貨 ------------------------------------------------------
-    const region = REGIONS[lang];
-    if (!region) return bad(res, 400, `Unsupported region: ${lang}`);
+    // お届け先（通貨・配送国）と表示言語は別物。古い画面は lang しか送ってこないので、
+    // region が無ければ lang をお届け先として扱う。
+    const regionKey = body.region || lang;
+    const region = REGIONS[regionKey];
+    if (!region) return bad(res, 400, `Unsupported region: ${regionKey}`);
+    // メールや Stripe の画面に出す言語。指定が無ければお届け先の既定の言語。
+    const uiLang = ['ja','en','es','pt'].includes(body.uiLang) ? body.uiLang : regionKey;
 
     // --- カート検証 -------------------------------------------------------
     if (!Array.isArray(items) || items.length === 0) return bad(res, 400, 'Cart is empty');
@@ -55,7 +60,7 @@ export default async function handler(req, res) {
         tax_behavior: region.taxBehavior,
         product_data: {
           name: isSub ? `${product.name}（定期便）` : product.name,
-          description: product.description[lang] || product.description.ja,
+          description: product.description[uiLang] || product.description.ja,
         },
       };
 
@@ -107,7 +112,7 @@ export default async function handler(req, res) {
       ? [{
           shipping_rate_data: {
             type: 'fixed_amount',
-            display_name: lang === 'es' ? 'Envío' : '配送料',
+            display_name: uiLang === 'es' ? 'Envío' : '配送料',
             fixed_amount: { amount: region.shipping, currency: region.currency },
           },
         }]
@@ -125,7 +130,8 @@ export default async function handler(req, res) {
     // 通常購入でも同じものを入れておけば、読み出し側の処理を1本にできる。
     const metadata = {
       order_ref: orderRef,
-      lang,
+      lang: regionKey,
+      ui_lang: uiLang,
       items: items.map((i) => `${i.id}x${i.qty}`).join(','),
       plan: hasSubscription ? 'subscription' : 'once',
       // 案内メールを送っていい相手かどうか。既定は「送らない」
@@ -154,7 +160,7 @@ export default async function handler(req, res) {
       mode: hasSubscription ? 'subscription' : 'payment',
       line_items,
       customer_email: c.email,
-      locale: region.locale,
+      locale: uiLang,
       client_reference_id: orderRef,
       metadata,
       shipping_options: shippingOptions,
