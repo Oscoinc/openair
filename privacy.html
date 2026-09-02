@@ -281,60 +281,77 @@
       <a href="./terms.html" class="hover:text-zinc-900" data-i18n="footer_terms">利用規約</a>
       <a href="./tokushoho.html" class="hover:text-zinc-900">特定商取引法に基づく表記</a>
       <a href="./support.html" class="hover:text-zinc-900" data-i18n="footer_support">サポート</a>
-      <button id="lang-switcher" type="button" class="text-zinc-500 hover:text-zinc-900 transition flex items-center gap-1.5 cursor-pointer" aria-label="言語切替 / Cambiar idioma" title="言語を切り替える / Cambiar idioma">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <circle cx="12" cy="12" r="9"/>
-          <path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>
-        </svg>
-        <span id="lang-current">日本語</span>
+      <button id="lang-switcher" type="button" class="text-zinc-500 hover:text-zinc-900 transition flex items-center gap-1.5 cursor-pointer" aria-label="お届け先の国・地域を変更" title="お届け先の国・地域を変更">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+        <span id="lang-current">🇯🇵 日本</span>
       </button>
     </div>
   </div>
 </footer>
 
 <!-- Region selection modal -->
+<style id="ship-ui-css">
+  .ship-badge{display:inline-block;font-size:10px;line-height:1;padding:3px 7px;border-radius:999px;
+    letter-spacing:.02em;white-space:nowrap;font-weight:500}
+  .ship-yes{background:#0f172a;color:#fff}
+  .ship-soon{background:#f4f4f5;color:#a1a1aa}
+  #region-modal [data-shipping="soon"]{opacity:.72}
+  #lang-switcher{white-space:nowrap}
+</style>
 <div id="region-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/40 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="region-modal-title">
   <div class="bg-white rounded-3xl p-7 max-w-sm w-full shadow-2xl" onclick="event.stopPropagation()">
-    <div class="text-[11px] tracking-[0.3em] uppercase text-zinc-500 mb-1">Region</div>
-    <h3 id="region-modal-title" class="text-xl font-semibold tracking-tight mb-1">配送地域を選択</h3>
-    <p class="text-[12px] text-zinc-500 mb-5" id="region-modal-sub">ご利用の地域に合わせて、言語と通貨が切り替わります。</p>
+    <div class="text-[11px] tracking-[0.3em] uppercase text-zinc-500 mb-1">Shipping</div>
+    <h3 id="region-modal-title" class="text-xl font-semibold tracking-tight mb-1">お届け先の国・地域</h3>
+    <p class="text-[12px] text-zinc-500 mb-5" id="region-modal-sub">選ぶと、言語と通貨がその地域に切り替わります。</p>
     <ul class="space-y-1.5">
       <li>
-        <button data-region="ja" class="region-option w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
-          <span class="text-2xl">🇯🇵</span>
-          <div class="flex-1">
-            <div class="text-[14px] font-medium text-zinc-900">日本</div>
-            <div class="text-[11px] text-zinc-500">日本語 · 全国配送 · ¥</div>
+        <button data-region="ja" data-shipping="yes" class="region-option w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
+          <span class="text-2xl" data-region-flag>🇯🇵</span>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <div class="text-[14px] font-medium text-zinc-900" data-region-name>日本</div>
+              <span class="ship-badge ship-yes" data-region-badge>配送対応</span>
+            </div>
+            <div class="text-[11px] text-zinc-500 mt-0.5" data-region-desc>日本語 · 全国配送 · ¥</div>
           </div>
           <span class="region-check text-zinc-900 hidden text-[18px]">✓</span>
         </button>
       </li>
       <li>
-        <button data-region="en" class="region-option w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
-          <span class="text-2xl">🇺🇸</span>
-          <div class="flex-1">
-            <div class="text-[14px] font-medium text-zinc-900">United States</div>
-            <div class="text-[11px] text-zinc-500">English · USA shipping · $</div>
+        <button data-region="es" data-shipping="yes" class="region-option w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
+          <span class="text-2xl" data-region-flag>🇪🇺</span>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <div class="text-[14px] font-medium text-zinc-900" data-region-name>ヨーロッパ</div>
+              <span class="ship-badge ship-yes" data-region-badge>配送対応</span>
+            </div>
+            <div class="text-[11px] text-zinc-500 mt-0.5" data-region-desc>EU 27カ国 · スペインから発送 · €</div>
           </div>
           <span class="region-check text-zinc-900 hidden text-[18px]">✓</span>
         </button>
       </li>
       <li>
-        <button data-region="es" class="region-option w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
-          <span class="text-2xl">🇪🇸</span>
-          <div class="flex-1">
-            <div class="text-[14px] font-medium text-zinc-900">España</div>
-            <div class="text-[11px] text-zinc-500">Español · Envío UE · €</div>
+        <button data-region="en" data-shipping="soon" class="region-option w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
+          <span class="text-2xl" data-region-flag>🇺🇸</span>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <div class="text-[14px] font-medium text-zinc-900" data-region-name>アメリカ合衆国</div>
+              <span class="ship-badge ship-soon" data-region-badge>近日対応</span>
+            </div>
+            <div class="text-[11px] text-zinc-500 mt-0.5" data-region-desc>English · $</div>
           </div>
           <span class="region-check text-zinc-900 hidden text-[18px]">✓</span>
         </button>
       </li>
       <li>
-        <button data-region="pt" class="region-option w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
-          <span class="text-2xl">🇧🇷</span>
-          <div class="flex-1">
-            <div class="text-[14px] font-medium text-zinc-900">Brasil</div>
-            <div class="text-[11px] text-zinc-500">Português · Envio Brasil · R$</div>
+        <button data-region="pt" data-shipping="soon" class="region-option w-full p-4 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition text-left">
+          <span class="text-2xl" data-region-flag>🇧🇷</span>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <div class="text-[14px] font-medium text-zinc-900" data-region-name>ブラジル</div>
+              <span class="ship-badge ship-soon" data-region-badge>近日対応</span>
+            </div>
+            <div class="text-[11px] text-zinc-500 mt-0.5" data-region-desc>Português · R$</div>
           </div>
           <span class="region-check text-zinc-900 hidden text-[18px]">✓</span>
         </button>
@@ -615,6 +632,35 @@ const translations = {
 const I18N_KEY = 'openair_lang';
 const SUPPORTED_LANGS = ['ja','en','es','pt'];
 const LANG_LABEL = { ja: '日本語', en: 'English', es: 'Español', pt: 'Português' };
+// お届け先（配送対応国・地域）— 表示は言語ではなく「どこに届けられるか」
+const REGION_UI = {
+  ja: { flag: '\uD83C\uDDEF\uD83C\uDDF5', ship: 'yes',
+        name: { ja: '日本', en: 'Japan', es: 'Japón', pt: 'Japão' },
+        desc: { ja: '日本語 · 全国配送 · ¥', en: 'Japanese · Nationwide · ¥',
+                es: 'Japonés · Todo Japón · ¥', pt: 'Japonês · Todo o Japão · ¥' } },
+  es: { flag: '\uD83C\uDDEA\uD83C\uDDFA', ship: 'yes',
+        name: { ja: 'ヨーロッパ', en: 'Europe', es: 'Europa', pt: 'Europa' },
+        desc: { ja: 'EU 27カ国 · スペインから発送 · €', en: '27 EU countries · ships from Spain · €',
+                es: '27 países de la UE · envío desde España · €', pt: '27 países da UE · envio da Espanha · €' } },
+  en: { flag: '\uD83C\uDDFA\uD83C\uDDF8', ship: 'soon',
+        name: { ja: 'アメリカ合衆国', en: 'United States', es: 'Estados Unidos', pt: 'Estados Unidos' },
+        desc: { ja: 'English · $', en: 'English · $', es: 'Inglés · $', pt: 'Inglês · $' } },
+  pt: { flag: '\uD83C\uDDE7\uD83C\uDDF7', ship: 'soon',
+        name: { ja: 'ブラジル', en: 'Brazil', es: 'Brasil', pt: 'Brasil' },
+        desc: { ja: 'Português · R$', en: 'Portuguese · R$', es: 'Portugués · R$', pt: 'Português · R$' } }
+};
+const SHIP_BADGE = {
+  yes:  { ja: '配送対応', en: 'Shipping',    es: 'Con envío', pt: 'Com envio' },
+  soon: { ja: '近日対応', en: 'Coming soon', es: 'Muy pronto', pt: 'Em breve' }
+};
+const SHIP_SWITCHER_LABEL = {
+  ja: 'お届け先の国・地域を変更', en: 'Change shipping destination',
+  es: 'Cambiar destino de envío', pt: 'Alterar destino de entrega'
+};
+function regionLabelFor(region, lang){
+  const r = REGION_UI[region] || REGION_UI.ja;
+  return r.flag + ' ' + (r.name[lang] || r.name.ja);
+}
 function getLang(){
   try {
     const u = new URLSearchParams(location.search).get('lang');
@@ -658,7 +704,13 @@ function applyLang(lang){
   if (titleEntry) document.title = (titleEntry[lang] !== undefined && titleEntry[lang] !== '') ? titleEntry[lang] : titleEntry.ja;
   // Switcher label
   const langLabel = document.getElementById('lang-current');
-  if (langLabel) langLabel.textContent = LANG_LABEL[lang] || '日本語';
+  if (langLabel) langLabel.textContent = regionLabelFor(lang, lang);
+  const langBtn = document.getElementById('lang-switcher');
+  if (langBtn){
+    const l = SHIP_SWITCHER_LABEL[lang] || SHIP_SWITCHER_LABEL.ja;
+    langBtn.setAttribute('aria-label', l);
+    langBtn.setAttribute('title', l);
+  }
 }
 function setLang(lang){
   if (!SUPPORTED_LANGS.includes(lang)) lang = 'ja';
@@ -677,10 +729,10 @@ applyLang(getLang());
   switcher.parentNode.replaceChild(newSwitcher, switcher);
 
   const MODAL_TEXT = {
-    ja: { title: '配送地域を選択',         sub: 'ご利用の地域に合わせて、言語と通貨が切り替わります。', close: '閉じる' },
-    en: { title: 'Choose your region',     sub: 'Language and currency adapt to your region.',           close: 'Close' },
-    es: { title: 'Selecciona tu región',   sub: 'El idioma y la moneda se ajustan a tu región.',         close: 'Cerrar' },
-    pt: { title: 'Escolha sua região',     sub: 'O idioma e a moeda se ajustam à sua região.',           close: 'Fechar' }
+    ja: { title: 'お届け先の国・地域', sub: '選ぶと、言語と通貨がその地域に切り替わります。', close: '閉じる' },
+    en: { title: 'Shipping destination', sub: 'Language and currency follow the destination you pick.', close: 'Close' },
+    es: { title: 'Destino de envío',     sub: 'El idioma y la moneda siguen al destino que elijas.',     close: 'Cerrar' },
+    pt: { title: 'Destino de entrega',   sub: 'O idioma e a moeda seguem o destino escolhido.',          close: 'Fechar' }
   };
 
   function openModal(){
@@ -694,6 +746,25 @@ applyLang(getLang());
     if (title) title.textContent = t.title;
     if (sub) sub.textContent = t.sub;
     if (close) close.textContent = t.close;
+    paintRows(lang);
+  }
+  // 各行の国名・説明・配送バッジを現在の言語で描き直す
+  function paintRows(lang){
+    modal.querySelectorAll('.region-option').forEach(btn => {
+      const r = REGION_UI[btn.dataset.region];
+      if (!r) return;
+      const flag = btn.querySelector('[data-region-flag]');
+      const name = btn.querySelector('[data-region-name]');
+      const desc = btn.querySelector('[data-region-desc]');
+      const badge = btn.querySelector('[data-region-badge]');
+      if (flag) flag.textContent = r.flag;
+      if (name) name.textContent = r.name[lang] || r.name.ja;
+      if (desc) desc.textContent = r.desc[lang] || r.desc.ja;
+      if (badge){
+        const b = SHIP_BADGE[r.ship] || SHIP_BADGE.soon;
+        badge.textContent = b[lang] || b.ja;
+      }
+    });
   }
   function closeModal(){ modal.classList.add('hidden'); }
   function updateChecks(){
